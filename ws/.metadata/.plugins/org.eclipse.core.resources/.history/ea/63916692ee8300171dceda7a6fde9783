@@ -1,0 +1,79 @@
+@charset "ISO-8859-1";
+ul.ss-tab-consultation {
+	padding-left: 25%;
+	background-color: white;
+}
+
+.nav-tabs a,
+.nav-tabs a:hover,
+.nav-tabs a:focus {
+  color: #555;
+  cursor: default;
+}
+
+.nav-tabs > li.active-consult-tab  > a,
+.nav-tabs > li.active-consult-tab  > a:hover,
+.nav-tabs > li.active-consult-tab  > a:focus {
+  color: #555;
+  background-color: #EEE;
+  border: 1px solid #ddd;
+  border-bottom-color: red;
+  cursor: default;
+  transition: all 1s;
+}
+
+.consult .saisi-title-gray {
+    margin-left : -1.5em;
+}
+
+.consult .saisi-title-red {
+    color: #09A;
+    margin : -.2em -.5em .2em 0;
+}
+
+.consult .btn-primary, .consult .btn-primary:hover{
+	background-color: #09A;
+}
+
+.list-filtres {
+	position: relative;
+    background-color: rgba(30, 176, 200, 0.04);
+    border-radius: 4px;
+    padding: .3em;
+    max-height: 75px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    transition: all .5s;
+}
+
+.list-filtres-toggl {
+	max-height: inherit;
+	overflow-y: visible;
+	padding: .5em;
+	transition: all .5s;
+}
+
+.row-container {
+	margin: 0 -15px;
+}
+
+.row-container .row, .row-container label {
+	margin: 3px 2px;
+}
+
+.row-container {
+    margin: 0 -15px;
+    position: relative;
+    display: block;
+    border-radius: 4px;
+    box-shadow: #6AD 1px 1px 0px 0px !important;
+    border: #CCC solid 1px;
+}
+
+.form-marge input[type="radio"] {
+	margin: 0;
+}
+
+.filtre-form {
+    display: inline-flex; 	
+}

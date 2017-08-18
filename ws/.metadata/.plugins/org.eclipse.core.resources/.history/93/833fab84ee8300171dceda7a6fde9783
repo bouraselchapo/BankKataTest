@@ -1,0 +1,14 @@
+'use strict';
+
+angular.module('saisieEvenementModule')
+
+.config(['$stateProvider', '$urlRouterProvider',
+         function($stateProvider, $urlRouterProvider) {
+	
+	$stateProvider.state('saisieEvenement', {
+		url : '/saisieEvenement',
+		templateUrl : 'saisieEvenement/view.html',
+		controller : 'saisieEvenementController',
+		controllerAs : 'saisieEvenementController'
+	});
+}]);

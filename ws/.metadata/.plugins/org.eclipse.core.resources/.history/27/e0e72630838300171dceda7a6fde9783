@@ -1,0 +1,54 @@
+<div>
+<!-- Consultation du Reseau -->
+<h3 class="col-sm-4" style = "border: 2px solid;  border-radius: 25px;">Consultation Gare Référentiel</h3>
+	<table id="consultationReseauTableId" class="table table-striped">
+		<thead>
+			<tr>
+				<th>GARE</th>
+				<th><em class="fa fa-cog"></em></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="gare in listeGare">
+				<td>{{gare.libelle}}</td>
+				<td align="center"><a class="btn btn-default"
+					ng-click="modifierGare(gare.id)"><em class="fa fa-pencil"></em></a>
+					<a class="btn btn-anger" ng-click="supprimerGare(gare)"><em
+						class="fa fa-trash"></em></a></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="row">
+		<div class="col-md-2 col-md-offset-4">
+			<button type="button" ng-disabled="precedantDisabledGare"
+				class="btn btn-sm btn-primary btn-block"
+				style="background-color: #A10043; width: 50%;"
+				ng-click="precedantGare()">Précedant</button>
+		</div>
+		<div class="col-md-2">
+			<button type="button" ng-disabled="suivantDisabledGare"
+				class="btn btn-sm btn-primary btn-block"
+				style="background-color: #A10043; width: 50%;" ng-click="suivantGare()">Suivant</button>
+		</div>
+
+	</div>
+
+<br>
+	<div id="modificatoinGare" class="row">
+		<div class="col-md-2">
+			<input ng-model="gareSelected.libelle"
+						name="idFlagAdmin" class="form-control"
+						id="inputFlagAdmin" required />
+		</div>
+	</div>
+
+<br>
+	<div class="row">
+		<button ng-disabled="EnregistrerDisabledGare" type="button" 
+			class="btn btn-sm btn-primary btn-block"
+			style="background-color: #A10043; width: 10%; float :right;" 
+			ng-click="updateGareRef()">ENREGISTRER</button>
+	</div>
+
+</div>

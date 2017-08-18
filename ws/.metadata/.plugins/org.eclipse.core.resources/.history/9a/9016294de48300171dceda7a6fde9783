@@ -1,0 +1,19 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountModel.java
+// Created: 18 août 2017 09:08:44
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.web.models;
+
+/**
+ * @author PHBS06171
+ *
+ */
+public class AccountModel {
+
+  private ClientModel client;
+
+}

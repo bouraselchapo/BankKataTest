@@ -1,0 +1,34 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: Account.java
+// Created: 12 août 2017 11:00:41
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.domaine;
+
+import java.math.BigDecimal;
+
+/**
+ * @author PHBS06171
+ *
+ */
+public class Account {
+  
+  /**
+   * Unique bank account ID.
+   */
+  String accountRIB;
+  
+  /**
+   * The Bank Customer/account Holder.
+   */
+  BankClient accountHolder;
+  
+  /**
+   * Account current balance.
+   */
+  BigDecimal balance = new BigDecimal(0);
+
+}

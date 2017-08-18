@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fr.sncf.persistance.GareDao">
+
+	<insert id="saisirGareJour" useGeneratedKeys="true"
+		keyProperty="gareEvenementBean.id">
+
+		insert into GARE_JOUR
+		(
+		gare_jour_user_id,
+		gare_jour_uic, 
+		gare_jour_date, gare_heure_debut, gare_date_prev_debut,
+		gare_jour_date_fin, gare_heure_fin, gare_date_prev_fin,
+		gare_jour_id_event, gare_jour_id_categorie,
+		gare_jour_id_infocompl, gare_jour_saisie_libre_infocompl, gare_jour_duree_event,
+		GARE_JOUR_STIF, gare_jour_impact_validation, gare_jour_delete, gare_jour_update_time)
+		values
+		(#{gareEvenementBean.idUser}, #{gareEvenementBean.codeUIC},
+		#{gareEvenementBean.dateDebutEvent}, #{gareEvenementBean.heureDebut}, #{gareEvenementBean.datePrevDebut},
+		#{gareEvenementBean.dateFinEvent}, #{gareEvenementBean.heureFin}, #{gareEvenementBean.datePrevFin},
+		#{gareEvenementBean.idEvent},#{gareEvenementBean.idCategorie},#{gareEvenementBean.idInfoCmpt},
+		#{gareEvenementBean.saisieLibreInfoCompl},
+		#{gareEvenementBean.dureeEvent}, #{gareEvenementBean.stif}, #{gareEvenementBean.impactValidation},
+		 'NON', LOCALTIMESTAMP)
+	</insert>
+	
+	<insert id="sasirGareReferentiel" useGeneratedKeys="true"
+		keyProperty="gareReferentielBean.id">
+
+		insert into GARE
+		(gare_uic,
+		gare_libele,
+		gare_delete)
+		values
+		(#{gareReferentielBean.codeUIC}, #{gareReferentielBean.libelle}, 'NON')
+	</insert>
+	
+	<insert id="sasirGareLigneReferentiel" useGeneratedKeys="true"
+		keyProperty="gareReferentielBean.id">
+
+		insert into gare_ligne
+		(gare_ligne_uic,
+		gare_ligne_libelle_ligne,
+		gare_ligne_delete)
+		values
+		(#{gareReferentielBean.codeUIC}, #{gareReferentielBean.ligneAssocieelibelle}, 'NON')
+	</insert>
+	
+
+	<insert id="saisirListeGareJour" parameterType="java.util.List">
+		insert into GARE_JOUR
+		(gare_jour_user_id, gare_jour_uic, gare_jour_date,
+		gare_jour_date_fin,
+		gare_jour_id_event,
+		gare_jour_id_categorie,
+		gare_jour_id_infocompl,
+		gare_jour_saisie_libre_infocompl, gare_jour_duree_event, GARE_JOUR_STIF, gare_jour_impact_validation, gare_jour_delete)
+		values (
+		<foreach item="gareEvenementBean" collection="listeGareEventToInsert"
+			open="" close="" separator="),(">
+			#{gareEvenementBean.idUser},#{gareEvenementBean.codeUIC},#{gareEvenementBean.dateDebutEvent}, #{gareEvenementBean.dateFinEvent},#{gareEvenementBean.idEvent},#{gareEvenementBean.idCategorie},#{gareEvenementBean.idInfoCmpt},
+			#{gareEvenementBean.saisieLibreInfoCompl},
+			#{gareEvenementBean.dureeEvent}, #{gareEvenementBean.stif}, #{gareEvenementBean.impactValidation}, 'NON'
+		</foreach>
+		)
+	</insert>
+
+	<select id="recupererListeGares" resultType="fr.sncf.domaine.GareReferentielBean">
+		SELECT
+		gare.gare_Id
+		as id, gare.gare_UIC as codeUIC,
+		gare.gare_libele as libelle
+		FROM gare
+		WHERE gare.gare_delete != 'OUI'
+	</select>
+	
+	<select id="recupererListeGaresRef" resultType="fr.sncf.domaine.GareReferentielBean">
+		SELECT
+		gare.gare_Id
+		as id, gare.gare_UIC as codeUIC,
+		gare.gare_libele as libelle
+		FROM gare
+		WHERE gare.gare_delete != 'OUI'
+	</select>
+	
+	<select id="recupererCodeUICParIdGare" resultType="String">
+		SELECT gare.gare_uic
+		FROM gare
+		WHERE gare.gare_id = #{idGareRef}
+	</select>
+	
+	
+	<select id="recupererGareByCodeUIC" resultType="fr.sncf.domaine.GareReferentielBean">
+		SELECT
+		gare.gare_Id
+		as id, gare.gare_UIC as codeUIC,
+		gare.gare_libele as libelle
+		FROM gare
+		WHERE gare.gare_UIC = #{codeUIC}
+	</select>
+	
+	<select id="recupererListeGaresEvenement" resultType="fr.sncf.domaine.GareEvenementBean">
+		SELECT
+		gare_jour.gare_jour_Id as id, 
+		gare.gare_libele as libelleGare,
+		gare_jour.gare_jour_UIC as codeUIC,
+		gare_jour.gare_jour_date as dateDebutEvent,
+		gare_jour.gare_jour_date_fin as dateFinEvent,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		gare_jour.gare_jour_duree_event as dureeEvent,
+		gare_jour.gare_jour_saisie_libre_infocompl as saisieLibreInfoCompl,
+		gare_jour.gare_jour_stif as stif
+		FROM gare_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+		LEFT OUTER JOIN gare ON gare.gare_uic = gare_jour.gare_jour_UIC
+		LEFT OUTER JOIN gare_ligne ON gare_ligne.gare_ligne_uic = gare_jour.gare_jour_UIC
+		
+		<where>
+    		<if test="codeUIC != ''">
+   	 			gare_jour.gare_jour_UIC =  #{codeUIC}
+  			</if>
+    		<if test="ligneFiltre != ''">
+        		AND gare_ligne.gare_ligne_libelle_ligne =  #{ligneFiltre}
+    		</if>
+		</where>
+		
+		
+		ORDER BY gare_jour.gare_jour_date DESC
+	</select>
+	
+	<select id="recupererListeGaresEvenementParGareDate" resultType="fr.sncf.domaine.GareEvenementBean">
+		SELECT
+		gare_jour.gare_jour_Id as id, 
+		gare.gare_libele as libelleGare,
+		gare_jour.gare_jour_UIC as codeUIC,
+		gare_jour.gare_jour_date as dateDebutEvent,
+		gare_jour.gare_jour_date_fin as dateFinEvent,
+		
+		gare_jour.gare_jour_id_categorie as idCategorie,
+		gare_jour.gare_jour_id_event as idEvent,
+		gare_jour.gare_jour_id_infocompl as idInfoCmpt,
+		
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		gare_jour.gare_jour_duree_event as dureeEvent,
+		gare_jour.gare_jour_saisie_libre_infocompl as saisieLibreInfoCompl,
+		gare_jour.gare_jour_stif as stif
+		FROM gare_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+		LEFT OUTER JOIN gare ON gare.gare_uic = gare_jour.gare_jour_UIC
+		LEFT OUTER JOIN gare_ligne ON gare_ligne.gare_ligne_uic = gare_jour.gare_jour_UIC
+		
+		WHERE gare_jour.gare_jour_UIC =  #{gareEvenementBean.codeUIC}
+		AND gare_jour.gare_jour_date =  #{gareEvenementBean.dateDebutEvent}
+		
+		AND gare_jour.gare_jour_delete != 'OUI'
+		
+		ORDER BY gare_jour.gare_jour_date DESC
+	</select>
+	
+	<select id="recupererListeGaresEvenementDoublons" resultType="fr.sncf.domaine.GareEvenementBean">
+		SELECT
+		gare_jour.gare_jour_Id as id, 
+		gare.gare_libele as libelleGare,
+		gare_jour.gare_jour_UIC as codeUIC,
+		gare_jour.gare_jour_date as dateDebutEvent,
+		gare_jour.gare_jour_date_fin as dateFinEvent,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		gare_jour.gare_jour_duree_event as dureeEvent,
+		gare_jour.gare_jour_saisie_libre_infocompl as saisieLibreInfoCompl,
+		gare_jour.gare_jour_stif as stif
+		FROM gare_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+		LEFT OUTER JOIN gare ON gare.gare_uic = gare_jour.gare_jour_UIC
+		LEFT OUTER JOIN gare_ligne ON gare_ligne.gare_ligne_uic = gare_jour.gare_jour_UIC
+		WHERE gare_jour.gare_jour_delete != 'OUI'
+		
+		AND gare_jour.gare_jour_UIC in
+    	<foreach item="gareUIC" index="index" collection="gareEvenementBean.selectedGares"
+             open="(" separator="," close=")">
+       		#{gareUIC}
+    	</foreach>
+    	
+    	<!-- ARI test en remplaçant idCategorie par par LibelleCategorie-->
+  		
+		<if test="gareEvenementBean.idCategorie != null">
+   	 		AND gare_jour.gare_jour_id_categorie =  #{gareEvenementBean.idCategorie}
+  		</if>
+  		
+  		<if test="gareEvenementBean.idEvent != null">
+   	 		AND gare_jour.gare_jour_id_event =  #{gareEvenementBean.idEvent}
+  		</if>
+  		
+  		<if test="gareEvenementBean.idInfoCmpt != null">
+   	 		AND gare_jour.gare_jour_id_infocompl =  #{gareEvenementBean.idInfoCmpt}
+  		</if>
+  		
+    	<if test="gareEvenementBean.dateDebutEvent != null">
+   	 		AND gare_jour.gare_jour_date = #{gareEvenementBean.dateDebutEvent}
+  		</if>
+  		
+  		<!-- ARI Ajout du filtre dans le cas où la date de fin uniquement est renseignée -> ne fonctionne pas ?-->
+  		<if test="gareEvenementBean.dateFinEvent != null">
+   	 		AND gare_jour.gare_jour_date_fin = #{gareEvenementBean.dateFinEvent}
+  		</if>
+  		
+  		<if test="gareEvenementBean.heureDebut != null">
+   	 		AND gare_jour.gare_heure_debut = #{gareEvenementBean.heureDebut}
+  		</if>
+  		
+  		<if test="gareEvenementBean.heureFin != null">
+   	 		AND gare_jour.gare_heure_fin = #{gareEvenementBean.heureFin}
+  		</if>
+	</select>
+	
+	
+	<select id="recupererListeGaresEvenementSansDoublon" resultType="fr.sncf.domaine.GareEvenementBean">
+		SELECT
+		MIN(gare_jour.gare_jour_Id) as id, 
+		gare.gare_libele as libelleGare,
+		MIN(gare_jour.gare_jour_UIC) as codeUIC,
+		MIN(gare_jour.gare_jour_date) as dateDebutEvent,
+		gare_jour.gare_jour_date_fin as dateFinEvent,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		MIN(gare_jour.gare_jour_duree_event) as dureeEvent,
+		MIN(gare_jour.gare_jour_saisie_libre_infocompl) as saisieLibreInfoCompl,
+		MIN(gare_jour.gare_jour_stif) as stif
+		FROM gare_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+		LEFT OUTER JOIN gare ON gare.gare_uic = gare_jour.gare_jour_UIC
+		LEFT OUTER JOIN gare_ligne ON gare_ligne.gare_ligne_uic = gare_jour.gare_jour_UIC
+		WHERE gare_jour.gare_jour_delete != 'OUI'
+    		
+    	<if test="codeUIC != ''">
+   	 		AND gare_jour.gare_jour_UIC =  #{codeUIC}
+  		</if>
+    	<if test="ligneFiltre != ''">
+        	AND gare_ligne.gare_ligne_libelle_ligne =  #{ligneFiltre}
+    	</if>
+    	
+    	<if test="dateDebut != null and dateFin == null">
+   	 		AND gare_jour.gare_jour_date = #{dateDebut}
+  		</if>
+  		
+  		<!-- ARI Ajout du filtre dans le cas où la date de fin uniquement est renseignée -> ne fonctionne pas ?-->
+  		<if test="dateFin != null and dateDebut == null">
+   	 		AND gare_jour.gare_jour_date_fin = #{dateFin}
+  		</if>
+  		
+  		<!-- ARI Mise à jour du filtre si les dates de début et date de fin sont renseignées  
+  		<if test="dateDebut != null and dateFin != null">
+   	 		AND ((gare_jour.gare_jour_date BETWEEN #{dateDebut} and #{dateFin} ) OR ( #{dateDebut} BETWEEN gare_jour.gare_jour_date and gare_jour.gare_jour_date_fin ) OR (gare_jour.gare_jour_date_fin BETWEEN #{dateDebut} and #{dateFin} ))
+  		</if>
+  		-->
+		
+		<if test="dateDebut != null and dateFin != null">
+   	 		AND NOT gare_jour.gare_jour_date &gt; #{dateFin} AND NOT gare_jour.gare_jour_date_fin &lt; #{dateDebut}
+  		</if>
+  		
+  		<!-- ARI test en remplaçant idCategorie par par LibelleCategorie-->
+  		
+		<if test="idCategorie != null">
+   	 		AND gare_jour.gare_jour_id_categorie =  #{idCategorie}
+  		</if>
+  		
+  		<if test="impactValidation != ''">
+   	 		AND gare_jour.gare_jour_impact_validation =  #{impactValidation}
+  		</if>
+  		
+		GROUP BY gare.gare_libele, libelleCategorie, libelleEvent, libelleInfoCmpl, dateFinEvent
+	</select>
+	
+	<select id="recupererListeGaresEvenementSansDoublonAll" resultType="fr.sncf.domaine.GareEvenementBean">
+		SELECT
+		MIN(gare_jour.gare_jour_Id) as id, 
+		gare.gare_libele as libelleGare,
+		MIN(gare_jour.gare_jour_UIC) as codeUIC,
+		MIN(gare_jour.gare_jour_date) as dateDebutEvent,
+		gare_jour.gare_jour_date_fin as dateFinEvent,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		MIN(gare_jour.gare_jour_duree_event) as dureeEvent,
+		MIN(gare_jour.gare_jour_saisie_libre_infocompl) as saisieLibreInfoCompl,
+		MIN(gare_jour.gare_jour_stif) as stif
+		FROM gare_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+		LEFT OUTER JOIN gare ON gare.gare_uic = gare_jour.gare_jour_UIC
+		LEFT OUTER JOIN gare_ligne ON gare_ligne.gare_ligne_uic = gare_jour.gare_jour_UIC
+		WHERE gare_jour.gare_jour_delete != 'OUI'
+    		
+    	<if test="codeUIC != ''">
+   	 		AND gare_jour.gare_jour_UIC =  #{codeUIC}
+  		</if>
+    	<if test="ligneFiltre != ''">
+        	AND gare_ligne.gare_ligne_libelle_ligne =  #{ligneFiltre}
+    	</if>
+		
+		
+		GROUP BY gare.gare_libele, libelleCategorie, libelleEvent, libelleInfoCmpl, dateFinEvent
+	</select>
+	
+	
+	<delete id="supprimerGareEvenement">
+  		delete from gare_jour where gare_jour.gare_jour_Id = #{idGareEvenement}
+	</delete>
+	
+	<update id="modifierGareEvenement">
+  		update gare_jour set
+    	gare_jour_UIC = #{gareEvenementBean.codeUIC},
+    	gare_jour_id_categorie = #{gareEvenementBean.idCategorie},
+    	gare_jour_id_event = #{gareEvenementBean.idEvent},
+    	gare_jour_id_infocompl = #{gareEvenementBean.idInfoCmpt},
+    	GARE_JOUR_STIF = #{gareEvenementBean.stif}
+  		where gare_jour.gare_jour_Id = #{gareEvenementBean.id}
+	</update>
+	
+	<update id="modifierGareEvenementSurUnePeriode">
+  		update gare_jour set
+    	gare_jour_UIC = #{gareEvenementBean.codeUIC},
+    	gare_jour_date_fin = #{gareEvenementBean.dateFinEvent},
+    	gare_jour_id_categorie = #{gareEvenementBean.idCategorie},
+    	gare_jour_id_event = #{gareEvenementBean.idEvent},
+    	gare_jour_id_infocompl = #{gareEvenementBean.idInfoCmpt},
+    	gare_jour_saisie_libre_infocompl = #{gareEvenementBean.saisieLibreInfoCompl},
+    	GARE_JOUR_STIF = #{gareEvenementBean.stif}
+  		where gare_jour.gare_jour_Id IN (SELECT gare_jour.gare_jour_Id 
+  										 FROM gare_jour
+  										 
+  										 LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie
+										 LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+										 LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+										 
+										 WHERE  gare_jour.gare_jour_UIC = (SELECT gare_jour.gare_jour_UIC
+										 								    FROM gare_jour 
+										 								    WHERE gare_jour.gare_jour_Id = #{gareEvenementBean.id}  		
+										 								   )
+										 AND categorie.categorie_libele = (SELECT categorie.categorie_libele
+										 								    FROM gare_jour
+										 								    LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie 
+										 								    WHERE gare_jour.gare_jour_Id = #{gareEvenementBean.id}  		
+										 								   )
+										 AND evenement.evenement_libele = (SELECT evenement.evenement_libele
+										 								    FROM gare_jour 
+										 								    LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+										 								    WHERE gare_jour.gare_jour_Id = #{gareEvenementBean.id}  		
+										 								   )
+										 AND information_compl.information_compl_libele = (SELECT information_compl.information_compl_libele
+										 								    FROM gare_jour 
+										 								    LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+										 								    WHERE gare_jour.gare_jour_Id = #{gareEvenementBean.id}  		
+										 								   )  
+										 AND gare_jour.gare_jour_date_fin = (SELECT gare_jour.gare_jour_date_fin
+																							FROM gare_jour  
+																							WHERE gare_jour.gare_jour_Id = #{gareEvenementBean.id} 		
+																						   ) 
+										 
+										 
+										 ) 
+		
+	</update>
+	
+	<delete id="supprimerGareEvenementSurUnePeriode">
+  		delete from gare_jour 
+  		where gare_jour.gare_jour_Id IN (SELECT gare_jour.gare_jour_Id 
+  										 FROM gare_jour
+  										 
+  										 LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie
+										 LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+										 LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+										 
+										 WHERE  gare_jour.gare_jour_UIC = (SELECT gare_jour.gare_jour_UIC
+										 								    FROM gare_jour 
+										 								    WHERE gare_jour.gare_jour_Id = #{idGareEvenement}  		
+										 								   )
+										 AND categorie.categorie_libele = (SELECT categorie.categorie_libele
+										 								    FROM gare_jour
+										 								    LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie 
+										 								    WHERE gare_jour.gare_jour_Id = #{idGareEvenement}  		
+										 								   )
+										 AND evenement.evenement_libele = (SELECT evenement.evenement_libele
+										 								    FROM gare_jour 
+										 								    LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+										 								    WHERE gare_jour.gare_jour_Id = #{idGareEvenement}  		
+										 								   )
+										 AND information_compl.information_compl_libele = (SELECT information_compl.information_compl_libele
+										 								    FROM gare_jour 
+										 								    LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+										 								    WHERE gare_jour.gare_jour_Id = #{idGareEvenement}  		
+										 								   )  
+										 
+										 AND gare_jour.gare_jour_date_fin = (SELECT gare_jour.gare_jour_date_fin
+																							FROM gare_jour  
+																							WHERE gare_jour.gare_jour_Id = #{idGareEvenement} 		
+																						   ) 
+										 
+										 ) 
+	</delete>
+	
+	<update id="supprimerLogiqueGareEvenementSurUnePeriode">
+  		update gare_jour set
+    	gare_jour_Delete = 'OUI'
+  		where gare_jour.gare_jour_Id IN (SELECT gare_jour.gare_jour_Id 
+  										 FROM gare_jour
+  										 
+  										 LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie
+										 LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+										 LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+										 
+										 WHERE  gare_jour.gare_jour_UIC = (SELECT gare_jour.gare_jour_UIC
+										 								    FROM gare_jour 
+										 								    WHERE gare_jour.gare_jour_Id = #{idGareEvenement}  		
+										 								   )
+										 AND categorie.categorie_libele = (SELECT categorie.categorie_libele
+										 								    FROM gare_jour
+										 								    LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie 
+										 								    WHERE gare_jour.gare_jour_Id = #{idGareEvenement}  		
+										 								   )
+										 AND evenement.evenement_libele = (SELECT evenement.evenement_libele
+										 								    FROM gare_jour 
+										 								    LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+										 								    WHERE gare_jour.gare_jour_Id = #{idGareEvenement}  		
+										 								   )
+										 AND information_compl.information_compl_libele = (SELECT information_compl.information_compl_libele
+										 								    FROM gare_jour 
+										 								    LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+										 								    WHERE gare_jour.gare_jour_Id = #{idGareEvenement}  		
+										 								   )  
+										 AND gare_jour.gare_jour_date_fin = (SELECT gare_jour.gare_jour_date_fin
+																							FROM gare_jour  
+																							WHERE gare_jour.gare_jour_Id = #{idGareEvenement} 		
+																						   ) 
+										 
+										 ) 
+	</update>
+
+
+	<update id="supprimerLogiqueGareRef">
+  		update gare set
+    	gare_delete = 'OUI'
+  		where gare.gare_id = #{idGareRef}
+	</update>
+	
+	<update id="supprimerLogiqueGareLigneRef">
+  		update gare_ligne set
+    	gare_ligne_delete = 'OUI'
+  		where gare_ligne.gare_ligne_uic = #{codeUIC}
+	</update>
+	
+	
+	<update id="modifierGareRef">
+  		update gare set
+    	gare_libele = #{gareReferentielBean.libelle}
+    	
+  		where gare.gare_id = #{gareReferentielBean.id}
+	</update>
+	
+	<select id="recupererGareEventTotalPourExport" resultType="fr.sncf.domaine.GareEvenementBean">
+	 select gare_jour_id as id,
+	   gare.gare_libele as libelleGare,
+	   gare_jour_user_id as idUser,
+	   useraccount_numero_cp as numCp,
+	   gare_jour_uic as codeUIC,
+	   --calendrier.calendrier_date as calendrierDate,
+	   gare_jour_date as dateDebutEvent,
+	   gare_jour_date_fin as dateFinEvent,
+	   gare_jour_id_categorie as idCategorie,
+	   gare_jour_id_event as idEvent,
+	   gare_jour_id_infocompl as idInfoCmpt,
+	   categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+	   gare_jour_saisie_libre_infocompl as saisieLibreInfoCompl,
+	   gare_jour_duree_event as dureeEvent,
+	   gare_jour_stif as stif,
+	   gare_jour_impact_validation as impactValidation
+	 
+	 FROM gare_jour
+	 --INNER JOIN calendrier ON calendrier.calendrier_date &gt;= gare_jour.gare_jour_date 
+	 --AND calendrier.calendrier_date &lt;= gare_jour.gare_jour_date_fin
+	 LEFT OUTER JOIN gare ON gare.gare_uic = gare_jour.gare_jour_UIC
+	 	LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+	    LEFT OUTER JOIN useraccount ON useraccount.useraccount_id = gare_jour.gare_jour_user_id
+	   
+	   WHERE gare_jour.gare_jour_delete != 'OUI'
+	</select>
+		
+	<select id="recupererGareEventTotalPourExportCopy" resultType="fr.sncf.domaine.GareEvenementBean">
+	 Copy ( select gare_jour_user_id as ID_SAISIE,
+	   useraccount_numero_cp as NUM_CP,
+	   gare.gare_libele as GARE,
+	   gare_jour_uic as CODE_UIC,
+	   calendrier.calendrier_date as Date,
+	   gare_jour_date as Date_Debut,
+	   gare_jour_date_fin as Date_Fin,
+	   gare_jour_duree_event as Duree,
+	   gare_jour_id_categorie as CategorieEvent,
+	   categorie.categorie_libele as CategorieEvent_libelle,
+	   gare_jour_id_event as Event,
+	   evenement.evenement_libele as Event_libelle,
+	   gare_jour_id_infocompl as SousEvent,
+	  information_compl.information_compl_libele as SousEvent_libelle,
+	   gare_jour_saisie_libre_infocompl as InfoEvent_libre
+	--   gare_jour_stif as stif,
+	--   gare_jour_impact_validation as impactValidation 
+	 FROM gare_jour
+	 INNER JOIN calendrier ON calendrier.calendrier_date &gt;= gare_jour.gare_jour_date 
+	 AND calendrier.calendrier_date &lt;= gare_jour.gare_jour_date_fin
+	 LEFT OUTER JOIN gare ON gare.gare_uic = gare_jour.gare_jour_UIC
+	 	LEFT OUTER JOIN categorie ON categorie.categorie_id = gare_jour.gare_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = gare_jour.gare_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = gare_jour.gare_jour_id_infocompl
+	    LEFT OUTER JOIN useraccount ON useraccount.useraccount_id = gare_jour.gare_jour_user_id
+	   
+	   WHERE gare_jour.gare_jour_delete != 'OUI')
+	   To '/nas/sftppddp2/outgoing/gareTotal.csv' With CSV DELIMITER ';' HEADER
+	</select>
+</mapper> 

@@ -1,0 +1,93 @@
+
+angular.module('saisieCategorieRefModule') 
+
+.controller('saisieCategorieRefController', ['$scope',
+                                        '$location',
+                                        '$http',
+                                        'Auth',
+                                        function($scope,
+                                                $location,
+                                                $http,
+                                                Auth) {
+    
+	$scope.model = {};
+//	$scope.listeCategoriesFiltre = {};
+	$scope.listeEvenements ={};
+	
+    $scope.init = function() {
+    	
+    	
+    	$http.get("services/categorie/getCategories", $scope.filtre).success(function(listeCategoriesFiltre) {
+    		if(listeCategoriesFiltre != null){
+    			$scope.listeCategoriesFiltre = listeCategoriesFiltre // mettre la liste des catégories dans le sope
+	
+   			 var options = {
+    		    		data: listeCategoriesFiltre,
+    		    		getValue: "libelle",
+    		    		list: {	
+    		    		    match: {
+    		    		      enabled: true
+    		    		    }
+    		    		  }
+    		    	};
+    			$("#inputIdCategorie").easyAutocomplete(options);    			
+    			
+    		}else{
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    	
+    	
+    	
+    	$http.get("services/categorie/getEventExportTotal").success(function(listeEvenementAll) {
+    		
+    		if(listeEvenementAll != null){
+    		$scope.listeEvenementAll = listeEvenementAll;
+ 			 var optionsEvent = {
+ 					data: $scope.listeEvenementAll,
+		    		getValue: "libelle",
+		    		list: {	
+		    		    match: {
+		    		      enabled: true
+		    		    }
+		    		  }
+		    	};
+			$("#inputIdEvent").easyAutocomplete(optionsEvent);
+    		
+    		}
+    		else {
+    		}
+    	});
+    	
+    	
+    	$http.get("services/categorie/getInfoComplExportTotal").success(function(listeInfoComplExportTotal) {
+    		
+    		if(listeInfoComplExportTotal != null){
+    		$scope.listeInfoComplExportTotal = listeInfoComplExportTotal;
+ 			 var optionsInfoCompl = {
+ 					data: $scope.listeInfoComplExportTotal,
+		    		getValue: "libelle",
+		    		list: {	
+		    		    match: {
+		    		      enabled: true
+		    		    }
+		    		  }
+		    	};
+			$("#inputIdInfoComplementaire").easyAutocomplete(optionsInfoCompl);
+    		
+    		}
+    		else {
+    		}
+    	});
+    	
+    	
+    };
+    
+    $scope.init();
+
+    $scope.saisirCategorieEventInfoCmplRef = function(){
+    	$http.post("services/categorie/saisieCategorieRef", $scope.model).success(function(idEventSaisi) {
+		});
+    };
+}]);

@@ -1,0 +1,17 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: EnumTransactionType.java
+// Created: 15 août 2017 16:07:21
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.domaine;
+
+/**
+ * @author PHBS06171
+ *
+ */
+public enum TransactionType {
+  DEPOSIT, TRANSFER_FROM, TRANSFER_TO, WITHDROW
+}

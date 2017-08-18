@@ -1,0 +1,19 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: EnumTransactionType.java
+// Created: 15 août 2017 16:07:21
+// Author:HICHAM BOURAS1
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.domaine;
+
+/**
+ * Enumeration for all transaction types.
+ * 
+ * @authorHICHAM BOURAS1
+ *
+ */
+public enum TransactionType {
+  DEPOSIT, TRANSFER_FROM, TRANSFER_TO, WITHDRAW
+}

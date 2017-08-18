@@ -1,0 +1,39 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: Transaction.java
+// Created: 15 août 2017 16:15:46
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.domaine;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+/**
+ * @author PHBS06171
+ *
+ */
+public class Transaction {
+
+  private final Account account;
+  private final BigDecimal amount;
+  private final LocalDateTime date;
+  private final Object transactionType;
+
+  /**
+   * @param account
+   * @param transacctionType
+   * @param amount
+   * @param transactionDate
+   */
+  public Transaction(Account account, TransactionType transacctionType, BigDecimal amount,
+      LocalDateTime transactionDate) {
+    this.account = account;
+    this.transactionType = transactionType;
+    this.amount = amount;
+    this.date = transactionDate;// TODO Auto-generated constructor stub
+  }
+
+}

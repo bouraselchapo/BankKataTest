@@ -1,0 +1,11 @@
+angular.module('consultationInfoComplRefModule')
+
+.directive('uiFormConsultationInfoComplRef', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'consultationInfoComplReferentiel/view.html',
+		controller : 'consultationInfoComplRefController',
+		controllerAs : 'consultationInfoComplRefController',
+		replace: true,
+	}
+}]);

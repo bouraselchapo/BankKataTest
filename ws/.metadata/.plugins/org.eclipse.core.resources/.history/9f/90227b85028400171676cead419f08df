@@ -1,0 +1,104 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountDAO.java
+// Created: 13 août 2017 21:48:34
+// Author: HICHAM BOURAS
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.persistenceTest;
+
+import static org.fest.assertions.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import org.junit.Test;
+import org.mockito.InjectMocks;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.persistence.AccountDAO;
+import com.bank.account.test.builders.AccountBuilder;
+
+
+/**
+ * Data access object interface for accounts repository class Test.
+ * 
+ * @author HICHAM BOURAS
+ *
+ */
+public class AccountDAOTest {
+
+  @InjectMocks
+  private AccountDAO accountDAO;
+
+  /**
+   * Account getter by client object Test.
+   * 
+   */
+  @Test
+  public void getAccountByClientTest() {
+    // We start by creating a Bank client that will be the account holder.
+    final BankClient client =
+        AccountBuilder.getBuilder().clientUID("AQZ445376").clientName("John").buildClient();
+
+    // Create the account
+    accountService.createAccount(CLIENT_1);
+
+    // Get account
+    final Account account = accountService.getAccountByClient(CLIENT_1);
+
+    // Test that the account exists.
+    assertThat(account).isNotNull();
+  }
+
+  public void shouldDepositAnAmount() {
+    //
+    ACCOUNT_1 = AccountBuilder.getBuilder().clientName("John").clientUID("AQZ445376").build();
+
+    // Deposit value
+    accountService.depositAmount(LocalDateTime.now(), ACCOUNT_1, new BigDecimal(1000));
+
+    assertThat(ACCOUNT_1.getBalance()).isEqualByComparingTo(new BigDecimal(1000));
+  }
+
+  public void shouldWithdrawAnAmount() {
+    // Withdraw value
+    accountService.withdrawAmount(LocalDateTime.now(), ACCOUNT_1, new BigDecimal(600));
+
+    assertThat(ACCOUNT_1.getBalance()).isEqualByComparingTo(new BigDecimal(400));
+  }
+
+}
+
+/**
+ * Account getter by RIB.
+ * 
+ * @param RIB
+ *        account RIB.
+ * @return Account
+ *        for the given RIB.
+ */
+@Test
+public void getAccountByRIBTest(String rib) {
+  return null;
+}
+
+/**
+ * All account Objects getter.
+ * 
+ * @return All accounts in the repository.
+ */
+public void getAllAccountsTest() {
+  return null;
+}
+
+/**
+ * Add account to the repository test.
+ * 
+ * @param account.
+ */
+@Test
+void shouldCreateAccount() {}
+
+}

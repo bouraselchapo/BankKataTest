@@ -1,0 +1,17 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: TransactionDAO.java
+// Created: 13 août 2017 21:14:37
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.service.impl;
+
+/**
+ * @author PHBS06171
+ *
+ */
+public interface TransactionDAO {
+
+}

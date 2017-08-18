@@ -1,0 +1,285 @@
+<div class="col-md-12 panel container" >
+  <div class="panel-body consult" >	
+    <p class="saisi-title-gray"> CONSULTATION </p>
+    <p class="saisi-title-red"> ÉVÈNEMENTS SAISIS </p>
+    <div class="row">
+	  <div class="col-md-6">
+	    <label class="label-reve" for="selectCategorie" style="color: blue;"> Gare </label>
+	  </div>	
+	  <div class="col-md-6">
+	   <label class="label-reve" for="selectCategorie" style="color: blue;"> Ligne </label>
+	  </div>
+    </div>	
+    
+    <div class="row">
+		<div class="col-md-6">
+			<ui-input-gare></ui-input-gare>
+			<div id="list_gares" style="position:relative; display: none;">
+				{{model.listeGaresSelectione}}
+			  <button type="button"></button>
+	  		</div>	
+	    </div>
+	  <div class="col-md-6">
+	    <ui-select-ligne></ui-select-ligne>
+	  </div>
+    </div>
+<!-- Filtres -->
+<div class="row">
+    <div class="col-md-12">
+    <div class="row-container" style="position: relative; display: block;" class="ng-binding">
+    <div id="list_filtres" class="list-filtres">
+    <!-- date/heure début, date/heure fin, durée, en cours, terminé, 
+    
+    
+    catégorie, événement, sous-événement, information complémentaire, date de début prévisionnelle (Oui/Non ou pictogramme), date de fin prévisionnelle (Oui/Non ou pictogramme),  impact validation à la hausse (Oui/Non ou pictogramme), impact validation à la baisse (Oui/Non ou pictogramme), date de dernière modification, nom créateur, prénom créateur, entité
+     --><div class="row">
+		<div class="col-md-2">
+				<div  id='datetimepickerDebFiltre'>
+					<input id="inputDateDebutFiltre" type="text" ng-model="filtre.dateDebut" class="form-control filtre-form" 
+					       style="max-width: 105px;" placeholder="Date/heure Début">
+					<input type="text" ng-model="filtre.heureDebut" this.value = '';" 
+							onkeyup="this.value = this.value.replace(/[^0-9]/g,'');"
+					       id="inputHeureDebutFiltre" maxlength="2" class="form-control form-heure filtre-form" placeholder="..">
+				</div>
+			</div>
+			
+			<div class="col-md-2">
+				<label><input type="checkbox" ng-model="filtre.ttLaJourneeDebut" ng-true-value="'true'"
+					ng-false-value="'false'">&nbsp;Toute la journée </label>			
+			</div>
+			
+			<div class="col-md-2">
+				<div  id='datetimepickerFinFiltre'>
+					<input type="text" id="inputDateFinEventFiltre" ng-model="filtre.dateFin" 
+					       class="form-control filtre-form" placeholder="Date/h de Fin"
+					       style="max-width: 105px;">
+					<input type="text" id="inputHeureFinFiltre" ng-model="filtre.heureFin" 
+					       onkeyup="this.value = this.value.replace(/[^0-9\.]/g,'');" 
+					       maxlength="2" class="form-control form-heure filtre-form" placeholder="..">
+				</div>
+			</div>
+		
+			<div class="col-md-2">
+				<label><input type="checkbox"
+					ng-model="filtre.ttLaJourneeFin" ng-true-value="'true'"
+					ng-false-value="'false'">&nbsp;Toute la journée </label>			
+			</div>
+			
+			<div class="col-md-2">
+				<input ng-model="filtre.duree" name="filtreDuree"
+						onkeyup="this.value = this.value.replace(/[^0-9\.]/g,'');" 
+					placeholder="Durée" class="form-control" id="inputLigneFiltre" />
+			</div>
+			<div class="col-md-2">
+				<label><input type="checkbox"
+					ng-model="filtre.enCours" ng-true-value="'true'"
+					ng-false-value="'false'">&nbsp;En cours </label>	
+					<label><input type="checkbox"
+					ng-model="filtre.termine" ng-true-value="'true'"
+					ng-false-value="'false'">&nbsp;Terminé </label>			
+			</div>
+</div> 
+
+<div class="row">						
+			<div class="col-md-2">
+				<!-- Catégorie d’évènements -->
+			    <select name="categorie" id="categorie" ng-model="filtre.idCategorie" 
+						ng-change="selectCategorie()" class="form-control" >
+						<option ng-repeat="categorie in listeCategories" value="{{categorie.id}}">
+						{{categorie.libelle}}</option>
+				</select>
+			</div>
+
+			<div class="col-md-2">					
+				<!-- Evènement -->
+				<select ng-model="filtre.idEvent" ng-change="selectEvent()"
+						class="form-control">
+						<option ng-repeat="event in listeEvenements" value="{{event.id}}">
+						{{event.libelle}}</option>
+				</select>
+			</div>
+			
+			<div class="col-md-2">	
+ 				<!-- Sous-évènement --> 
+				<select ng-model="filtre.idInfoCmpt" ng-change="selectInfoCmpl()"
+					    class="form-control">
+						<option ng-repeat="infoCmpl in listeInfoComplementaires"
+								value="{{infoCmpl.id}}">{{infoCmpl.libelle}}</option>
+				</select>
+			</div>
+						
+			<div class="col-md-4">
+				<input ng-model="filtre.libelleGare" name="gareFiltre"
+					placeholder="Information" class="form-control" id="inputLibelleGareFiltre" />
+			</div>
+			
+	</div> 
+	
+	<div class="row">
+			<div class="col-md-2">
+				<input ng-model="filtre.libelleGare" name="gareFiltre"
+					placeholder="Evènement" class="form-control" id="inputLibelleGareFiltre" />
+			</div>
+			
+			<div class="col-md-2">
+				<input ng-model="filtre.libelleGare" name="gareFiltre"
+					placeholder="Sous-évènement" class="form-control" id="inputLibelleGareFiltre" />
+			</div>
+
+			<div class="col-md-2">
+				<div  id='datetimepickerDebFiltre'>
+					<input type="text" id="inputdateDebEventFiltre" class="form-control" placeholder="Date de Début *">
+				</div>
+			</div>
+			
+			<div class="col-md-2">
+				<label><input type="checkbox"
+					ng-model="filtre.impactValidation" ng-true-value="'YES'"
+					ng-false-value="'NON'">&nbsp;Evènement impactant les validations
+					</label>			
+			</div>
+			
+			<div class="col-md-2">
+				<div  id='datetimepickerFinFiltre'>
+					<input type="text" id="inputdateFinEventFiltre" class="form-control" placeholder="Date de Fin *">
+				</div>
+			</div>
+
+			<div class="col-md-2">
+				<select ng-model="filtre.idCategorieSelectedFiltre"
+					ng-change="selectCategorieFiltre()" class="form-control" placeholder="Categorie">
+					<option ng-repeat="categorie in listeCategoriesFiltre"
+						value="{{categorie.id}}">{{categorie.libelle}}</option>
+				</select>
+			</div>
+	</div> <div class="row">			
+			<div class="col-md-2">
+				<label><input type="checkbox"
+					ng-model="filtre.impactValidation" ng-true-value="'YES'"
+					ng-false-value="'NON'">&nbsp;Evènement impactant les validations
+					</label>			
+			</div>
+						
+			<div class="col-md-2">
+				<input ng-model="filtre.ligneFiltre" name="ligneFiltre"
+					placeholder="Catégorie" class="form-control" id="inputLigneFiltre" />
+			</div>
+
+			<div class="col-md-2">
+				<input ng-model="filtre.libelleGare" name="gareFiltre"
+					placeholder="Evènement" class="form-control" id="inputLibelleGareFiltre" />
+			</div>
+			
+			<div class="col-md-2">
+				<input ng-model="filtre.libelleGare" name="gareFiltre"
+					placeholder="Sous-évènement" class="form-control" id="inputLibelleGareFiltre" />
+			</div>
+
+			<div class="col-md-2">
+				<div  id='datetimepickerDebFiltre'>
+					<input type="text" id="inputdateDebEventFiltre" class="form-control" placeholder="Date de Début *">
+				</div>
+			</div>
+			
+			<div class="col-md-2">
+				<div  id='datetimepickerFinFiltre'>
+					<input type="text" id="inputdateFinEventFiltre" class="form-control" placeholder="Date de Fin *">	
+				</div>
+			</div>
+</div> <div class="row">			
+			<div class="col-md-2">
+				<select ng-model="filtre.idCategorieSelectedFiltre"
+					ng-change="selectCategorieFiltre()" class="form-control" placeholder="Categorie">
+					<option ng-repeat="categorie in listeCategoriesFiltre"
+						value="{{categorie.id}}">{{categorie.libelle}}</option>
+				</select>
+			</div>
+</div>
+</div>
+<button type="button" class="btn-gare-liste-ext" onclick="$('#list_filtres').toggleClass('list-filtres-toggl');">
+	. . .</button>
+</div>
+    
+    </div>
+</div>
+		
+		<div class="row">
+			<div class="col-md-6">
+				<button type="button" class="btn btn-sm btn-primary btn-block"
+					style="display: inline-block;     margin-top: 5px;s"
+					ng-click="filtrerConsultation()">Filtrer</button>
+				<button type="button" class="btn btn-sm btn-primary btn-block"
+					style="display: inline-block;"
+					ng-click="exportFiltre()">Export Excel</button>
+									
+			</div>
+
+			<div class="">
+
+
+				<button id="idExporGareEvent" ng-show="false" type="button"
+					class="btn btn-sm btn-primary btn-block"
+					style="background-color: #00A10C; width: 50%;"
+					ng-csv="csvFiltreGare" field-separator=";" add-bom="true" csv-header="getHeaderFiltreGare()"
+					filename="gareEvent.csv">Export Filtre GARE</button>
+
+				<button id="idExporLigneEvent" ng-show="false" type="button"
+					class="btn btn-sm btn-primary btn-block"
+					style="background-color: #00A10C; width: 50%;"
+					ng-csv="csvFiltreLigne" field-separator=";" add-bom="true" csv-header="getHeaderFiltreLigne()"
+					filename="ligneEvent.csv">Export Filtre LIGNE</button>
+
+				<button id="idExporReseauEvent" ng-show="false" type="button"
+					class="btn btn-sm btn-primary btn-block"
+					style="background-color: #00A10C; width: 50%;"
+					ng-csv="csvFiltreReseau" field-separator=";" add-bom="true" csv-header="getHeaderFiltreReseau()"
+					filename="reseauEvent.csv">Export Filtre Reseau</button>
+
+				<button id="idExporGareTotal" ng-show="false" type="button"
+					class="btn btn-sm btn-primary btn-block"
+					style="background-color: #00A10C; width: 50%;"
+					ng-csv="csvGareTotal" field-separator=";" add-bom="true" csv-header="getHeaderGareTotal()"
+					filename="gareTotal.csv">Export Gare Total</button>
+
+				<button id="idExporLigneTotal" ng-show="false" type="button"
+					class="btn btn-sm btn-primary btn-block"
+					style="background-color: #00A10C; width: 50%;"
+					ng-csv="csvLigneTotal" field-separator=";" add-bom="true" csv-header="getHeaderLigneTotal()"
+					filename="ligneTotal.csv">Export Ligne Total</button>
+
+				<button id="idExporReseauTotal" ng-show="false" type="button"
+					class="btn btn-sm btn-primary btn-block"
+					style="background-color: #00A10C; width: 50%;"
+					ng-csv="csvReseauTotal" field-separator=";" add-bom="true" csv-header="getHeaderReseauTotal()"
+					filename="reseauTotal.csv">Export RESEAU Total</button>
+			</div>
+		</div>
+  <br>
+  <div>		
+	  <div class="row" >
+	  	<ul class="nav nav-tabs ss-tab-consultation">
+			<li role="presentation"
+				ng-class="{'active-consult-tab' : consultTab == 'CONSULT_GARE'}"><a
+				ng-click="setConsultTab('CONSULT_GARE')">CONSULTATION GARE</a></li>
+			<li role="presentation"
+				ng-class="{'active-consult-tab' : consultTab == 'CONSULT_LIGNE'}"><a
+				ng-click="setConsultTab('CONSULT_LIGNE')">CONSULTATION LIGNE</a></li>
+			<li role="presentation"
+				ng-class="{'active-consult-tab' : consultTab == 'CONSULT_RESEAU'}"><a
+				ng-click="setConsultTab('CONSULT_RESEAU')">CONSULTATION RESEAU</a></li>
+		</ul>
+	  </div>
+	
+	  <div class="row" >
+		  <div ng-if="consultTab == 'CONSULT_GARE'">
+		  		<ui-form-consultation-gare></ui-form-consultation-gare>
+		  </div>
+		  <div ng-if="consultTab == 'CONSULT_LIGNE'">
+				<ui-form-consultation-ligne></ui-form-consultation-ligne>
+		   </div><div ng-if="consultTab == 'CONSULT_RESEAU'">
+				<ui-form-consultation-reseau></ui-form-consultation-reseau>
+		   </div>
+	  </div>
+  </div>
+</div>
+</div>

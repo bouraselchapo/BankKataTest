@@ -1,0 +1,26 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountModel.java
+// Created: 18 août 2017 09:08:44
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.web.models;
+
+/**
+ * Date Transfer Model For the account. 
+ * model = { 
+ *           client : { name : '', uid: '' }, 
+ *           deposeWithdrawAmount : 0.0, 
+ *           transferAmount : 0.0
+ *         }
+ * 
+ * @author PHBS06171
+ *
+ */
+public class AccountModel {
+
+  private ClientModel client;
+
+}

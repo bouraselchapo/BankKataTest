@@ -1,0 +1,7 @@
+<div style="position:relative;">
+	<div id="gare-input-container" class="form-marge">
+		<input ng-model="model.libelleGare" name="codeUIC" class="inputLibelleGare form-control" 
+	       id="inputLibelleGare" placeholder="GARE" ng-disabled="vars.toutLeReseau == 'R'" />
+	</div>
+	<button type="button" class="btn-collapse" ng-click="ajouterGare()">+</button>
+</div>

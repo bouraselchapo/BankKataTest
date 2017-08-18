@@ -1,0 +1,215 @@
+
+angular.module('consultationReseauFormModule') 
+
+.controller('consultationReseauFormController', ['$scope',
+                                                 '$rootScope',
+                                        '$location',
+                                        '$http',
+                                        'Auth',
+                                        function($scope,
+                                        		$rootScope,
+                                                $location,
+                                                $http,
+                                                Auth) {
+    
+	
+	
+	
+	
+	$scope.model = {};
+	$scope.listeReseauEvent;
+	
+	$scope.precedantDisabledReseau=false;
+	$scope.suivantDisabledReseau=false;
+	$scope.numPageReseau = 1
+	$scope.reseauEventSelected;
+	$scope.listeCategoriesReseau;
+	
+	$scope.idCategorieSelectedReseau;
+	$scope.idEventlectedReseau;
+	
+	$scope.EnregistrerDisabledReseau=true;
+	
+	$.datepicker.regional['fr'] = {
+    	    closeText: 'Fermer',
+    	    prevText: 'Précédent',
+    	    nextText: 'Suivant',
+    	    currentText: 'Aujourd\'hui',
+    	    monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+    	    monthNamesShort: ['Janv.','Févr.','Mars','Avril','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'],
+    	    dayNames: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+    	    dayNamesShort: ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'],
+    	    dayNamesMin: ['D','L','M','M','J','V','S'],
+    	    weekHeader: 'Sem.',
+    	    dateFormat: 'yy-mm-dd',
+    	    firstDay: 1,
+    	    isRTL: false,
+    	    showMonthAfterYear: false,
+    	    yearSuffix: ''
+    	};
+    	$.datepicker.setDefaults($.datepicker.regional['fr']);
+
+    jQuery(document).ready(function($){
+//        $("#inputdateFinEventReseau").datetimepicker({
+//          	locale: 'fr',
+//            viewMode: 'days',
+//            format: 'DD/MM/YYYY',
+//        });
+    });
+    
+	
+	$rootScope.initConsultationReseau = function(filtre, numPage) {
+		$scope.filtreConsultationReseau = filtre;
+		if(filtre == undefined){
+    		filtre ={};
+    	}
+		
+    	if(filtre.dateFinEvent == undefined){
+    		filtre.dateFinEvent ="";
+    	}
+    	
+    	if(filtre.dateDebEvent == undefined){
+    		filtre.dateDebEvent ="";
+    	}
+    	if(filtre.idCategorie == undefined){
+    		filtre.idCategorie ="";
+    	}
+    	if(filtre.impactValidation == undefined){
+    		filtre.impactValidation ="";
+    	}
+    	if(numPage!=undefined){
+    		$scope.numPage = numPage;
+    	}
+    	
+    	$http.get("services/reseau/getReseaux/?numPageReseau="+$scope.numPageReseau+"&dateFinEvent="+filtre.dateFinEvent
+    			+"&dateDebEvent="+filtre.dateDebEvent+"&idCategorieSelectedFiltre="+filtre.idCategorieSelectedFiltre+"&impactValidation="+filtre.impactValidation).success(function(listeReseauEvent) {
+    		
+    		if($scope.numPageReseau == 1){
+        		$scope.precedantDisabledReseau=true;
+        	}
+    		
+    		if(listeReseauEvent != null){
+    			$scope.listeReseauEvent = listeReseauEvent // mettre la liste des catégories dans le sope
+    		}else{
+    			$scope.precedantDisabledReseau=true;
+    			$scope.suivantDisabledReseau=true;
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    		$http.get("services/categorie/getCategories", $scope.model).success(function(listeCategoriesReseau) {
+        		if(listeCategoriesReseau != null){
+        			$scope.listeCategoriesReseau = listeCategoriesReseau // mettre la liste des catégories dans le sope
+        		}else{
+        			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+        		}
+        		
+        	});
+    		
+    		
+    	});
+    };
+    
+    $scope.filtreReseau = {};
+    $rootScope.initConsultationReseau($scope.filtreReseau);
+    
+    $scope.precedantReseau = function(){
+    	
+    	if($scope.numPageReseau == 1){
+    		$scope.precedantDisabledReseau=true;
+    	}else{
+    		$scope.numPageReseau--;
+    		$rootScope.initConsultationReseau($scope.filtreConsultationReseau);
+    	}
+    };
+    
+    $scope.suivantReseau = function(){
+    	$scope.numPageReseau++;
+    	$scope.precedantDisabledReseau=false;
+    	$rootScope.initConsultationReseau($scope.filtreConsultationReseau);
+    };
+    
+    $scope.modifierEventReseau = function(idReseauEvent){
+    	$scope.EnregistrerDisabledReseau=false;
+    	
+    	angular.forEach($scope.listeReseauEvent, function(reseatEvent, key) {
+			if(reseatEvent.id == idReseauEvent){
+				$scope.reseauEventSelected = reseatEvent;
+			}
+		});
+    };
+   
+    $scope.supprimerEventReseau = function(reseauEvent){
+    	var options={day:"2-digit", month:"2-digit",year:"numeric"};
+    	var madatedebutEvent = new Date(reseauEvent.dateDebutEvent).toLocaleString('fr-FR',options);
+    	if (confirm("Êtes-vous sûr de vouloir supprimer l'évènement du "+madatedebutEvent+" ?")){
+    	var index = $scope.listeReseauEvent.indexOf(reseauEvent);
+    	$scope.listeReseauEvent.splice(index, 1);  
+    	 var idReseauEvenement =  reseauEvent.id;
+    	$http.post("services/reseau/deleteReseauEvent", idReseauEvenement).success(function(listeCategoriesReseau) {
+    		$rootScope.initConsultationReseau($scope.filtreConsultationReseau);
+		
+    	});
+    	}
+    };
+   
+    
+    
+    $scope.selectCategorieReseau = function(){
+    	$scope.idCategorieSelectedReseau;
+		angular.forEach($scope.listeCategoriesReseau, function(categorie, key) {
+			if(categorie.id == $scope.idCategorieSelectedReseau){
+				$scope.reseauEventSelected.libelleCategorie = categorie.libelle;
+				$scope.reseauEventSelected.idCategorie = categorie.id;
+				$scope.listeEvenementsReseau = categorie.listEvenements
+			}
+		});
+    };
+    
+    $scope.selectEventReseau = function(){
+    	$scope.idEventlectedReseau;
+		angular.forEach($scope.listeEvenementsReseau, function(evenement, key) {
+			if(evenement.id == $scope.idEventlectedReseau){
+				$scope.reseauEventSelected.libelleEvent = evenement.libelle;
+				$scope.reseauEventSelected.idEvent = evenement.id;
+				$scope.listeInfoComplementairesReseau = evenement.listeInfoCompl;
+			}
+		});
+    };
+    
+    $scope.selectInfoCmplReseau = function(){
+    	$scope.idInfoCpmlSelectedReseau;
+    	angular.forEach($scope.listeInfoComplementairesReseau, function(infoCmpl, key) {
+			if(infoCmpl.id == $scope.idInfoCpmlSelectedReseau){
+				$scope.reseauEventSelected.libelleInfoCmpl = infoCmpl.libelle;
+				$scope.reseauEventSelected.idInfoCmpt = infoCmpl.id;
+			}
+		});
+    	
+
+    };
+    
+    $scope.updateEventReseau = function(){
+    	
+    	if($("#inputdateFinEventReseau").val() ==""){
+     		 event.preventDefault();
+      	}
+      	else{
+      		$scope.reseauEventSelected.oldDateFinEvent = $scope.reseauEventSelected.dateFinEvent;
+        	$scope.reseauEventSelected.dateFinEvent = new Date($("#inputdateFinEventReseau").val());
+        	$scope.reseauEventSelected.idUser =  Auth.getUser().id;
+        	$http.post("services/reseau/updateReseauEvent", $scope.reseauEventSelected).success(function(listeCategoriesReseau) {
+        	window.alert("Modification enregistrée.");
+        		if(listeCategoriesReseau != null){
+        			$rootScope.initConsultationReseau($scope.filtreConsultationReseau);
+        		}else{
+        			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+        			//window.alert("Merci de saisir tous les champs obligatoires.");
+        		}
+        		
+        	});
+      	}
+    	
+    };
+    
+    
+}]);

@@ -1,0 +1,31 @@
+angular.module('consultationFormModule',[])
+.controller('consultationController', 
+		   ['$scope', '$location', '$http', 'Auth',
+             function($scope, $location, $http, Auth) {
+	
+	$scope.model = {};
+	$scope.model.idCategorie="";
+	$scope.filtre = $scope.model;
+	$scope.consultTab = 'CONSULT_GARE';
+	
+	$scope.setConsultTab = function(selectedTab) {
+		$scope.consultTab = selectedTab;
+	}
+	
+	$scope.selectCategorie = function(){
+		$scope.model = $scope.filtre;
+	    serviceEvenement.selectCategorie($scope);
+	};
+	    
+	$scope.selectEvent = function(){
+		$scope.model = $scope.filtre;
+	    serviceEvenement.selectEvent($scope);
+	};
+	    
+	$scope.selectInfoCmpl = function(){
+		$scope.model = $scope.filtre;
+	    serviceEvenement.selectInfoCmpl($scope);
+	};
+	    
+	
+}]);

@@ -1,0 +1,11 @@
+angular.module('consultationCategorieRefModule')
+
+.directive('uiFormConsultationCategorieRef', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'consultationCategorieReferentiel/view.html',
+		controller : 'consultationCategorieRefController',
+		controllerAs : 'consultationCategorieRefController',
+		replace: true,
+	}
+}]);

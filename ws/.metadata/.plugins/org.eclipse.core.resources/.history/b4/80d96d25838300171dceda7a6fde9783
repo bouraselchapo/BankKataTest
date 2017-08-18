@@ -1,0 +1,115 @@
+<div class="col-md-10 col-md-offset-1 panel">
+		<div class="panel-body" >
+			<p class="saisi-title-gray"> SAISIE </p>
+			<p class="saisi-title-red"> LIGNE </p>
+			<form name ="saisiForm" class="form-horizontal margin-top">
+			
+			<table width="100%" >
+					<tr><td width="27%" align="right" valign="top">
+						<label class="label-reve" for="select-ligne" style="color: blue;"> Ligne <span class="required">*</span> </label>
+					</td><td colspan="5"  class="form-holder">
+	    					<ui-select-ligne></ui-select-ligne>
+						</td><td width="27px" align="right" valign="top">
+									<button type="button" class="help-icon" data-toggle="popover" data-placement="left" data-html="true"
+									     data-content="<p>Indiquer la ou les lignes concernées.</p>" onclick="$(this).popover('toggle');" />
+					</div>
+			</td></tr></table>
+		
+						<!-- Gategorie -->					
+				<table width="100%" ng-include="'templates/saisie/saisie-evenement.html'" onload="tmplLoad()"></table>
+							
+				<table width="100%"><tr><td><small> <i><span class="required">*</span> Saisie obligatoire</i></small> <br/></td>	
+				<td colspan="4" align="right">
+					<table><tr><td><button type="button" ng-click="reset()" name="saisie" class="btn btn-sm btn-primary btn-block btn-cancel">
+							<b>ANNULER</b></button></td><td width="10px"></td>
+						<td><button ng-click="saisirLigneJour()" name="saisie" class="btn btn-sm btn-primary btn-block">
+							<b>ENREGISTRER</b></button></td></tr></table></td>
+				
+				</tr></table>
+		<!-- Modal -->
+		<div id="myModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->    
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Doublon !</h4>
+					</div>
+					<div class="modal-body">
+						<p>Un  évènement a été saisi le même jour sur la même Ligne.
+						Voulez-vous confirmer et mettre à jour ses informations ?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal"
+							ng-click="annulerModal()">Annuler</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal"
+							ng-click="confirmerGareEvent()">Confirmer</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		
+		<!-- Modal Bloquante -->
+		<div id="myModalBloquante" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Doublon bloquant !</h4>
+					</div>
+					<div class="modal-body">
+						<p>Vous ne pouvez pas enregistrer un  évènement sur le même jour et la même Ligne 
+						avec les mêmes infos Catégorie/Evènement/Info Complèmentaires </p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modalBloquant" ng-click="fermerLigneEvent()">Fermer</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		
+		<div id="myModalEnregistrementOk" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					 <div class="modal-header">
+						<button type="button" class="close" data-dismiss="myModalEnregistrementOk">&times;</button>
+						<h4 class="modal-title">Info Enregistrement !</h4>
+					</div> 
+					<div class="modal-body">
+						<p>Votre événement a bien été enregistré. </p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modalBloquant" ng-click="fermerEnregistrementLigneOk()">Fermer</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		
+		<div id="myModalEnregistrementNonOk" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					 <div class="modal-header">
+						<button type="button" class="close" data-dismiss="myModalEnregistrementLigneNonOk">&times;</button>
+						<h4 class="modal-title">Info Enregistrement !</h4>
+					</div> 
+					<div class="modal-body">
+						<p>Veuillez compléter tous les champs obligatoires. </p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modalBloquant" ng-click="fermerEnregistrementLigneNonOk()">Fermer</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+</div>

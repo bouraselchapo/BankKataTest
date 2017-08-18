@@ -1,0 +1,31 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: TransactionDAO.java
+// Created: 13 août 2017 21:14:37
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.persistence;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.TransactionType;
+
+/**
+ * @author PHBS06171
+ *
+ */
+public interface TransactionDAO {
+
+  /**
+   * @param account
+   * @param amount
+   * @param date
+   */
+  void addTransaction(Account account, TransactionType transactionType, BigDecimal amount,
+      LocalDateTime date);
+
+}

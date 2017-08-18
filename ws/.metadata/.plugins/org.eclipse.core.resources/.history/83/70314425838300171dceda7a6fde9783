@@ -1,0 +1,25 @@
+
+angular.module('saisieGareRefModule') 
+
+.controller('saisieGareRefController', ['$scope',
+                                        '$location',
+                                        '$http',
+                                        'Auth',
+                                        function($scope,
+                                                $location,
+                                                $http,
+                                                Auth) {
+    
+	$scope.model = {};
+    
+
+    $scope.init = function() {
+    };
+    
+    $scope.init();
+
+    $scope.saisirGareRef = function(){
+    	$http.post("services/gare/saisieGareRef", $scope.model).success(function(idEventSaisi) {
+		});
+    };
+}]);

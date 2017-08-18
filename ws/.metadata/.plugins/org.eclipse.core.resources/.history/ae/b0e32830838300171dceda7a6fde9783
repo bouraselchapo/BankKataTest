@@ -1,0 +1,200 @@
+
+angular.module('consultationLigneFormModule') 
+
+.controller('consultationLigneFormController', ['$scope',
+                                                '$rootScope',
+                                        '$location',
+                                        '$http',
+                                        'Auth',
+                                        function($scope,
+                                        		$rootScope,
+                                                $location,
+                                                $http,
+                                                Auth) {
+    
+	
+	
+	
+	
+	$scope.model = {};
+	$scope.listeLigneEvent;
+	
+	$scope.precedantDisabledLigne=false;
+	$scope.suivantDisabledLigne=false;
+	$scope.numPageLigne = 1
+	$scope.ligneEventSelected;
+	$scope.listeCategoriesLigne;
+	
+	$scope.idCategorieSelectedLigne;
+	$scope.idEventlectedLigne;
+	
+	$scope.EnregistrerDisabledLigne=true;
+	
+    jQuery(document).ready(function($){
+//        $("#inputdateFinEventLigne").datetimepicker({
+//          	locale: 'fr',
+//            viewMode: 'days',
+//            format: 'DD/MM/YYYY',
+//        });
+    });
+
+	$rootScope.initConsultationLigne = function(filtre, numPage) {
+		$scope.filtreConsultationLigne = filtre;
+    	if(filtre == undefined){
+    		filtre ={};
+    	}
+    	if(filtre.codeUIC == undefined){
+    		filtre.codeUIC ="";
+    	}
+    	if(filtre.ligneFiltre == undefined){
+    		filtre.ligneFiltre ="";
+    	}
+    	
+    	if(filtre.dateFinEvent == undefined){
+    		filtre.dateFinEvent ="";
+    	}
+    	
+    	if(filtre.dateDebEvent == undefined){
+    		filtre.dateDebEvent ="";
+    	}
+    	if(filtre.idCategorie == undefined){
+    		filtre.idCategorie ="";
+    	}
+    	if(filtre.impactValidation == undefined){
+    		filtre.impactValidation ="";
+    	}
+    	if(numPage!=undefined){
+    		$scope.numPage = numPage;
+    	}
+    	
+    	$http.get("services/ligne/getLignesEvents/?numPageLigne="+$scope.numPageLigne+"&codeUIC="+filtre.codeUIC+"&ligneFiltre="+filtre.ligneFiltre+"&dateFinEvent="+filtre.dateFinEvent
+    			+"&dateDebEvent="+filtre.dateDebEvent+"&idCategorieSelectedFiltre="+filtre.idCategorieSelectedFiltre+"&impactValidation="+filtre.impactValidation).success(function(listeLigneEvent) {
+    		
+    		if($scope.numPageLigne == 1){
+        		$scope.precedantDisabledLigne=true;
+        	}
+    		
+    		if(listeLigneEvent != null){
+    			$scope.listeLigneEvent = listeLigneEvent // mettre la liste des catégories dans le sope
+    		}else{
+    			$scope.precedantDisabledLigne=true;
+    			$scope.suivantDisabledLigne=true;
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    		$http.get("services/categorie/getCategories", $scope.model).success(function(listeCategoriesLigne) {
+        		if(listeCategoriesLigne != null){
+        			$scope.listeCategoriesLigne = listeCategoriesLigne // mettre la liste des catégories dans le sope
+        		}else{
+        			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+        		}
+        		
+        	});
+    		
+    		
+    	});
+    };
+    
+    $scope.filtreLigne = {};
+    $rootScope.initConsultationLigne($scope.filtreLigne);
+    
+    $scope.precedantLigne = function(){
+    	
+    	if($scope.numPageLigne == 1){
+    		$scope.precedantDisabledLigne=true;
+    	}else{
+    		$scope.numPageLigne--;
+    		$rootScope.initConsultationLigne($scope.filtreConsultationLigne);
+    	}
+    };
+    
+    $scope.suivantLigne = function(){
+    	$scope.numPageLigne++;
+    	$scope.precedantDisabledLigne=false;
+    	$rootScope.initConsultationLigne($scope.filtreConsultationLigne);
+    };
+    
+    $scope.modifierEventLigne = function(idLigneEvent){
+    	$scope.EnregistrerDisabledLigne=false;
+    	
+    	angular.forEach($scope.listeLigneEvent, function(ligneEvent, key) {
+			if(ligneEvent.id == idLigneEvent){
+				$scope.ligneEventSelected = ligneEvent;
+			}
+		});
+    };
+   
+    $scope.supprimerEventLigne = function(ligneEvent){
+    	var options={day:"2-digit", month:"2-digit",year:"numeric"};
+    	var madatedebutEvent = new Date(ligneEvent.dateDebutEvent).toLocaleString('fr-FR',options);
+    	if (confirm("Êtes-vous sûr de vouloir supprimer l'évènement de la ligne "+ligneEvent.ligneLibelle+" du "+madatedebutEvent+" ?")){
+    	var index = $scope.listeLigneEvent.indexOf(ligneEvent);
+    	$scope.listeLigneEvent.splice(index, 1);  
+    	 var idLigneEvenement =  ligneEvent.id;
+    	$http.post("services/ligne/deleteLigneEvent", idLigneEvenement).success(function(listeCategoriesLigne) {
+    		$rootScope.initConsultationLigne($scope.filtreConsultationLigne);
+		
+    	});
+    	}
+    };
+   
+    
+    
+    $scope.selectCategorieLigne = function(){
+    	$scope.idCategorieSelectedLigne;
+		angular.forEach($scope.listeCategoriesLigne, function(categorie, key) {
+			if(categorie.id == $scope.idCategorieSelectedLigne){
+				$scope.ligneEventSelected.libelleCategorie = categorie.libelle;
+				$scope.ligneEventSelected.idCategorie = categorie.id;
+				$scope.listeEvenementsLigne = categorie.listEvenements
+			}
+		});
+    };
+    
+    $scope.selectEventLigne = function(){
+    	$scope.idEventlectedLigne;
+		angular.forEach($scope.listeEvenementsLigne, function(evenement, key) {
+			if(evenement.id == $scope.idEventlectedLigne){
+				$scope.ligneEventSelected.libelleEvent = evenement.libelle;
+				$scope.ligneEventSelected.idEvent = evenement.id;
+				$scope.listeInfoComplementairesLigne = evenement.listeInfoCompl;
+			}
+		});
+    };
+    
+    $scope.selectInfoCmplLigne = function(){
+    	$scope.idInfoCpmlSelected;
+    	angular.forEach($scope.listeInfoComplementairesLigne, function(infoCmpl, key) {
+			if(infoCmpl.id == $scope.idInfoCpmlSelected){
+				$scope.ligneEventSelected.libelleInfoCmpl = infoCmpl.libelle;
+				$scope.ligneEventSelected.idInfoCmpt = infoCmpl.id;
+			}
+		});
+    	
+
+    };
+    
+    $scope.updateEventLigne = function(){
+    	
+    	if($("#inputdateFinEventLigne").val() ==""){
+      		 event.preventDefault();
+       	}
+       	else{
+       		$scope.ligneEventSelected.oldDateFinEvent = $scope.ligneEventSelected.dateFinEvent;
+        	$scope.ligneEventSelected.dateFinEvent = new Date($("#inputdateFinEventLigne").val());
+        	$scope.ligneEventSelected.idUser =  Auth.getUser().id;
+        	$http.post("services/ligne/updateLigneEvent", $scope.ligneEventSelected).success(function(listeCategoriesLigne) {
+        	window.alert("Modification enregistrée.");
+        		if(listeCategoriesLigne != null){
+        			$rootScope.initConsultationLigne($scope.filtreConsultationLigne);
+        		}else{
+        			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+        			//window.alert("Merci de saisir tous les champs obligatoires.");
+        		}
+        		
+        	});
+       	}
+    };
+    
+    
+}]);

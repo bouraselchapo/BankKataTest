@@ -1,0 +1,100 @@
+
+angular.module('consultationCategorieRefModule') 
+
+.controller('consultationCategorieRefController', ['$scope',
+                                        '$location',
+                                        '$http',
+                                        'Auth',
+                                        function($scope,
+                                                $location,
+                                                $http,
+                                                Auth) {
+    
+	
+	
+	
+	
+	$scope.model = {};
+	$scope.listeCategorie;
+	
+	$scope.precedantDisabledCategorie=false;
+	$scope.suivantDisabledCategorie=false;
+	$scope.numPageCategorie = 1
+	$scope.categorieSelected;
+	
+	$scope.EnregistrerDisabledCategorie=true;
+	
+	
+	$scope.initConsultationCategorieRef = function() {
+    	
+    	
+    	$http.get("services/categorie/getCategoriesRef/?numPageCategorie="+$scope.numPageCategorie).success(function(listeCategorie) {
+    		
+    		if($scope.numPageCategorie == 1){
+        		$scope.precedantDisabledCategorie=true;
+        	}
+    		
+    		if(listeCategorie != null){
+    			$scope.listeCategorie = listeCategorie // mettre la liste des catégories dans le sope
+    		}else{
+    			$scope.precedantDisabledCategorie=true;
+    			$scope.suivantDisabledCategorie=true;
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    $scope.initConsultationCategorieRef();
+    
+    $scope.precedantCategorie = function(){
+    	
+    	if($scope.numPageCategorie == 1){
+    		$scope.precedantDisabledCategorie=true;
+    	}else{
+    		$scope.numPageCategorie--;
+    		$scope.initConsultationCategorieRef();
+    	}
+    };
+    
+    $scope.suivantCategorie = function(){
+    	$scope.numPageCategorie++;
+    	$scope.precedantDisabledCategorie=false;
+    	$scope.initConsultationCategorieRef();
+    };
+    
+    $scope.modifierCategorie = function(idCategorie){
+    	$scope.EnregistrerDisabledCategorie=false;
+    	
+    	angular.forEach($scope.listeCategorie, function(categorie, key) {
+			if(categorie.id == idCategorie){
+				$scope.categorieSelected = categorie;
+			}
+		});
+    };
+   
+    $scope.supprimerCategorie = function(categorie){
+    	
+    	var index = $scope.listeCategorie.indexOf(categorie);
+    	$scope.listeCategorie.splice(index, 1);  
+    	 var idCategorie =  categorie.id;
+    	$http.post("services/categorie/deleteLigneRef", idCategorie).success(function(categorieSupprime) {
+		$scope.initConsultationCategorieRef();
+		
+    	});
+    };
+   
+    
+    $scope.updateCategorieRef = function(){
+    	$http.post("services/categorie/updateCategorieRef", $scope.categorieSelected).success(function(listeCategorieUpdate) {
+    		if(listeCategorieUpdate != null){
+    			$scope.initConsultationCategorieRef();
+    		}else{
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    
+}]);

@@ -1,0 +1,11 @@
+angular.module('consultationUtilisateurRefModule')
+
+.directive('uiFormConsultationUtilisateurRef', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'consultationUtilisateurReferentiel/view.html',
+		controller : 'consultationUtilisateurRefController',
+		controllerAs : 'consultationUtilisateurRefController',
+		replace: true,
+	}
+}]);

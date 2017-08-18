@@ -1,0 +1,11 @@
+angular.module('consultationReseauFormModule')
+
+.directive('uiFormConsultationReseau', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'consultationReseauJourForm/view.html',
+		controller : 'consultationReseauFormController',
+		controllerAs : 'consultationReseauFormController',
+		replace: true,
+	}
+}]);

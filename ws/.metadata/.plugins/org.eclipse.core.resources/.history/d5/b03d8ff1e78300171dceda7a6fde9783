@@ -1,0 +1,49 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountDAO.java
+// Created: 13 août 2017 21:48:34
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.persistence;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.BankClient;
+
+
+/**
+ * Data access object interface for accounts repository.
+ * 
+ * @author PHBS06171
+ *
+ */
+public interface AccountDAO {
+
+  /**
+   * Add account to the repository.
+   * 
+   * @param account.
+   */
+  void createAccount(Account account);
+
+  /**
+   * Account getter by client object.
+   * 
+   * @param client 
+   *            the account client
+   * @return the account.
+   */
+  public Account getAccountByClient(BankClient client);
+
+  /**
+   * Account getter by RIB.
+   * 
+   * @param RIB
+   *        account RIB.
+   * @return Account
+   *        for the geven RIB.
+   */
+  Account getAccountByRIB(String rib);
+
+}

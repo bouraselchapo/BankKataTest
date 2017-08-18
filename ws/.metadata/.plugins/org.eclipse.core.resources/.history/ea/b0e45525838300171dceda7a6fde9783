@@ -1,0 +1,11 @@
+angular.module('saisieReseauFormModule')
+
+.directive('uiFormSaisieReseau', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'saisieReseauForm/view.html',
+		controller : 'saisieReseauFormController',
+		controllerAs : 'saisieReseauFormController',
+		replace: true,
+	}
+}]);

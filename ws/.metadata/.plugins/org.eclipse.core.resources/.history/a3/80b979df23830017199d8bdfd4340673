@@ -1,0 +1,40 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountTransferTest.java
+// Created: 15 août 2017 09:37:15
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.acceptanceTest;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.service.AccountService;
+
+/**
+ * Acceptance test for transfer part business requirement :
+ * 
+ * ● Write some code to transfer a specified amount of money from one bank account (the payer) to
+ * another (the payee) ● Write some code to keep a record of the transfer for both bank accounts in
+ * a transaction history ● Write some code to query a bank account's transaction history for any
+ * bank transfers to or from a specific account
+ *
+ * @author PHBS06171
+ *
+ */
+public class AccountTransferTest {
+
+  AccountService accountService;
+
+  public void transferAmount() {
+    final Account sourceAccount;
+    final Account destinationAccount;
+    final LocalDate transactionDate;
+    final BigDecimal amount;
+    accountService.transferMoney(sourceAccount, destinationAccount, amount, transactionDate);
+  }
+
+}

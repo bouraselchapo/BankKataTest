@@ -1,0 +1,11 @@
+angular.module('consultationEvenementRefModule')
+
+.directive('uiFormConsultationEvenementRef', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'consultationEvenementReferentiel/view.html',
+		controller : 'consultationEvenementRefController',
+		controllerAs : 'consultationEvenementRefController',
+		replace: true,
+	}
+}]);

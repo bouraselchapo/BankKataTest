@@ -1,0 +1,4 @@
+#Tomcat publish data
+#Thu Aug 17 19:51:43 CEST 2017
+org.eclipse.jst.jee.server\:/binary\:C\:\\Users\\PHBS06171\\.m2\\repository\\org\\springframework\\spring-web\\4.3.10.RELEASE\\spring-web-4.3.10.RELEASE.jar=WEB-INF/lib/spring-web-4.3.10.RELEASE.jar
+org.eclipse.jst.j2ee.server\:bank-account-core=WEB-INF/lib/bank-account-core-0.0.1-SNAPSHOT.jar

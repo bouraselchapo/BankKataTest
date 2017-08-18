@@ -1,0 +1,22 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AppTestConfig.java
+// Created: 17 août 2017 11:54:07
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.test.conf;
+
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * @author PHBS06171
+ *
+ */
+@Configuration
+@ComponentScan(basePackages = {"com.mkyong.examples.spring"})
+public class AppTestConfig {
+}

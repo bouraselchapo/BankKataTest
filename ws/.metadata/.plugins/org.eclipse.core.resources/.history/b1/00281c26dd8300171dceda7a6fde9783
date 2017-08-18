@@ -1,0 +1,28 @@
+// Create the app module
+var bankKataApp = angular
+		.module('bankKataApp', [])
+		.config(
+				function($httpProvider) {
+
+					$httpProvider.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
+
+				});
+
+// Module for the index page.
+angular.module('BankAccountModule')
+// Contriller of the index page.
+.controller('BankAccountController',
+		[ '$scope', '$http', function($scope, $http) {
+// initiation off the model
+			$scope.model = {
+					client : {
+						name : '',
+						uid: ''
+					}
+			}
+			
+			
+			$scope.createAccount = function() {
+				alert('ok');
+			}
+		} ]);

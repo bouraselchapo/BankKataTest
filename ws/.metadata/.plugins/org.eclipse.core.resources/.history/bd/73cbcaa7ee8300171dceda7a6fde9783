@@ -1,0 +1,38 @@
+
+<div class="col-md-4">
+	<div class="panel">
+		<div class="panel-body">
+			<h3 class="text-center">
+				<center>Saisie Catégorie Référentiel</center>
+			</h3>
+			<form class="form-horizontal">
+
+				<div class="form-group">
+					<input ng-model="model.libelleCategorie" name="idInfoCmpt"
+						class="form-control" id="inputIdCategorie"
+						placeholder="Catégorie" required />
+				</div>
+				
+				<div class="form-group">
+					<input ng-model="model.libelleEvenement" name="idInfoCmpt"
+						class="form-control" id="inputIdEvent"
+						placeholder="Evènement" required />
+				</div>
+				
+				<div class="form-group">
+					<input ng-model="model.libelleInfoComplementaire" name="idInfoCmpt"
+						class="form-control" id="inputIdInfoComplementaire"
+						placeholder="Sous-évènement" required />
+				</div>
+				
+				<button ng-click="saisirCategorieEventInfoCmplRef()" name="saisie"
+					class="btn btn-sm btn-primary btn-block"
+					style="background-color: #A10043; font-size : 14px"><b>Enregistrer</b></button>
+			</form>
+		</div>
+
+	</div>
+</div>
+
+
+

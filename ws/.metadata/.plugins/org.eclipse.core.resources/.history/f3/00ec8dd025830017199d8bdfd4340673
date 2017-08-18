@@ -1,0 +1,123 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountServiceImpl.java
+// Created: 12 août 2017 10:40:06
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.service.impl;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.BankClient;
+import com.bank.account.domaine.TransactionType;
+import com.bank.account.persistence.AccountDAO;
+import com.bank.account.persistence.impl.AccountDAOImpl;
+import com.bank.account.persistence.impl.TransactionDAOImpl;
+import com.bank.account.service.AccountService;
+
+/**
+ * @author PHBS06171
+ *
+ */
+public class AccountServiceImpl implements AccountService {
+
+  private final AccountDAO accountDAO = new AccountDAOImpl();
+  private final TransactionDAOImpl transactionDAO = new TransactionDAOImpl();
+  // private Object transactionService;
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.bank.account.service.AccountService#createAccount(com.bank.account.domaine.AccountHolder)
+   */
+  public void createAccount(BankClient accountHolder) {
+    final Account account = new Account(accountHolder);
+    accountDAO.createAccount(account);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.bank.account.service.AccountService#depositAmount(java.math.BigDecimal)
+   */
+  public void depositAmount(Account account, BigDecimal amount, LocalDateTime date) {
+    // trace the transaction.
+    transactionDAO.addTransaction(account, TransactionType.DEPOSIT, amount, date);
+    // update the account balance.
+    account.setBalance(account.getBalance().add(amount));
+    // accountDAO.updateAccount(account);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.bank.account.service.AccountService#depositAmount(java.time.LocalDateTime,
+   * com.bank.account.domaine.Account, java.math.BigDecimal)
+   */
+  public void depositAmount(LocalDateTime localDate, Account account, BigDecimal accountNumber) {
+    // TODO Auto-generated method stub
+
+  }
+
+  /* (non-Javadoc)
+   * @see com.bank.account.service.AccountService#getAccountByHolder(com.bank.account.domaine.AccountHolder)
+   */
+  public Account getAccountByClient(BankClient client) {
+    return accountDAO.getAccountByClient(client);
+  }
+
+  /**
+   * @param transactionDate
+   * @param account
+   * @param amount
+   */
+  private void transferFrom(LocalDateTime transactionDate, Account account, BigDecimal amount) {
+    // update the account balance.
+    account.setBalance(account.getBalance().add(amount.negate()));
+    // trace the transaction.
+    transactionDAO.addTransaction(account, TransactionType.TRANSFER_FROM, amount, transactionDate);
+
+  }
+
+  /* (non-Javadoc)
+   * @see com.bank.account.service.AccountService#transferMoney(com.bank.account.domaine.Account, com.bank.account.domaine.Account, java.math.BigDecimal, java.time.LocalDate)
+   */
+  public void transferMoney(Account sourceAccount, Account destinationAccount,
+      BigDecimal transferAmount, LocalDateTime transactionDate) {
+    transferFrom(transactionDate, sourceAccount, transferAmount);
+    transferTo(transactionDate, destinationAccount, transferAmount);
+
+  }
+
+  /**
+   * @param transactionDate
+   * @param account
+   * @param amount
+   */
+  private void transferTo(LocalDateTime transactionDate, Account account, BigDecimal amount) {
+    // update the account balance.
+    account.setBalance(account.getBalance().add(amount));
+    // trace the transaction.
+    transactionDAO.addTransaction(account, TransactionType.TRANSFER_TO, amount, transactionDate);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.bank.account.service.AccountService#withdrowAmount(java.time.LocalDateTime,
+   * com.bank.account.domaine.Account, java.math.BigDecimal)
+   */
+  public void withdrowAmount(LocalDateTime transactionDate, Account account, BigDecimal amount) {
+    // update the account balance.
+    account.setBalance(account.getBalance().add(amount.negate()));
+    // trace the transaction.
+    transactionDAO.addTransaction(account, TransactionType.WITHDROW, amount, transactionDate);
+
+  }
+
+}

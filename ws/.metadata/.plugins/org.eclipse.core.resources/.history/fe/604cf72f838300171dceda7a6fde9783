@@ -1,0 +1,11 @@
+angular.module('consultationLigneRefModule')
+
+.directive('uiFormConsultationLigneRef', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'consultationLigneReferentiel/view.html',
+		controller : 'consultationLigneRefController',
+		controllerAs : 'consultationLigneRefController',
+		replace: true,
+	}
+}]);

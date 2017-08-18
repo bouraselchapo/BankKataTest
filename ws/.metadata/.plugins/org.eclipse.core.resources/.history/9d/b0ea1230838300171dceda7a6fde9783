@@ -1,0 +1,169 @@
+<div>
+
+<table>
+  <tr>
+    <td class="table-fix-part">
+    	<!-- Consultation de la gare -->
+    <div style="width: 310px; overflow: hidden; margin-top:-1.1em;">
+	<table id="consultationGareTableId" class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th><em class="fa fa-cog"></em></th>
+				<th>Gare</th>
+				<th>Code UIC</th>
+				<th>Date de début</th>
+				<th>Durée</th>
+				<th>Catégorie</th>
+				<th>Evènement</th>
+				<th>Sous-événement</th>
+				<th>Information Complémentaire</th>
+			<!--  	<th>STIF</th>-->
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="gareEvent in listeGareEvent">
+				<td align="center"><a class="btn btn-default"
+					ng-click="modifierGareEvent(gareEvent.id)"><em
+						class="fa fa-pencil"></em></a> <a class="btn btn-anger"
+					ng-click="supprimerGareEvent(gareEvent)"><em
+						class="fa fa-trash"></em></a></td>
+				<td>{{gareEvent.libelleGare}}</td>
+				<td>{{gareEvent.codeUIC}}</td>
+				<td>{{gareEvent.dateDebutEvent | date:'dd/MM/yyyy'}}</td>
+				<td>{{gareEvent.dureeEvent}}</td>
+				<td>{{gareEvent.libelleCategorie}}</td>
+				<td>{{gareEvent.libelleEvent}}</td>
+				<td>{{gareEvent.libelleInfoCmpl}}</td>
+				<td>{{gareEvent.saisieLibreInfoCompl}}</td>
+			<!-- 	<td>{{gareEvent.stif}}</td> -->
+			</tr>
+		</tbody>
+	</table>
+	</div>
+    </td>
+    <td width="400px" class="table-slide-part">
+    <div style="width: 81.1%; overflow-x: scroll; border-right: 1px solid;">
+    	<!-- Consultation de la gare -->
+		<table id="consultationGareTableId" class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>Durée</th>
+				<th>Catégorie</th>
+				<th>Evènement</th>
+				<th>Sous-événement</th>
+				<th>Information Complémentaire</th>
+				<th>Durée</th>
+				<th>Catégorie</th>
+				<th>Evènement</th>
+				<th>Sous-événement</th>
+				<th>Information Complémentaire</th>
+			<!--  	<th>STIF</th>-->
+				<th><em class="fa fa-cog"></em></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="gareEvent in listeGareEvent">
+				<td>{{gareEvent.dureeEvent}}</td>
+				<td>{{gareEvent.libelleCategorie}}</td>
+				<td>{{gareEvent.libelleEvent}}</td>
+				<td>{{gareEvent.libelleInfoCmpl}}</td>
+				<td>{{gareEvent.saisieLibreInfoCompl}}</td>
+				<td>{{gareEvent.dureeEvent}}</td>
+				<td>{{gareEvent.libelleCategorie}}</td>
+				<td>{{gareEvent.libelleEvent}}</td>
+				<td>{{gareEvent.libelleInfoCmpl}}</td>
+				<td>{{gareEvent.saisieLibreInfoCompl}}</td>
+			<!-- 	<td>{{gareEvent.stif}}</td> -->
+				<td align="center"><a class="btn btn-default"
+					ng-click="modifierGareEvent(gareEvent.id)"><em
+						class="fa fa-pencil"></em></a> <a class="btn btn-anger"
+					ng-click="supprimerGareEvent(gareEvent)"><em
+						class="fa fa-trash"></em></a></td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+    </td>
+  </tr>
+</table>
+
+	<div class="row">
+		<div class="col-md-2 col-md-offset-4">
+			<button type="button" ng-disabled="precedantDisabled"
+				class="btn btn-sm btn-primary btn-block"
+				style="width: 50%;"
+				ng-click="precedantGare()">Précedant</button>
+		</div>
+		<div class="col-md-2">
+			<button type="button" ng-disabled="suivantDisabled"
+				class="btn btn-sm btn-primary btn-block"
+				style="width: 50%;"
+				ng-click="suivantGare()">Suivant</button>
+		</div>
+
+	</div>
+
+<br>
+<!-- <div id="modificatoinLigne" class="row">
+		<div class="col-md-2">
+			<input ng-model="gareEventSelected.codeUIC" name="codeUIC"
+				class="form-control" id="inputCodeUIC" />
+		</div>
+
+		
+		
+		<div class="col-md-2">
+			<select ng-model="idCategorieSelected"
+						ng-change="selectCategorieGare()" class="form-control">
+							<option ng-repeat="categorie in listeCategories"
+								value="{{categorie.id}}">{{categorie.libelle}}</option>
+					</select>
+		</div>
+		
+		<div class="col-md-2">
+			<select ng-model="idEventlected"
+						ng-change="selectEventGare()" class="form-control">
+							<option ng-repeat="event in listeEvenements" value="{{event.id}}">{{event.libelle}}</option>
+					</select>
+		</div>
+		
+		<div class="col-md-2">
+			<select ng-model="idInfoCpmlSelected"
+						ng-change="selectInfoCmplGare()" class="form-control">
+							<option ng-repeat="infoCmpl in listeInfoComplementaires"
+								value="{{infoCmpl.id}}">{{infoCmpl.libelle}}</option>
+					</select>
+		</div>
+	
+		<div class="col-md-2">
+			<input ng-model="gareEventSelected.saisieLibreInfoCompl"
+						name="idInfoCmpt" class="form-control"
+						id="inputIdSaisieLibreInfoCompl" required />
+		</div>
+		
+		<div class="col-md-2 input-group date" id='datetimepicker1'>
+
+			<input type="text" id="inputdateFinEvent" class="form-control" placeholder="Date de Fin *">	
+-->
+<!-- 			<input ng-model="model.dateFinEvent" id="inputdateFinEvent" -->
+<!-- 				name="dateFinEvent" type='text' class="form-control" -->
+<!-- 				placeholder="Date de Fin" required /> <span class="input-group-addon"> -->
+<!-- 				<span class="glyphicon glyphicon-calendar"></span> -->
+<!-- 			</span> -->
+<!-- 	</div>
+		
+	</div>
+-->
+
+<br>
+<!-- 	<div class="row">
+	<label><input type="checkbox" ng-model="gareEventSelected.stif"
+						ng-true-value="'YES'" ng-false-value="'NON'">&nbsp;Evènement exonéré par le Stif</label>
+						
+		<button ng-disabled="EnregistrerDisabled" type="button"
+			ng-disabled="suivantDisabled"
+			class="btn btn-sm btn-primary btn-block"
+			style="width: 10%; float :right;"
+			ng-click="updateEventGare()">ENREGISTRER</button>
+	</div> -->
+</div>

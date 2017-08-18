@@ -1,0 +1,47 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountBuilder.java
+// Created: 14 août 2017 11:22:36
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.test.builders;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.BankClient;
+
+/**
+ * Builder class for Account object.
+ * 
+ * @author PHBS06171
+ *
+ */
+public final class AccountBuilder {
+
+  private BankClient client;
+
+  /**
+   * Client name.
+   */
+  private String name;
+
+  /**
+   * A client unique ID.
+   */
+  private String UID;
+
+  public Account build() {
+    return new Account(this.client);
+  }
+
+  public AccountBuilder client(BankClient client) {
+    this.client = client;
+    return this;
+  }
+
+  public AccountBuilder getBuilder() {
+    return new AccountBuilder();
+  }
+
+}

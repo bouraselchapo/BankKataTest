@@ -1,0 +1,31 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountDAO.java
+// Created: 13 août 2017 21:48:34
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.persistence.impl;
+
+import com.bank.account.domaine.Account;
+
+
+/**
+ * @author PHBS06171
+ *
+ */
+public interface AccountDAO {
+
+  /**
+   * @param accountHolder
+   */
+  void createAccountaccountHolder(Account account);
+
+  /**
+   * @param RIB
+   * @return
+   */
+  Account getAccountByRIB(String rib);
+
+}

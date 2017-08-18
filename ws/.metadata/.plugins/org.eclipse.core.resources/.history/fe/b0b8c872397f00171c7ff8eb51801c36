@@ -1,0 +1,33 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: IaccountService.java
+// Created: Aug 10, 2017 8:43:10 PM
+// Author: hicham
+////////////////////////////////////////////////////////////////////
+package com.bank.account.service;
+
+/**
+ * Interface for all account operations.
+ * 
+ * @author hicham.
+ *
+ */
+public interface accountService {
+
+  /**
+   * 
+   */
+  void createAccount();
+
+  /**
+   * @param accountNumber
+   * 
+   */
+  void depositAmount(int accountNumber);
+
+  /**
+   * 
+   */
+  void withdrawAmount();
+
+}

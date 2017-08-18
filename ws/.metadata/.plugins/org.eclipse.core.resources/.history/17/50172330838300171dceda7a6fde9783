@@ -1,0 +1,100 @@
+
+angular.module('consultationGareRefModule') 
+
+.controller('consultationGareRefController', ['$scope',
+                                        '$location',
+                                        '$http',
+                                        'Auth',
+                                        function($scope,
+                                                $location,
+                                                $http,
+                                                Auth) {
+    
+	
+	
+	
+	
+	$scope.model = {};
+	$scope.listeGare;
+	
+	$scope.precedantDisabledGare=false;
+	$scope.suivantDisabledGare=false;
+	$scope.numPageGare = 1
+	$scope.gareSelected;
+	
+	$scope.EnregistrerDisabledGare=true;
+	
+	
+	$scope.initConsultationGareRef = function() {
+    	
+    	
+    	$http.get("services/gare/getGaresRef/?numPageGare="+$scope.numPageGare).success(function(listeGare) {
+    		
+    		if($scope.numPageGare == 1){
+        		$scope.precedantDisabledGare=true;
+        	}
+    		
+    		if(listeGare != null){
+    			$scope.listeGare = listeGare // mettre la liste des catégories dans le sope
+    		}else{
+    			$scope.precedantDisabledGare=true;
+    			$scope.suivantDisabledGare=true;
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    $scope.initConsultationGareRef();
+    
+    $scope.precedantGare = function(){
+    	
+    	if($scope.numPageGare == 1){
+    		$scope.precedantDisabledGare=true;
+    	}else{
+    		$scope.numPageGare--;
+    		$scope.initConsultationGareRef();
+    	}
+    };
+    
+    $scope.suivantGare = function(){
+    	$scope.numPageGare++;
+    	$scope.precedantDisabledGare=false;
+    	$scope.initConsultationGareRef();
+    };
+    
+    $scope.modifierGare = function(idGare){
+    	$scope.EnregistrerDisabledGare=false;
+    	
+    	angular.forEach($scope.listeGare, function(gare, key) {
+			if(gare.id == idGare){
+				$scope.gareSelected = gare;
+			}
+		});
+    };
+   
+    $scope.supprimerGare = function(gare){
+    	
+    	var index = $scope.listeGare.indexOf(gare);
+    	$scope.listeGare.splice(index, 1);  
+    	 var idGare =  gare.id;
+    	$http.post("services/gare/deleteGareRef", idGare).success(function(utilisateurSupprime) {
+		$scope.initConsultationGareRef();
+		
+    	});
+    };
+   
+    
+    $scope.updateGareRef = function(){
+    	$http.post("services/gare/updateGareRef", $scope.gareSelected).success(function(listeCategoriesReseau) {
+    		if(listeCategoriesReseau != null){
+    			$scope.initConsultationGareRef();
+    		}else{
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    
+}]);

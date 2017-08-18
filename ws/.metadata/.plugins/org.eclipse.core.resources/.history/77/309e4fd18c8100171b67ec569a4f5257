@@ -1,0 +1,17 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountTransferTest.java
+// Created: 15 août 2017 09:37:15
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.acceptanceTest;
+
+/**
+ * @author PHBS06171
+ *
+ */
+public class AccountTransferTest {
+
+}

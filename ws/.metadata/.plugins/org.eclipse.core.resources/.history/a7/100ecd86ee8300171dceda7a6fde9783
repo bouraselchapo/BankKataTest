@@ -1,0 +1,203 @@
+<!-- index.html -->
+
+
+<!-- define angular app -->
+<html ng-app="sncfApp">
+ 
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8"/> 
+
+<!-- SCROLLS -->
+<!-- load bootstrap and fontawesome via CDN -->
+<link rel="stylesheet" type="text/css"
+	href="lib/css/bootstrap-3.3.5/css/bootstrap.css">
+
+<link rel="stylesheet" type="text/css"
+	href="lib/css/content/tableau/table.css">
+
+<link rel="stylesheet" type="text/css"
+	href="lib/EasyAutocomplete-1.3.3/easy-autocomplete.css">
+
+<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel='stylesheet' type='text/css'> -->
+<link rel="stylesheet" href="lib/css/utilcss/font-awesome.css">
+
+<!-- load angular  -->
+<script src="lib/js/angular-1.5.1/angular.js"></script>
+<script src="lib/js/angular-1.5.1/angular-route.js"></script>
+<script src="lib/js/angular-ui/angular-ui-route.js"></script>
+
+<script src="lib/js/angular-1.5.1/angular-sanitize.min.js"></script>
+<script src="lib/js/csv/ng-csv.js"></script>
+<script src="lib/js/angular-1.5.1/ngCookies.js"></script>
+
+<script src="lib/js/jquery/jquery-2.2.3.min.js"></script>
+
+<!-- //code.jquery.com/ui/1.11.4/jquery-ui.js -->
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"> -->
+<!-- <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> -->
+
+<link rel="stylesheet" href="lib/css/utilcss/jquery-ui.css">
+<script src="lib/js/utiljs/jquery-ui.js"></script>
+
+<link rel="stylesheet" href="lib/css/utilcss/jquery.timepicker.css">
+<script src="lib/js/utiljs/jquery.timepicker.min.js"></script>
+
+<script src="lib/EasyAutocomplete-1.3.3/jquery.easy-autocomplete.min.js"></script>
+
+<!-- Datepicker (telecharger Jss et css) -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js"></script> -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" /> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script> -->
+
+<!-- <!-- DataTable (telecharger Jss et css) -->
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.11/css/dataTables.bootstrap.min.css" /> -->
+<!-- <script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script> -->
+<!-- <script src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script> -->
+
+<!-- <link rel="stylesheet" href="lib/css/utilcss/bootstrap-datetimepicker.min.css" />
+<script src="lib/js/utiljs/moment.min.js"></script>
+<script src="lib/js/utiljs/bootstrap-datetimepicker.min.js"></script> 
+<script src="lib/js/utiljs/fr.js"></script>-->
+
+<script src="lib/js/bootstrap/bootstrap.min.js"></script>
+
+<!-- DataTable (telecharger Jss et css) -->
+<link rel="stylesheet" href="lib/css/utilcss/dataTables.bootstrap.min.css" />
+<script src="lib/js/utiljs/jquery.dataTables.min.js"></script>
+<script src="lib/js/utiljs/dataTables.bootstrap.min.js"></script>
+
+<!-- app css -->
+<link rel="stylesheet" type="text/css" href="lib/css/app.css">
+<link rel="stylesheet" type="text/css" href="lib/css/app/consult.css">
+
+<!--       Common -->
+<script src="common/loader.js"></script>
+<script src="common/directive.js"></script>
+<script src="common/service.js"></script>
+
+
+<!--       Ecran Connexion  -->
+<script src="connexion/loader.js"></script>
+<script src="connexion/config.js"></script>
+<script src="connexion/controller.js"></script>
+
+<!--       Ecran gestionReferentiel  -->
+<script src="gestionReferentiel/loader.js"></script>
+<script src="gestionReferentiel/config.js"></script>
+<script src="gestionReferentiel/controller.js"></script>
+
+<!--       Ecran Saisie des évènements  -->
+<script src="saisieEvenement/loader.js"></script>
+<script src="saisieEvenement/config.js"></script>
+<script src="saisieEvenement/controller.js"></script>
+<script src="saisieEvenement/directive.js"></script>
+
+<!--       Consultation Gare Jour -->
+<script src="consultationGareJour/loader.js"></script>
+<script src="consultationGareJour/config.js"></script>
+<script src="consultationGareJour/controller.js"></script>
+
+
+<!--       UI FORM SAisie Gare_Jour  -->
+<script src="saisieGareForm/loader.js"></script>
+<script src="saisieGareForm/controller.js"></script>
+
+<!--       UI FORM SAisie Ligne_Jour  -->
+<script src="saisieLigneForm/loader.js"></script>
+<script src="saisieLigneForm/controller.js"></script>
+
+<!--       UI FORM SAisie Reseau_Jour  -->
+<script src="saisieReseauForm/loader.js"></script>
+<script src="saisieReseauForm/directive.js"></script>
+<script src="saisieReseauForm/controller.js"></script>
+
+
+<!--       UI FORM SAisie Utilisateur Referentiel  -->
+<script src="saisieUtilisateurReferentiel/loader.js"></script>
+<script src="saisieUtilisateurReferentiel/directive.js"></script>
+<script src="saisieUtilisateurReferentiel/controller.js"></script>
+
+<!--       UI FORM SAisie Gare Referentiel  -->
+<script src="saisieGareReferentiel/loader.js"></script>
+<script src="saisieGareReferentiel/directive.js"></script>
+<script src="saisieGareReferentiel/controller.js"></script>
+
+<!--       UI FORM SAisie Categorie Referentiel  -->
+<script src="saisieCategorieReferentiel/loader.js"></script>
+<script src="saisieCategorieReferentiel/directive.js"></script>
+<script src="saisieCategorieReferentiel/controller.js"></script>
+
+<!-- <!--       UI FORM SAisie Evenement Referentiel  --> 
+<!-- <script src="saisieEvenementReferentiel/loader.js"></script> -->
+<!-- <script src="saisieEvenementReferentiel/directive.js"></script> -->
+<!-- <script src="saisieEvenementReferentiel/controller.js"></script> -->
+
+<!-- <!--       UI FORM SAisie Information Complementaire Referentiel  --> 
+<!-- <script src="saisieInfoComplementaireRef/loader.js"></script> -->
+<!-- <script src="saisieInfoComplementaireRef/directive.js"></script> -->
+<!-- <script src="saisieInfoComplementaireRef/controller.js"></script> -->
+
+<!--       UI FORM Consltation -->
+<script src="consultationEvenement/controller.js"></script>
+
+
+<!--       UI FORM Consltation Ligne_Jour  -->
+<script src="consultationLigneJourForm/loader.js"></script>
+<script src="consultationLigneJourForm/directive.js"></script>
+<script src="consultationLigneJourForm/controller.js"></script>
+
+<!--       UI FORM Consltation Gar_Jour  -->
+<script src="consultationGareJourForm/loader.js"></script>
+<script src="consultationGareJourForm/directive.js"></script>
+<script src="consultationGareJourForm/controller.js"></script>
+
+<!--       UI FORM Consltation Reseau_Jour  -->
+<script src="consultationReseauJourForm/loader.js"></script>
+<script src="consultationReseauJourForm/directive.js"></script>
+<script src="consultationReseauJourForm/controller.js"></script>
+
+
+<!--       UI FORM Consltation UTILISATEUR REFERENTIEL  -->
+<script src="consultationUtilisateurReferentiel/loader.js"></script>
+<script src="consultationUtilisateurReferentiel/directive.js"></script>
+<script src="consultationUtilisateurReferentiel/controller.js"></script>
+
+<!--       UI FORM Consltation GARE REFERENTIEL  -->
+<script src="consultationGareReferentiel/loader.js"></script>
+<script src="consultationGareReferentiel/directive.js"></script>
+<script src="consultationGareReferentiel/controller.js"></script>
+
+<!--       UI FORM Consltation LIGNE REFERENTIEL  -->
+<script src="consultationLigneReferentiel/loader.js"></script>
+<script src="consultationLigneReferentiel/directive.js"></script>
+<script src="consultationLigneReferentiel/controller.js"></script>
+
+
+
+<!--       UI FORM Consltation CATEGORIE REFERENTIEL  -->
+<script src="consultationCategorieReferentiel/loader.js"></script>
+<script src="consultationCategorieReferentiel/directive.js"></script>
+<script src="consultationCategorieReferentiel/controller.js"></script>
+
+
+<!--       UI FORM Consltation EVENEMENT REFERENTIEL  -->
+<script src="consultationEvenementReferentiel/loader.js"></script>
+<script src="consultationEvenementReferentiel/directive.js"></script>
+<script src="consultationEvenementReferentiel/controller.js"></script>
+
+
+<!--       UI FORM Consltation INFO COMPL REFERENTIEL  -->
+<script src="consultationInfoComplReferentiel/loader.js"></script>
+<script src="consultationInfoComplReferentiel/directive.js"></script>
+<script src="consultationInfoComplReferentiel/controller.js"></script>
+<script src="app.js"></script>
+</head>
+
+<!-- define angular controller -->
+<body>
+	<!-- MAIN CONTENT AND INJECTED VIEWS -->
+	<div id="uiViewContent">
+		<ui-view></ui-view>
+	</div>
+</body>
+</html>

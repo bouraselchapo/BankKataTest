@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workingSetManager>
+<workingSet editPageId="org.eclipse.ui.resourceWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1502975986686_1" label="bank-account-master" name="bank-account-master">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/bank-account-master" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/bank-account-web" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/bank-account-core" type="4"/>
+</workingSet>
+<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1502389030202_0" label="Window Working Set" name="Aggregate for window 1502389030201"/>
+</workingSetManager>

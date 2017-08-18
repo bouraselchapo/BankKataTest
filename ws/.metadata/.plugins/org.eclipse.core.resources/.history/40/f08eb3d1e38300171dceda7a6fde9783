@@ -1,0 +1,21 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: ClientModel.java
+// Created: 18 août 2017 09:02:08
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.web.models;
+
+/**
+ * @author PHBS06171
+ * Data Transfer Object for json client object. 
+ * client : { name : '',
+ *              uid: ''  }
+ *
+ */
+public class ClientModel {
+  private String name;
+  private String uid;
+}

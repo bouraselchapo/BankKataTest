@@ -1,0 +1,14 @@
+'use strict';
+
+angular.module('connexionModule')
+
+.config(['$stateProvider', '$urlRouterProvider',
+         function($stateProvider, $urlRouterProvider) {
+	
+	$stateProvider.state('connexion', {
+		url : '/connexion',
+		templateUrl : 'connexion/view.html',
+		controller : 'connexionController',
+		controllerAs : 'connexionController'
+	});
+}]);

@@ -1,0 +1,100 @@
+
+angular.module('consultationLigneRefModule') 
+
+.controller('consultationLigneRefController', ['$scope',
+                                        '$location',
+                                        '$http',
+                                        'Auth',
+                                        function($scope,
+                                                $location,
+                                                $http,
+                                                Auth) {
+    
+	
+	
+	
+	
+	$scope.model = {};
+	$scope.listeLigne;
+	
+	$scope.precedantDisabledLigne=false;
+	$scope.suivantDisabledLigne=false;
+	$scope.numPageLigne = 1
+	$scope.ligneSelected;
+	
+	$scope.EnregistrerDisabledLigne=true;
+	
+	
+	$scope.initConsultationLigneRef = function() {
+    	
+    	
+    	$http.get("services/ligne/getLignesRef/?numPageLigne="+$scope.numPageLigne).success(function(listeLigne) {
+    		
+    		if($scope.numPageLigne == 1){
+        		$scope.precedantDisabledLigne=true;
+        	}
+    		
+    		if(listeLigne != null){
+    			$scope.listeLigne = listeLigne // mettre la liste des catégories dans le sope
+    		}else{
+    			$scope.precedantDisabledLigne=true;
+    			$scope.suivantDisabledLigne=true;
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    $scope.initConsultationLigneRef();
+    
+    $scope.precedantLigne = function(){
+    	
+    	if($scope.numPageLigne == 1){
+    		$scope.precedantDisabledLigne=true;
+    	}else{
+    		$scope.numPageLigne--;
+    		$scope.initConsultationLigneRef();
+    	}
+    };
+    
+    $scope.suivantLigne = function(){
+    	$scope.numPageLigne++;
+    	$scope.precedantDisabledLigne=false;
+    	$scope.initConsultationLigneRef();
+    };
+    
+    $scope.modifierLigne = function(idLigne){
+    	$scope.EnregistrerDisabledLigne=false;
+    	
+    	angular.forEach($scope.listeLigne, function(ligne, key) {
+			if(ligne.id == idLigne){
+				$scope.ligneSelected = ligne;
+			}
+		});
+    };
+   
+    $scope.supprimerLigne = function(ligne){
+    	
+    	var index = $scope.listeLigne.indexOf(ligne);
+    	$scope.listeLigne.splice(index, 1);  
+    	 var idLigne =  ligne.id;
+    	$http.post("services/ligne/deleteLigneRef", idLigne).success(function(LigneSupprime) {
+		$scope.initConsultationLigneRef();
+		
+    	});
+    };
+   
+    
+    $scope.updateLigneRef = function(){
+    	$http.post("services/ligne/updateLigneRef", $scope.ligneSelected).success(function(listeLigneUpdate) {
+    		if(listeLigneUpdate != null){
+    			$scope.initConsultationLigneRef();
+    		}else{
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    
+}]);

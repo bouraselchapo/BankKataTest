@@ -1,0 +1,11 @@
+angular.module('consultationGareFormModule')
+
+.directive('uiFormConsultationGare', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'consultationGareJourForm/view.html',
+		controller : 'consultationGareFormController',
+		controllerAs : 'consultationGareFormController',
+		replace: true,
+	}
+}]);

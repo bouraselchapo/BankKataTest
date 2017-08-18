@@ -1,0 +1,47 @@
+<div class="app-header"> 
+	<img class="logo-sncf" src="lib/images/sncf-logo-s.png" alt="SNCF" 
+		 style="height: 45px;">
+<!-- 					<button ng-show="estAdmin" ng-click="goToGestionReferentiel()"
+						name="saisie" class="btn btn-sm btn-primary btn-block referentiel">Gestion du référentiel</button> -->
+</div>
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-static-top">
+      <div width="97%">
+        <div class="navbar-header"> <p style="width:7em"></p></div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li id="SAISIE-DROPDOWN" class="dropdown">
+          	<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" 
+                 aria-expanded="false">SAISIE ÉVÈNEMENT <span class="caret"></span></a>
+          		<ul class="dropdown-menu">
+          			<li>
+          		    	<a ng-click="setCurrentMenu('GARE', 'SAISIE-DROPDOWN')"> SAISIE GARE </a></li>
+          		    <li role="separator" class="divider"></li>
+					<li>
+		    			<a ng-click="setCurrentMenu('LIGNE', 'SAISIE-DROPDOWN')"> SAISIE LIGNE </a></li>
+          		</ul>
+          </li>
+          <li role="separator" class="divider-vertical"></li>
+          <li id="CONSULTATION-DROPDOWN" ><a ng-click="setCurrentMenu('CONSULTATION', 'CONSULTATION-DROPDOWN')">CONSULTATION ÉVÈNEMENTS SAISIS</a></li>
+		</ul> 
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" ng-click="goToGestionReferentiel()">ADMINISTRATION</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+<div class="container">
+	<div ng-if="currentTab == 'GARE'">
+			<ui-form-saisie-gare></ui-form-saisie-gare>
+	</div>
+
+	<div ng-if="currentTab == 'LIGNE'">
+			<ui-form-saisie-ligne></ui-form-saisie-ligne>
+	</div>
+	
+	<div ng-if="currentTab == 'CONSULTATION'">
+			<ui-consultation-saisie></ui-consultation-saisie>
+	</div>
+</div>

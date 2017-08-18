@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fr.sncf.persistance.LigneDao">
+
+	<insert id="saisirLigneJour" useGeneratedKeys="true"
+		keyProperty="ligneEvenementBean.id">
+
+		insert into LIGNE_JOUR
+		(ligne_jour_user_id, ligne_jour_lib_ligne,
+		ligne_jour_date, ligne_heure_debut, ligne_date_prev_debut,
+		ligne_jour_date_fin, ligne_heure_fin, ligne_date_prev_fin,
+		ligne_jour_id_event, ligne_jour_id_categorie, 
+		ligne_jour_id_infocompl, ligne_jour_saisie_libre_infocompl,
+		ligne_jour_duree_event, ligne_jour_stif, ligne_jour_impact_validation, 
+		ligne_jour_delete, ligne_jour_update_time)
+		values
+		(#{ligneEvenementBean.idUser},#{ligneEvenementBean.ligneLibelle},
+		#{ligneEvenementBean.dateDebutEvent}, #{ligneEvenementBean.heureDebut}, #{ligneEvenementBean.datePrevDebut},
+		#{ligneEvenementBean.dateFinEvent}, #{ligneEvenementBean.heureFin}, #{ligneEvenementBean.datePrevFin},
+		#{ligneEvenementBean.idEvent},#{ligneEvenementBean.idCategorie},#{ligneEvenementBean.idInfoCmpt},
+		#{ligneEvenementBean.saisieLibreInfoCompl},
+		#{ligneEvenementBean.dureeEvent}, #{ligneEvenementBean.stif}, #{ligneEvenementBean.impactValidation}, 'NON', LOCALTIMESTAMP)
+	</insert>
+
+	<insert id="sasirLigneReferentiel" useGeneratedKeys="true"
+		keyProperty="gareReferentielBean.id">
+
+		insert into ligne
+		(ligne_libele, ligne_jour_delete)
+		values
+		(#{gareReferentielBean.ligneAssocieelibelle}, 'NON')
+	</insert>
+	
+	<insert id="saisirListeLigneJour" parameterType="java.util.List">
+		insert into LIGNE_JOUR
+		(ligne_jour_user_id,
+		ligne_jour_lib_ligne,
+		ligne_jour_date,
+		ligne_jour_date_fin,
+		ligne_jour_id_event,
+		ligne_jour_id_categorie,
+		ligne_jour_id_infocompl,
+		ligne_jour_saisie_libre_infocompl,
+		ligne_jour_duree_event, ligne_jour_stif, ligne_jour_impact_validation, ligne_jour_delete)
+		values (
+		<foreach item="ligneEvenementBean" collection="listeLigneEventToInsert"
+			open="" close="" separator="),(">
+			#{ligneEvenementBean.idUser},#{ligneEvenementBean.ligneLibelle},#{ligneEvenementBean.dateDebutEvent},#{ligneEvenementBean.dateFinEvent},#{ligneEvenementBean.idEvent},#{ligneEvenementBean.idCategorie},#{ligneEvenementBean.idInfoCmpt},
+			#{ligneEvenementBean.saisieLibreInfoCompl},
+			#{ligneEvenementBean.dureeEvent}, #{ligneEvenementBean.stif}, #{ligneEvenementBean.impactValidation}, 'NON'
+		</foreach>
+		)
+	</insert>
+
+	<select id="recupererListeLignes" resultType="fr.sncf.domaine.LigneReferentielBean">
+		SELECT
+		ligne.ligne_Id as id,
+		ligne.ligne_libele as libelle
+		FROM ligne
+		WHERE ligne.ligne_delete != 'OUI'
+	</select>
+	
+	<select id="recupererListeLignesRef" resultType="fr.sncf.domaine.LigneReferentielBean">
+		SELECT
+		ligne.ligne_Id as id,
+		ligne.ligne_libele as libelle
+		FROM ligne
+		WHERE ligne.ligne_delete != 'OUI'
+	</select>
+	
+	<select id="recupererLigneByLibelle" resultType="fr.sncf.domaine.LigneReferentielBean">
+		SELECT
+		ligne.ligne_Id as id,
+		ligne.ligne_libele as libelle
+		FROM ligne
+		WHERE ligne.ligne_libele = #{lignelibelle}
+	</select>
+	
+	<select id="recupererLilgneLibelleParIdLigne" resultType="String">
+		SELECT ligne.ligne_libele
+		FROM ligne
+		WHERE ligne.ligne_id = #{idLigneRef}
+	</select>
+	
+	<select id="recupererListeLignesEvenement" resultType="fr.sncf.domaine.LigneEvenementBean">
+		SELECT
+		DISTINCT ligne_jour.ligne_jour_Id as id, 
+		ligne_jour.ligne_jour_lib_ligne as ligneLibelle,
+		ligne_jour.ligne_jour_date as dateDebutEvent,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		ligne_jour.ligne_jour_duree_event as dureeEvent,
+		ligne_jour.ligne_jour_saisie_libre_infocompl as saisieLibreInfoCompl,
+		ligne_jour.ligne_jour_stif as stif
+		FROM ligne_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_jour_id_infocompl
+		
+		
+		<if test="codeUIC != '' and ligneFiltre == ''">
+			LEFT OUTER JOIN gare_ligne ON gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne
+   	 		WHERE gare_ligne.gare_ligne_uic =  #{codeUIC}
+  		</if>
+  		
+  		<if test="codeUIC == '' and ligneFiltre != ''">
+			LEFT OUTER JOIN gare_ligne ON gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne
+   	 		WHERE gare_ligne.gare_ligne_libelle_ligne =  #{ligneFiltre}
+  		</if>
+  		
+  		<if test="codeUIC != '' and ligneFiltre != ''">
+			LEFT OUTER JOIN gare_ligne ON gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne
+   	 		WHERE gare_ligne.gare_ligne_libelle_ligne =  #{ligneFiltre}
+   	 		AND gare_ligne.gare_ligne_uic =  #{codeUIC}
+  		</if>
+  		
+		ORDER BY ligne_jour.ligne_jour_date DESC
+	</select>
+	
+	<select id="recupererListeLignesEvenementParLigneDate" resultType="fr.sncf.domaine.LigneEvenementBean">
+		SELECT
+		DISTINCT ligne_jour.ligne_jour_Id as id, 
+		ligne_jour.ligne_jour_lib_ligne as ligneLibelle,
+		ligne_jour.ligne_jour_date as dateDebutEvent,
+		
+		ligne_jour.ligne_jour_id_categorie as idCategorie,
+		ligne_jour.ligne_jour_id_event as idEvent,
+		ligne_jour.ligne_jour_id_infocompl as idInfoCmpt,
+		
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		ligne_jour.ligne_jour_duree_event as dureeEvent,
+		ligne_jour.ligne_jour_saisie_libre_infocompl as saisieLibreInfoCompl,
+		ligne_jour.ligne_jour_stif as stif
+		FROM ligne_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_jour_id_infocompl
+  		
+		LEFT OUTER JOIN gare_ligne ON gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne
+   	 	WHERE gare_ligne.gare_ligne_libelle_ligne =  #{ligneEvenementBean.ligneLibelle}
+   	 	AND ligne_jour.ligne_jour_date =  #{ligneEvenementBean.dateDebutEvent}
+  		
+  		AND ligne_jour.ligne_jour_delete != 'OUI'
+  		
+		ORDER BY ligne_jour.ligne_jour_date DESC
+	</select>
+	
+	<select id="recupererListeLignesEvenementSansDoublon" resultType="fr.sncf.domaine.LigneEvenementBean">
+		SELECT
+		MIN(ligne_jour.ligne_jour_Id) as id, 
+		ligne_jour.ligne_jour_lib_ligne as ligneLibelle,
+		MIN(ligne_jour.ligne_jour_date) as dateDebutEvent,
+		ligne_jour.ligne_jour_date_fin as dateFinEvent,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		MIN(ligne_jour.ligne_jour_duree_event) as dureeEvent,
+		MIN(ligne_jour.ligne_jour_saisie_libre_infocompl) as saisieLibreInfoCompl,
+		MIN(ligne_jour.ligne_jour_stif) as stif
+		FROM gare_ligne, ligne_jour  
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_jour_id_infocompl
+		WHERE ligne_jour.ligne_jour_delete != 'OUI'
+		
+		<if test="codeUIC != '' and ligneFiltre == ''">
+   	 		AND gare_ligne.gare_ligne_uic =  #{codeUIC}
+   	 		AND gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne
+  		</if>
+  		
+  		<if test="codeUIC == '' and ligneFiltre != ''">
+   	 		AND gare_ligne.gare_ligne_libelle_ligne =  #{ligneFiltre}
+   	 		AND gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne
+  		</if>
+  		
+  		<if test="codeUIC != '' and ligneFiltre != ''">
+   	 		AND gare_ligne.gare_ligne_libelle_ligne =  #{ligneFiltre}
+   	 		AND gare_ligne.gare_ligne_uic =  #{codeUIC}
+   	 		AND gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne
+  		</if>
+  		
+  		<if test="dateDebut != null and dateFin == null">
+   	 		AND ligne_jour.ligne_jour_date = #{dateDebut}
+  		</if>
+  		
+  		<!-- ARI Ajout du filtre dans le cas où la date de fin uniquement est renseignée -> ne fonctionne pas ?-->
+  		<if test="dateFin != null and dateDebut == null">
+   	 		AND ligne_jour.ligne_jour_date_fin = #{dateFin}
+  		</if>
+  		
+  		<!-- ARI Mise à jour du filtre si les dates de début et date de fin sont renseignées
+  		<if test="dateDebut != null and dateFin != null">
+   	 		AND (( ligne_jour.ligne_jour_date BETWEEN #{dateDebut} and #{dateFin}  ) OR ( #{dateDebut} BETWEEN ligne_jour.ligne_jour_date and ligne_jour.ligne_jour_date_fin ) OR (ligne_jour.ligne_jour_date_fin BETWEEN #{dateDebut} and #{dateFin} ))
+  		</if>
+  		-->
+  		
+  		<if test="dateDebut != null and dateFin != null">
+  			AND NOT ligne_jour.ligne_jour_date &gt; #{dateFin} AND NOT ligne_jour.ligne_jour_date_fin &lt; #{dateDebut}
+  		</if>
+  		
+  		
+  		<if test="idCategorie != null">
+   	 		AND ligne_jour.ligne_jour_id_categorie =  #{idCategorie}
+  		</if>
+  		
+  		<if test="impactValidation != ''">
+   	 		AND ligne_jour.ligne_jour_impact_validation =  #{impactValidation}
+  		</if>
+  		
+		GROUP BY ligne_jour_lib_ligne, ligne_jour_date_fin, categorie_libele, evenement_libele, information_compl_libele
+	</select>
+	
+	<select id="recupererListeLignesEvenementSansDoublonAll" resultType="fr.sncf.domaine.LigneEvenementBean">
+		SELECT
+		MIN(ligne_jour.ligne_jour_Id) as id, 
+		ligne_jour.ligne_jour_lib_ligne as ligneLibelle,
+		MIN(ligne_jour.ligne_jour_date) as dateDebutEvent,
+		ligne_jour.ligne_jour_date_fin as dateFinEvent,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		MIN(ligne_jour.ligne_jour_duree_event) as dureeEvent,
+		MIN(ligne_jour.ligne_jour_saisie_libre_infocompl) as saisieLibreInfoCompl,
+		MIN(ligne_jour.ligne_jour_stif) as stif
+		FROM gare_ligne, ligne_jour  
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_jour_id_infocompl
+		WHERE ligne_jour.ligne_jour_delete != 'OUI'
+		
+		<if test="codeUIC != '' and ligneFiltre == ''">
+<!-- 			LEFT OUTER JOIN gare_ligne ON gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne -->
+   	 		AND gare_ligne.gare_ligne_uic =  #{codeUIC}
+   	 		AND gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne
+  		</if>
+  		
+  		<if test="codeUIC == '' and ligneFiltre != ''">
+<!-- 			LEFT OUTER JOIN gare_ligne ON gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne -->
+   	 		AND gare_ligne.gare_ligne_libelle_ligne =  #{ligneFiltre}
+   	 		AND gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne
+  		</if>
+  		
+  		<if test="codeUIC != '' and ligneFiltre != ''">
+<!-- 			LEFT OUTER JOIN gare_ligne ON gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne -->
+   	 		AND gare_ligne.gare_ligne_libelle_ligne =  #{ligneFiltre}
+   	 		AND gare_ligne.gare_ligne_uic =  #{codeUIC}
+   	 		AND gare_ligne.gare_ligne_libelle_ligne = ligne_jour.ligne_jour_lib_ligne
+  		</if>
+  		
+		GROUP BY ligne_jour_lib_ligne, ligne_jour_date_fin, categorie_libele, evenement_libele, information_compl_libele
+	</select>
+	
+	<delete id="supprimerLigneEvenement">
+  		delete from ligne_jour where ligne_jour.ligne_jour_Id = #{idLigneEvenement}
+	</delete>
+	
+	<update id="modifierLigneEvenement">
+  		update ligne_jour set
+    	ligne_jour_lib_ligne = #{ligneEvenementBean.ligneLibelle},
+    	ligne_jour_id_categorie = #{ligneEvenementBean.idCategorie},
+    	ligne_jour_id_event = #{ligneEvenementBean.idEvent},
+    	ligne_jour_id_infocompl = #{ligneEvenementBean.idInfoCmpt},
+    	ligne_jour_stif = #{ligneEvenementBean.stif}
+  		where ligne_jour.ligne_jour_id = #{ligneEvenementBean.id}
+	</update>
+
+	<update id="modifierLigneEvenementSurUnePeriode">
+  		update ligne_jour set
+    	ligne_jour_lib_ligne = #{ligneEvenementBean.ligneLibelle},
+    	ligne_jour_date_fin = #{ligneEvenementBean.dateFinEvent},
+    	ligne_jour_id_categorie = #{ligneEvenementBean.idCategorie},
+    	ligne_jour_id_event = #{ligneEvenementBean.idEvent},
+    	ligne_jour_id_infocompl = #{ligneEvenementBean.idInfoCmpt},
+    	ligne_jour_saisie_libre_infocompl = #{ligneEvenementBean.saisieLibreInfoCompl},
+    	ligne_jour_stif = #{ligneEvenementBean.stif}
+  		where ligne_jour.ligne_jour_id IN (SELECT ligne_jour.ligne_jour_Id        
+  										 FROM ligne_jour
+  										 
+  										 LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_jour_id_categorie
+										 LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_jour_id_event
+										 LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_jour_id_infocompl
+										 
+										 WHERE  ligne_jour.ligne_jour_lib_ligne = (SELECT ligne_jour.ligne_jour_lib_ligne
+																					FROM ligne_jour 
+																					WHERE ligne_jour.ligne_jour_Id = #{ligneEvenementBean.id} 		
+																				   )
+										 AND categorie.categorie_libele = (SELECT categorie.categorie_libele
+																			FROM ligne_jour
+																			LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_jour_id_categorie
+																			WHERE ligne_jour.ligne_jour_Id = #{ligneEvenementBean.id} 		
+																		   )
+										 AND evenement.evenement_libele = (SELECT evenement.evenement_libele
+						 													FROM ligne_jour  
+						 													LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_jour_id_event
+						 													WHERE ligne_jour.ligne_jour_Id = #{ligneEvenementBean.id} 		
+						 												   )
+										 AND information_compl.information_compl_libele = (SELECT information_compl.information_compl_libele
+																							FROM ligne_jour  
+																							LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_jour_id_infocompl
+																							WHERE ligne_jour.ligne_jour_Id = #{ligneEvenementBean.id} 		
+																						   )
+										 AND ligne_jour.ligne_jour_date_fin = (SELECT ligne_jour.ligne_jour_date_fin
+																							FROM ligne_jour  
+																							WHERE ligne_jour.ligne_jour_Id = #{ligneEvenementBean.id} 		
+																						   ) 
+										 
+										 )
+	</update>
+	
+	<delete id="supprimerLigneEvenementSurUnePeriode">
+  		delete from ligne_jour 
+  		where ligne_jour.ligne_jour_Id IN (SELECT ligne_jour.ligne_jour_Id        
+  										 FROM ligne_jour
+  										 
+  										 LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_jour_id_categorie
+										 LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_jour_id_event
+										 LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_jour_id_infocompl
+										 
+										 WHERE  ligne_jour.ligne_jour_lib_ligne = (SELECT ligne_jour.ligne_jour_lib_ligne
+																					FROM ligne_jour 
+																					WHERE ligne_jour.ligne_jour_Id = #{idLigneEvenement} 		
+																				   )
+										 AND categorie.categorie_libele = (SELECT categorie.categorie_libele
+																			FROM ligne_jour
+																			LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_jour_id_categorie
+																			WHERE ligne_jour.ligne_jour_Id = #{idLigneEvenement}		
+																		   )
+										 AND evenement.evenement_libele = (SELECT evenement.evenement_libele
+						 													FROM ligne_jour  
+						 													LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_jour_id_event
+						 													WHERE ligne_jour.ligne_jour_Id =#{idLigneEvenement} 		
+						 												   )
+										 AND information_compl.information_compl_libele = (SELECT information_compl.information_compl_libele
+																							FROM ligne_jour  
+																							LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_jour_id_infocompl
+																							WHERE ligne_jour.ligne_jour_Id = #{idLigneEvenement} 		
+																						   )
+																						   
+										 AND ligne_jour.ligne_jour_date_fin = (SELECT ligne_jour.ligne_jour_date_fin
+																							FROM ligne_jour  
+																							WHERE ligne_jour.ligne_jour_Id = #{idLigneEvenement} 		
+																						   ) 
+										 
+										 )
+	</delete>
+	
+	<update id="supprimerLogiqueLigneEvenementSurUnePeriode">
+  		update ligne_jour set
+    	ligne_jour_Delete = 'OUI'
+  		where ligne_jour.ligne_jour_id IN (SELECT ligne_jour.ligne_jour_Id        
+  										 FROM ligne_jour
+  										 
+  										 LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_jour_id_categorie
+										 LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_jour_id_event
+										 LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_jour_id_infocompl
+										 
+										 WHERE  ligne_jour.ligne_jour_lib_ligne = (SELECT ligne_jour.ligne_jour_lib_ligne
+																					FROM ligne_jour 
+																					WHERE ligne_jour.ligne_jour_Id = #{idLigneEvenement} 		
+																				   )
+										 AND categorie.categorie_libele = (SELECT categorie.categorie_libele
+																			FROM ligne_jour
+																			LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_jour_id_categorie
+																			WHERE ligne_jour.ligne_jour_Id = #{idLigneEvenement} 		
+																		   )
+										 AND evenement.evenement_libele = (SELECT evenement.evenement_libele
+						 													FROM ligne_jour  
+						 													LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_jour_id_event
+						 													WHERE ligne_jour.ligne_jour_Id = #{idLigneEvenement} 		
+						 												   )
+										 AND information_compl.information_compl_libele = (SELECT information_compl.information_compl_libele
+																							FROM ligne_jour  
+																							LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_jour_id_infocompl
+																							WHERE ligne_jour.ligne_jour_Id = #{idLigneEvenement} 		
+																						   )
+										 AND ligne_jour.ligne_jour_date_fin = (SELECT ligne_jour.ligne_jour_date_fin
+																							FROM ligne_jour  
+																							WHERE ligne_jour.ligne_jour_Id = #{idLigneEvenement} 		
+																						   ) 
+										 
+										 )
+	</update>
+	
+	<update id="supprimerLogiqueLigneRef">
+  		update ligne set
+    	ligne_delete = 'OUI'
+  		where ligne.ligne_id = #{idGareRef}
+	</update>
+	
+	<update id="supprimerLogiqueLigneGareRef">
+  		update gare_ligne set
+    	gare_ligne_delete = 'OUI'
+  		where gare_ligne.gare_ligne_libelle_ligne = #{lignelibelle}
+	</update>
+	
+	
+	<update id="modifierLigneRef">
+  		update ligne set
+    	ligne_libele = #{ligneReferentielBean.libelle}
+    	
+  		where ligne.ligne_Id = #{ligneReferentielBean.id}
+	</update>
+	
+	<select id="recupererLigneEventTotalPourExport" resultType="fr.sncf.domaine.LigneEvenementBean">
+	 select ligne_jour_id as id,
+	   ligne_jour_user_id as idUser,
+	   useraccount_numero_cp as numCp,
+	   ligne_jour_lib_ligne as ligneLibelle,
+	   ligne_jour_date as dateDebutEvent,
+	   ligne_jour_date_fin as dateFinEvent,
+	   ligne_jour_id_categorie as idCategorie,
+	   ligne_jour_id_event as idEvent,
+	   ligne_jour_id_infocompl as idInfoCmpt,
+	   categorie.categorie_libele as libelleCategorie,
+	   evenement.evenement_libele as libelleEvent,
+	   information_compl.information_compl_libele as libelleInfoCmpl,
+	   ligne_jour_saisie_libre_infocompl as saisieLibreInfoCompl,
+	   ligne_jour_duree_event as dureeEvent,
+	   ligne_jour_stif as stif,
+	   ligne_jour_impact_validation as impactValidation
+	 
+	 FROM ligne_jour
+	 
+	   	LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_jour_id_infocompl
+	    LEFT OUTER JOIN useraccount ON useraccount.useraccount_id = ligne_jour.ligne_jour_user_id
+	   
+	   WHERE ligne_jour.ligne_jour_delete != 'OUI'
+	</select>
+	
+	<select id="recupererLigneEventTotalPourExportCopy" resultType="fr.sncf.domaine.LigneEvenementBean">
+	 Copy (  select 
+	   ligne_jour_user_id as ID_SAISIE,
+	   useraccount_numero_cp as NUM_CP,
+	   ligne_jour_lib_ligne as ligne,
+	   calendrier.calendrier_date as Date,
+	   ligne_jour_date as Date_Debut,
+	   ligne_jour_date_fin as Date_Fin,
+	   ligne_jour_duree_event as Duree,
+	   ligne_jour_id_categorie as CategorieEvent,
+	   categorie.categorie_libele as CategorieEvent_libelle,
+	   ligne_jour_id_event as Event,
+	   evenement.evenement_libele as Event_libelle,
+	   ligne_jour_id_infocompl as SousEvent,
+	   information_compl.information_compl_libele as SousEvent_libelle,
+	   ligne_jour_saisie_libre_infocompl as InfoEvent_libre	 
+	 FROM ligne_jour
+	  INNER JOIN calendrier ON calendrier.calendrier_date &gt;= ligne_jour.ligne_jour_date 
+	  AND calendrier.calendrier_date &lt;= ligne_jour.ligne_jour_date_fin
+	  
+	   	LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_jour_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_jour_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_jour_id_infocompl
+	    LEFT OUTER JOIN useraccount ON useraccount.useraccount_id = ligne_jour.ligne_jour_user_id
+	   
+	   WHERE ligne_jour.ligne_jour_delete != 'OUI')
+	   
+	   To '/nas/sftppddp2/outgoing/ligneTotal.csv' With CSV DELIMITER ';' HEADER
+	</select>
+	
+	<select id="recupererListeLignesEvenementDoublons" resultType="fr.sncf.domaine.LigneEvenementBean">
+		SELECT
+		ligne_jour.Ligne_jour_id as id, 
+		ligne_jour.ligne_jour_date as dateDebutEvent,
+		ligne_jour.ligne_jour_date_fin as dateFinEvent,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		ligne_jour.ligne_jour_duree_event as dureeEvent,
+		ligne_jour.ligne_jour_saisie_libre_infocompl as saisieLibreInfoCompl,
+		ligne_jour.ligne_jour_stif as stif
+		FROM ligne_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = ligne_jour.ligne_JOUR_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = ligne_jour.ligne_JOUR_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = ligne_jour.ligne_JOUR_id_infocompl
+		
+		WHERE ligne_jour.ligne_jour_delete != 'OUI'
+
+		<if test="ligneEvenementBean.idCategorie != null">
+   	 		AND ligne_jour.ligne_jour_id_categorie =  #{ligneEvenementBean.idCategorie}
+  		</if>
+  		
+  		<if test="ligneEvenementBean.idEvent != null">
+   	 		AND ligne_jour.ligne_jour_id_event =  #{ligneEvenementBean.idEvent}
+  		</if>
+  		
+  		<if test="ligneEvenementBean.idInfoCmpt != null">
+   	 		AND ligne_jour.ligne_jour_id_infocompl =  #{ligneEvenementBean.idInfoCmpt}
+  		</if>
+  		
+    	<if test="ligneEvenementBean.dateDebutEvent != null">
+   	 		AND ligne_jour.ligne_jour_date = #{ligneEvenementBean.dateDebutEvent}
+  		</if>
+  		
+  		<!-- ARI Ajout du filtre dans le cas où la date de fin uniquement est renseignée -> ne fonctionne pas ?-->
+  		<if test="ligneEvenementBean.dateFinEvent != null">
+   	 		AND ligne_jour.ligne_jour_date_fin = #{ligneEvenementBean.dateFinEvent}
+  		</if>
+  		
+  		<if test="ligneEvenementBean.heureDebut != null">
+   	 		AND ligne_jour.ligne_heure_debut = #{ligneEvenementBean.heureDebut}
+  		</if>
+  		
+  		<if test="ligneEvenementBean.heureFin != null">
+   	 		AND ligne_jour.ligne_heure_fin = #{ligneEvenementBean.heureFin}
+  		</if>
+	</select>
+	
+</mapper> 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="Rerun com.bank.account.persistenceTest.AccountDAOTest" project="bank-account-core" tests="3" started="3" failures="0" errors="0" ignored="0">
+  <testsuite name="com.bank.account.persistenceTest.AccountDAOTest" time="0.577">
+    <testcase name="shouldGetAllAccounts" classname="com.bank.account.persistenceTest.AccountDAOTest" time="0.561"/>
+    <testcase name="shouldGetAccountByClient" classname="com.bank.account.persistenceTest.AccountDAOTest" time="0.016"/>
+    <testcase name="shouldGetAccountByRIB" classname="com.bank.account.persistenceTest.AccountDAOTest" time="0.0"/>
+  </testsuite>
+</testrun>

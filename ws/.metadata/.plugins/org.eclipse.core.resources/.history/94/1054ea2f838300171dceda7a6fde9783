@@ -1,0 +1,37 @@
+angular.module('consultationGareJourModule')
+
+.controller('consultationGareJourController', ['$scope',
+                                        '$location',
+                                        '$http',
+                                        function($scope,
+                                                $location,
+                                                $http) {
+    
+	
+	
+	
+	
+	$scope.model = {};
+	
+	$(function () {
+        $('#datetimepickerFinFilte').datetimepicker();
+        $('#datetimepickerDebFilte').datetimepicker();
+    });
+	
+    $scope.init = function() {
+    };
+    
+    $scope.init();
+    
+    $scope.filtrerConsultation = function(){
+    	if($scope.filtre == undefined){
+    		$scope.filtre ={};
+    	}
+    //ARI echange des lignes dateFinEvent et dateDebEvent ?
+    	$scope.filtre.dateDebEvent = new Date($("#inputdateDebEventFiltre").val());
+    	$scope.filtre.dateFinEvent = new Date($("#inputdateFinEventFiltre").val());
+    	$scope.initConsultationGare($scope.filtre);
+    	$scope.initConsultationLigne($scope.filtre);
+    };
+    
+}]);

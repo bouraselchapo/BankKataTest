@@ -1,0 +1,17 @@
+// create the app module
+var bankKataApp = angular.module('bankKataApp', []).config(function($httpProvider) {
+
+	$httpProvider.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
+
+});
+
+angular.module('saisieEvenementModule')
+
+.controller('saisieEvenementController', 
+			['$scope','$rootScope', '$location', '$http',
+             '$timeout', '$cookies', 'Auth',
+             function($scope, $rootScope, $location, $http,
+                      $timeout, $cookies, Auth) {
+			}]);
+
+

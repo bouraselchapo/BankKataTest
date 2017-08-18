@@ -1,0 +1,12 @@
+angular.module('saisieGareRefModule')
+
+.directive('uiFormSaisieGareRef', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'saisieGareReferentiel/view.html',
+		controller : 'saisieGareRefController',
+		controllerAs : 'saisieGareRefController',
+		replace: true,
+	}
+}]);
+

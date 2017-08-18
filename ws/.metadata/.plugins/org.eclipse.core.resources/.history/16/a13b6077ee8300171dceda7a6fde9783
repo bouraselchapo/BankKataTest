@@ -1,0 +1,14 @@
+angular.module('moduleDirectvieCommon', []).service('Auth', function() {
+    var user;
+    return {
+        getUser: function() {
+            return user;
+        },
+        setUser: function(newUser) {
+            user = newUser;
+        },
+        isConnected: function() {
+            return !!user;
+        }
+    };
+});

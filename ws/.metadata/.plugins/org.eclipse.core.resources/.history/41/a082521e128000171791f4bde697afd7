@@ -1,0 +1,30 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountDAO.java
+// Created: 13 août 2017 11:46:34
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.persistence.impl;
+
+import java.util.Map;
+
+import com.bank.account.domaine.Account;
+
+/**
+ * @author PHBS06171
+ *
+ */
+public class AccountDAO {
+
+  Map<String, Account> accountPersistanceMap;
+
+  /**
+   * @param accountHolder
+   */
+  public void createAccountaccountHolder(Account account) {
+    accountPersistanceMap.put(account., account);
+  }
+
+}

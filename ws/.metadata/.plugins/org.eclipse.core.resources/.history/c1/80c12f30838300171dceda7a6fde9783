@@ -1,0 +1,14 @@
+'use strict';
+
+angular.module('gestionReferentielModule')
+
+.config(['$stateProvider', '$urlRouterProvider',
+         function($stateProvider, $urlRouterProvider) {
+	
+	$stateProvider.state('gestionReferentiel', {
+		url : '/gestionReferentiel',
+		templateUrl : 'gestionReferentiel/view.html',
+		controller : 'gestionReferentielController',
+		controllerAs : 'gestionReferentielController'
+	});
+}]);

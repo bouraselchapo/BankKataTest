@@ -1,0 +1,20 @@
+package com.bank.account.serviceTest;
+
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.bank.account.test.conf.AppTestConfig;
+
+/**
+ * Account test Class.
+ * 
+ * @author hicham.
+ *
+ */
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {AppTestConfig.class})
+public class AccountAcceptanceTest {
+
+}

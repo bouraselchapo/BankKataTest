@@ -1,0 +1,88 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountCreationTest.java
+// Created: 12 août 2017 10:15:31
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.acceptanceTest;
+
+import static org.fest.assertions.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.BankClient;
+import com.bank.account.service.AccountService;
+import com.bank.account.service.impl.AccountServiceImpl;
+import com.bank.account.test.builders.AccountBuilder;
+
+/**
+ *
+ * Acceptance test for first business requirement :
+ * 
+ * Write some code to create a bank application and to withdraw/deposit a valid amount of money
+ * in/from the account
+ *
+ * @author PHBS06171
+ *
+ */
+public class AccountCreationTest {
+
+  private Account account1;
+  private Account account2;
+  //
+  // private BankClient client2;
+  //
+  final AccountService accountService = new AccountServiceImpl();
+
+  private BankClient client1;
+
+  @BeforeClass
+  public void init() {
+    this.account1 = AccountBuilder.getBuilder().clientName("John").clientUID("AQZ445376").build();
+    this.client1 =
+        AccountBuilder.getBuilder().clientUID("AQZ445376").clientName("John").buildClient();
+  }
+
+  @Test
+  public void shouldCreateAccount() {
+
+    final AccountService accountService = new AccountServiceImpl();
+
+    // Create account
+    accountService.createAccount(this.client1);
+
+    // Get account
+    final Account account = accountService.getAccountByClient(this.client1);
+
+    // Test that the created account exist
+    assertThat(account).isNotNull();
+  }
+
+  public void shouldDepositAnAmount() {
+    // Deposit value
+    accountService.depositAmount(LocalDateTime.now(), this.account1, new BigDecimal(1000));
+    
+  }
+
+  public void shouldWithdrowAnAmount() {
+    // Withdraw value
+    accountService.withdrowAmount(LocalDateTime.now(), account1, new BigDecimal(1000));
+  }
+
+  /*
+   * ● Write some code to transfer a specified amount of money from one bank account (the payer) to
+   * another (the payee) ● Write some code to keep a record of the transfer for both bank accounts
+   * in a transaction history ● Write some code to query a bank account's transaction history for
+   * any bank transfers to or from a specific account
+   */
+
+
+
+}

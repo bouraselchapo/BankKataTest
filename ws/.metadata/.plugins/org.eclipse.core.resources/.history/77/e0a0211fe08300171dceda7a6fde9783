@@ -1,0 +1,48 @@
+<!-- index.html -->
+
+<!-- define angular app -->
+<html ng-app="BankKataApp">
+ 
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8"/> 
+
+<!-- load angular  -->
+<script src="lib/js/angular/angular.js"></script>
+
+<script src="app.js"></script>
+</head>
+
+<!-- define angular controller -->
+<body ng-controller="bankAccountController">
+	<h1> Bienvenue </h1>
+	<h1> Create account</h1>
+	<table>
+	<tr><td>
+	<label>Client ID (Identity document number)</label> </td> <td> <input type="text" ng-model="model.client.uid" maxlength="11"/></td>
+	</tr><tr><td> <label>Client Name </label> </td><td><input type="text" ng-model="model.client.name" maxlength="50"/></td>
+	</tr><tr><td></td><td><button type="button" ng-click="createAccount()"> Create bank account </button></td></tr>
+	</table>
+	<br>
+	<h1> Depose/withdraw</h1>
+	<table><tr><td>
+	<label> Select an account</label></td><td><select></select></td></tr>
+	<tr><td>
+	<label>Amount </label></td><td><input type="text" ng-model="model.deposeWithdrawAmount" maxlength="13"/></td></tr>
+	<tr><td></td><td><button type="button"> Deposit </button>
+	<button type="button"> Withdraw </button></td></tr>	</table>
+	<br>
+	<h1> Transfer</h1>
+	<table><tr><td>
+	<label> Select the source account</label></td><td><select></select></td></tr>
+	<tr><td><label> Select the destination account</label></td><td><select></select></td></tr>
+	<tr><td><label> Amount </label> </td><td><input type="text" ng-model="model.transferAmount" maxlength="13"/></td></tr>
+	<tr><td></td><td><button type="button"> Transfer </button></td></tr>
+	</table>
+	<br>
+	<h1> History</h1>
+	<table><tr><td>
+	<label> Select an account </label></td><td><select ng-model="model.historyAccount"></select></td></tr>
+	<tr><td></td><td><button type="button"> Get history </button></td></tr>
+	</table>
+</body>
+</html>

@@ -1,0 +1,106 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountServiceImpl.java
+// Created: 12 août 2017 10:40:06
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.service.impl;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.BankClient;
+import com.bank.account.persistence.AccountDAO;
+import com.bank.account.persistence.impl.TransactionDAOImpl;
+import com.bank.account.service.AccountService;
+
+/**
+ * @author PHBS06171
+ *
+ */
+public class AccountServiceImpl implements AccountService {
+
+  @Autowired
+  private AccountDAO accountDAO = new AccountDAOimpl();
+  private TransactionDAOImpl transactionDAO;
+  // private Object transactionService;
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.bank.account.service.AccountService#createAccount(com.bank.account.domaine.AccountHolder)
+   */
+  public void createAccount(BankClient accountHolder) {
+    final Account account = new Account(accountHolder);
+    accountDAO.createAccount(account);
+  }
+
+  /* (non-Javadoc)
+   * @see com.bank.account.service.AccountService#depositAmount(java.math.BigDecimal)
+   */
+  public void depositAmount(BigDecimal accountNumber) {
+    accountDAO.
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.bank.account.service.AccountService#depositAmount(java.math.BigDecimal)
+   */
+  public void depositAmount(String accountRIB, BigDecimal amount, Date date) {
+    final Account account = accountDAO.getAccountByRIB(accountRIB);
+    // trace the transaction.
+    transactionDAO.addTransaction(account, amount, date);
+    // update the account balance.
+    account.setBalance(account.getBalance().add(amount));
+    // accountDAO.updateAccount(account);
+  }
+
+  /* (non-Javadoc)
+   * @see com.bank.account.service.AccountService#getAccountByHolder(com.bank.account.domaine.AccountHolder)
+   */
+  public Account getAccountByClient(BankClient accountHolder) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.bank.account.service.AccountService#withdrowAmount(java.math.BigDecimal)
+   */
+  public void withdrowAmount(BigDecimal amount) {
+    // TODO Auto-generated method stub
+
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.bank.account.service.AccountService#depositAmount(java.time.LocalDateTime,
+   * com.bank.account.domaine.Account, java.math.BigDecimal)
+   */
+  public void depositAmount(LocalDateTime localDate, Account account1, BigDecimal accountNumber) {
+    // TODO Auto-generated method stub
+
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.bank.account.service.AccountService#withdrowAmount(java.time.LocalDateTime,
+   * com.bank.account.domaine.Account, java.math.BigDecimal)
+   */
+  public void withdrowAmount(LocalDateTime localDate, Account account1, BigDecimal accountNumber) {
+    // TODO Auto-generated method stub
+
+  }
+
+}

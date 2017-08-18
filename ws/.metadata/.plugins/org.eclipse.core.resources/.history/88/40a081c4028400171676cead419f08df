@@ -1,0 +1,72 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountDAO.java
+// Created: 13 août 2017 11:46:34
+// Author: HICHAM BOURAS
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.persistence.impl;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.stereotype.Repository;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.BankClient;
+import com.bank.account.persistenceTest.AccountDAOTest;
+
+/**
+ * Class implementing the AccountDAO interface {@link AccountDAOTest}
+ * 
+ * @author HICHAM BOURAS
+ *
+ */
+@Repository
+public class AccountDAOImpl implements AccountDAOTest {
+
+  /**
+   * A map to store the created accounts.
+   */
+  private final Map<String, Account> accountPersistanceMap = new HashMap<String, Account>();
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.bank.account.persistence.AccountDAO#createAccount(com.bank.account.domaine.Account)
+   */
+  public void saveAccount(Account account) {
+    accountPersistanceMap.put(account.getAccountRIB(), account);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.bank.account.persistence.AccountDAO#getAccountByClient(com.bank.account.domaine.BankClient)
+   */
+  public Account getAccountByClient(BankClient client) {
+    return accountPersistanceMap.get(client.getClientUID());
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.bank.account.persistence.AccountDAO#getAccountByRIB(java.lang.String)
+   */
+  public Account getAccountByRIB(String rib) {
+    return accountPersistanceMap.get(rib);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.bank.account.persistence.AccountDAO#getAllAccounts()
+   */
+  public Set<Account> getAllAccounts() {
+    return new HashSet<Account>(accountPersistanceMap.values());
+  }
+}

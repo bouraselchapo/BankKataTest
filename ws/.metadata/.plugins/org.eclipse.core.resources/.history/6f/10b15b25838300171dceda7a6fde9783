@@ -1,0 +1,165 @@
+<tr><td></td>
+	<td colspan="5" ><div class="form-group" style="padding-left:1.6em;"><label style="margin-top: .2em;">
+						<input id="toutLeReseau" type="checkbox" ng-change="onchangeToutLeReseau()" ng-model="vars.toutLeReseau" 
+						       ng-true-value="'R'" ng-false-value="" 
+						       class="ng-valid ng-dirty ng-valid-parse ng-empty ng-touched">
+						       Tout le réseau</label></div></td>
+					<td align="right">
+						<button type="button" class="help-icon" data-toggle="popover" data-placement="left" data-html="true"
+								data-content="<p>Indiquer si toutes les Lignes et toutes les Gares sont concernées.</p>" 
+								onclick="$(this).popover('toggle');" />
+					</td></tr>
+			<tr><td align="right" width="27%">
+					<label class="label-reve" for="selectCategorie" style="color: green;"> Catégorie d’évènements <span class="required">*</span></label>
+					</td><td colspan="5"  class="form-holder"><div class="form-group">
+						<select name="categorie" id="categorie" ng-model="model.idCategorie" 
+							ng-change="selectCategorie()" class="form-control" required>
+							<option ng-repeat="categorie in listeCategories"
+								value="{{categorie.id}}">{{categorie.libelle}}</option>
+						</select>
+					</div><td align="right">
+							<button type="button" class="help-icon" data-toggle="popover" data-placement="left" data-html="true"
+								     data-content="<p>Choisir dans les listes déroulantes une catégorie d’événement, un événement et un sous-événement. </p>
+									<br>
+									<p>Si aucune catégorie d’événement ne correspond, sélectionner « Autres cas» et apporter des 
+									précisions dans la rubrique « Saisie  libre – Informations complémentaires ».</p>" onclick="$(this).popover('toggle');" />
+					</td></tr>
+
+				<!-- Evenement -->
+				<tr><td align="right">
+					<label class="label-reve" for="selectEvent" style="color: green;"> Evènement <span class="required">*</span></label>
+					</td><td colspan="5"  class="form-holder"><div class="form-group">
+					<select ng-model="model.idEvent" ng-change="selectEvent()" required
+						class="form-control">
+						<option ng-repeat="event in listeEvenements" value="{{event.id}}">{{event.libelle}}</option>
+					</select>
+					</div></td>
+						<td align="right">
+							<button type="button" class="help-icon" data-toggle="popover" data-placement="left" data-html="true"
+								     data-content="<p>Choisir dans les listes déroulantes une catégorie d’événement, un événement et un sous-événement. </p>
+									<br>
+									<p>Si aucune catégorie d’événement ne correspond, sélectionner « Autres cas» et apporter des 
+									précisions dans la rubrique « Saisie  libre – Informations complémentaires ».</p>" onclick="$(this).popover('toggle');" />
+					</td></tr>
+
+				<!-- Sous evenement -->
+				<tr><td align="right">
+					<label class="label-reve" for="selectInfoCmpl" style="color: green;"> Sous-évènement <span class="required">*</span></label>
+					</td><td colspan="5"  class="form-holder"><div class="form-group">
+						<select ng-model="model.idInfoCmpt" ng-change="selectInfoCmpl()" required
+							class="form-control">
+							<option ng-repeat="infoCmpl in listeInfoComplementaires"
+								value="{{infoCmpl.id}}">{{infoCmpl.libelle}}</option>
+						</select>
+					</div></td>
+						<td align="right">
+							<button type="button" class="help-icon" data-toggle="popover" data-placement="left" data-html="true"
+								     data-content="<p>Choisir dans les listes déroulantes une catégorie d’événement, un événement et un sous-événement. </p>
+									<br>
+									<p>Si aucune catégorie d’événement ne correspond, sélectionner « Autres cas» et apporter des 
+									précisions dans la rubrique « Saisie  libre – Informations complémentaires ».</p>" onclick="$(this).popover('toggle');" />
+					</td></tr>
+
+				<tr><td align="right">
+				<label class="label-reve" for="selectInfoCmpl" style="color: green;"> Informations complémentaires</label>
+				</td><td colspan="5"  class="form-holder"><div class="form-group">
+				<div style="position:relative">
+				<!-- ARI ajout taille max champ saisie libre information complémentaire de 100 caractères -->
+					<textarea rows="1" cols="50" ng-model="model.saisieLibreInfoCompl" name="idInfoCmpt"
+						class="form-control" id="inputIdSaisieLibreInfoCompl" maxlength="150" 
+						onkeyup="if(this.value.length==150) msg(serviceEvenement.msg_taille_max_saisieCplmt)"></textarea>
+						<button type="button" class="btn-evt-cmplt-expand" onclick="$('#inputIdSaisieLibreInfoCompl').toggleClass('expand');">. . .</button>
+				</div>
+				</div></td>
+					<td align="right">
+							<button type="button" class="help-icon" data-toggle="popover" data-placement="left" data-html="true"
+								     data-content="<p>La saisie libre permet d’apporter des compléments d’information : détail sur le moment de la journée 
+							(Matinée, Après-midi, Soir), information sur la récupération ou non des données… Ce champ n’est pas obligatoire
+							 mais peut permettre une meilleure compréhension de l’évènement. </p>" onclick="$(this).popover('toggle');" />
+				</td></tr>
+
+				<tr><td align="right"><label class="label-reve"> Date de début <span class="required">*</span></label></td>
+					<td class="form-holder" width="120px">
+						<div id='datetimepicker1' class="form-date form-marge">
+							<input type="text" ng-model="vars.dateDebutEvent" id="inputdateDebutEvent" class="form-control" 
+								   placeholder="../../....">
+						</div></td><td width="15px"/>
+					<td width="130px" >Heure de début <span ng-if="vars.ttLaJourneeHrDebut == 'NON'" class="required">*</span></td>
+					<td width="43px">
+							<input type="text" id="inputHeureDebutEvent" ng-model="model.heureDebut" class="form-control form-heure" 
+								  maxlength="2" ng-blur="heureDebutChange();" placeholder="..">
+					</td>
+					
+					<td align="center" ><label >
+						<input type="checkbox" ng-model="model.datePrevDebut" ng-true-value="'true'" ng-false-value="'false'" 
+						       class="ng-valid ng-dirty ng-valid-parse ng-empty ng-touched">
+						       Date prévisionnelle</label></td>
+					<td align="right">
+						<button type="button" class="help-icon" data-toggle="popover" data-placement="left" data-html="true"
+								data-content="<p>Les dates de début et de fin permettent de définir la durée d’un évènement. S’il ne s’agit que d’une seule journée, 
+							saisir la même date en début et en fin.</p>" onclick="$(this).popover('toggle');" />
+				</td></tr>
+				
+				<tr><td colspan="3" /><td colspan="4">
+						<label><input type="checkbox" ng-model="vars.ttLaJourneeHrDebut" ng-true-value="'YES'" ng-false-value="'NON'" 
+						       	ng-change="model.heureDebut='';"
+						       	class="ng-valid ng-dirty ng-valid-parse ng-empty ng-touched"> Toute la journée</label></td></tr>
+
+		<tr><td colspan="7" height="5px" /></tr>
+
+				<tr><td align="right"><label class="label-reve">Date de fin <span class="required">*</span></label></td>
+				<td class="form-holder">
+					<div id='datetimepicker2' class="form-date form-marge">
+						<input type="text" ng-model="vars.dateFinEvent" id="inputdateFinEvent" class="form-control" 
+							   placeholder="../../....">
+					</div> </td><td /><td >Heure de fin <span ng-if="vars.ttLaJourneeHrFin == 'NON'" class="required">*</span></td>
+							<td >
+								<input type="text" ng-model="model.heureFin" ng-blur="heureFinChange();" id="inputHeureFinEvent" 
+								        maxlength="2" class="form-control form-heure" placeholder="..">
+							</td>
+					<td align="center"><label >
+						<input type="checkbox" ng-model="model.datePrevFin" ng-true-value="'true'" ng-false-value="'false'" 
+						       class="ng-valid ng-dirty ng-valid-parse ng-empty ng-touched">
+						 	Date prévisionnelle
+						 </label>		
+					</td><td align="right">
+							<button type="button" class="help-icon" data-toggle="popover" data-placement="left" data-html="true"
+								     data-content="<p>Les dates de début et de fin permettent de définir la durée d’un évènement. 
+								     S’il ne s’agit que d’une seule journée, 
+							saisir la même date en début et en fin.</p>" onclick="$(this).popover('toggle');" />
+				</td></tr>
+				
+				<tr><td colspan="3" /><td  colspan="4"><label >
+				        <input type="checkbox" ng-model="vars.ttLaJourneeHrFin" ng-true-value="'YES'" ng-false-value="'NON'" 
+						       ng-change="model.heureFin='';" 
+						       class="ng-valid ng-dirty ng-valid-parse ng-empty ng-touched"> Toute la journée </label></td></tr>
+						       
+		<tr><td colspan="7" height="7px" /></tr>
+						
+				<tr><td></td><td colspan="5"  class="form-holder"><div class="form-marge">
+				<table><tr><td valign="top" width="325px">
+					<label class="label-reve no-margin-right" style="color:#D74874;">Evènement pouvant impacter les validations : </label>		
+					</td><td width="100px"><input type="radio" ng-model="model.impactValidation" value="UP"></td>
+						<td width="100px"><input type="radio" ng-model="model.impactValidation" value="DWN"></td>
+						<td width="100px"><input type="radio" ng-model="model.impactValidation" value=""></td>
+					</td></tr></table></div>
+				</td>
+				<td align="right">
+							<button type="button" class="help-icon" data-toggle="popover" data-placement="left" data-html="true"
+								     data-content="<p>Cocher cette case si l’évènement impacte ou est susceptible d’impacter
+								      le nombre de validations remontées.</p>" onclick="$(this).popover('toggle');" />
+				 </td></tr>
+				 
+				 <tr><td></td><td colspan="5"  class="form-holder"><div class="form-marge">
+				<table><tr><td valign="top" width="325px">
+					</td><td>
+						<td width="100px"><label class="no-margin-right"> à la hausse</label></td>
+						<td width="100px"><label class="no-margin-right"> à la baisse</label></td>
+						<td width="100px"><label class="no-margin-right"> ne sait pas</label></td>
+					</td></tr></table></div>
+				</td>
+				<td align="right">
+				 </td></tr>
+				
+				<tr><td colspan="7" height="11px" /></tr>
+ 

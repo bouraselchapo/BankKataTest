@@ -1,0 +1,67 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountHolder.java
+// Created: 12 août 2017 10:32:50
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.domaine;
+
+/**
+ * Class representing the Bank account holder.
+ * 
+ * @author PHBS06171
+ *
+ */
+public class BankClient {
+
+  /**
+   * Client name.
+   */
+  private String name;
+
+  /**
+   * A client unique ID.
+   */
+  private String UID;
+
+  /**
+   * @param string
+   */
+  public BankClient(String uid, String name) {
+    super();
+    this.UID = uid;
+    this.name = name;
+  }
+
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * @return the uID
+   */
+  public String getUID() {
+    return UID;
+  }
+
+
+  /**
+   * @param name the name to set
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  /**
+   * @param uID the uID to set
+   */
+  public void setUID(String uID) {
+    UID = uID;
+  }
+
+}

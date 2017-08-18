@@ -1,0 +1,9 @@
+jdbc.driverClassName=org.postgresql.Driver
+jdbc.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# recette :
+jdbc.servername=cremolino
+jdbc.databasename=bprev09
+jdbc.databaseport=5432
+jdbc.username=pgsrevp2
+jdbc.password=dedee3f7e1

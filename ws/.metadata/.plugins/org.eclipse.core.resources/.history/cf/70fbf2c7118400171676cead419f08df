@@ -1,0 +1,54 @@
+/* Scripte mise à jour pour REVE 2.*/ 
+/* alter gare_jour table */
+ALTER TABLE gare_jour 
+	ADD COLUMN
+	  gare_heure_debut SMALLINT, 
+	ADD COLUMN
+	  gare_heure_fin SMALLINT,
+	ADD COLUMN
+	  gare_date_prev_fin BOOLEAN,
+	ADD COLUMN
+	  gare_date_prev_debut BOOLEAN
+	ADD COLUMN
+	  gare_jour_update_time TIMESTAMP;
+	  
+/* update existant gare*/
+update gare_jour set 
+  gare_heure_debut = '00',
+  gare_heure_fin = '24';
+  
+/* alter ligne_jour table */
+ALTER TABLE ligne_jour 
+	ADD COLUMN
+	  ligne_heure_debut SMALLINT, 
+	ADD COLUMN
+	  ligne_heure_fin SMALLINT,
+	ADD COLUMN
+	  ligne_date_prev_fin BOOLEAN,
+	ADD COLUMN
+	  ligne_date_prev_debut BOOLEAN	
+	ADD COLUMN
+	  ligne_jour_update_time TIMESTAMP;
+	  
+/* update existant ligne*/
+update ligne_jour set 
+  ligne_heure_debut = '00',
+  ligne_heure_fin = '24';
+  
+/* alter reseau_jour table */
+ALTER TABLE reseau_jour 
+	ADD COLUMN
+	  reseau_heure_debut SMALLINT, 
+	ADD COLUMN
+	  reseau_heure_fin SMALLINT,
+	ADD COLUMN
+	  reseau_date_prev_fin BOOLEAN,
+	ADD COLUMN
+	  reseau_date_prev_debut BOOLEAN
+	ADD COLUMN
+	  reseau_jour_update_time TIMESTAMP;
+	  
+/* update existant resseau*/
+update reseau_jour set 
+  reseau_heure_debut = '00',
+  reseau_heure_fin = '24';

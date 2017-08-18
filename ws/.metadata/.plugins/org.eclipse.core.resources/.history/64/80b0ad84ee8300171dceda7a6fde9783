@@ -1,0 +1,625 @@
+angular.module('saisieEvenementModule')
+
+.controller('saisieEvenementController', 
+			['$scope','$rootScope', '$location', '$http',
+             '$timeout', '$cookies', 'Auth',
+             function($scope, $rootScope, $location, $http,
+                      $timeout, $cookies, Auth) {
+    $scope.model = {};
+    $scope.listeGares = {};
+    $scope.currentTab;
+    //$scope.estAdmin = false;
+    $rootScope.estAdmin = true;
+    $scope.csvFiltreGare = [];
+    $scope.csvFiltreLigne = [];
+    $scope.csvFiltreReseau = [];
+    
+    $scope.csvGareTotal = [];
+    $scope.csvLigneTotal = [];
+    $scope.csvReseauTotal = [];
+    
+    $scope.csvCategorieTotal = [];
+    $scope.csvEvenementTotal = [];
+    $scope.csvInfoComplTotal = [];
+    
+    $scope.setCurrentMenu = function(tab, parentId){
+    	$scope.currentTab = tab;
+    	$(".active-dropdown").removeClass("active-dropdown");
+    	$("#" + parentId).addClass("active-dropdown");
+    };    
+    
+    $scope.setCurrentTab = function(tab){
+    	$scope.currentTab = tab;
+    };
+    
+    $scope.init = function() {
+    	$scope.filtre = {};
+    	
+  //ARI initialisation Impact validation et idCategorieSelectionFiltre à vide
+    	
+    	$scope.filtre.impactValidation = "";
+    	$scope.filtre.idCategorieSelectedFiltre = "";
+    	if(Auth.getUser()==undefined){
+    		Auth.setUser(JSON.parse($cookies.get('utilisateur'))); 
+    	}
+    		
+		 $rootScope.estAdmin=true;
+    	if(Auth.getUser().flagAdmin == "YES"){
+    		 $scope.estAdmin=true;
+    		 
+    		 //alert($rootScope.estAdmin);
+    		 $rootScope.estAdmin=true;
+    	}
+    	
+    	if($scope.currentTab == undefined) $scope.setCurrentMenu('GARE', 'SAISIE-DROPDOWN');
+    	
+    	//Récuperer la liste des Gare du referentiels
+    	$http.get("services/gare/getGares", $scope.filtre).success(function(listeGares) {
+    		if(listeGares != null){
+    			$scope.listeGares = listeGares // mettre la liste des catégories dans le sope
+    			
+    			 var options = {
+    		    		data: listeGares,
+    		    		getValue: "libelle",
+    		    		list: {	
+    		    		    match: {
+    		    		      enabled: true
+    		    		    }
+    		    		  },
+    			select: function( event, ui ) {
+    				// alert('ici');
+    		          var terms = split( this.value );
+    		          // remove the current input
+    		          terms.pop();
+    		          // add the selected item
+    		          terms.push( ui.item.value );
+    		          // add placeholder to get the comma-and-space at the end
+    		          terms.push( "" );
+    		          this.value = terms.join( ", " );
+    		          return false;
+    		        }
+    		    	};
+    	//	   console.log(options);
+    			$("#inputLibelleGareFiltre").easyAutocomplete(options);
+    		    
+    		}else{
+    			//Afficher un message d'erreurs informant que la liste des gares est vides !
+    			
+    		}
+    		
+    	});
+    	
+    	$http.get("services/categorie/getCategories", $scope.filtre).success(function(listeCategoriesFiltre) 
+    		{
+    	/*	ARI affichage des différentes catégories existantes dans le filtre de données*/
+    	  if(listeCategoriesFiltre != null){
+    			$scope.listeCategoriesFiltre = listeCategoriesFiltre // mettre la liste des catégories dans le scope
+    			filtreGategorieVide = {id:"",libelle:""}; //ajouter la catégorie "vide" à la fin de la liste
+    			$scope.listeCategoriesFiltre.push(filtreGategorieVide);
+    		}else{
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    
+    	//console.log("test");
+    
+    };
+    
+    
+    $scope.selectCategorieFiltre = function(){
+    	$scope.filtre.idCategorieSelectedFiltre;
+    };
+    
+    
+    /**
+     * Cette méthde sera appelé à chaque fois qu'on a cliqué sur un elément dans la page consultation. 
+     * Le but de cette méthode est d'initier les dates(bootstrap) pour le filtre. (C'est une solution 
+     * temporaire et rapide pour détourner le problème d'affichage des dates)
+     */
+    $scope.clickConsultation = function(){
+    	$(function () {
+    		
+    	    jQuery(document).ready(function($){
+    	        $("#inputdateDebEventFiltre").datetimepicker({
+    	          	locale: 'fr',
+    	            viewMode: 'days',
+    	            format: 'DD/MM/YYYY',
+    	        });
+    	        $("#inputdateFinEventFiltre").datetimepicker({
+    	          	locale: 'fr',
+    	            viewMode: 'days',
+    	            format: 'DD/MM/YYYY',
+    	        });
+    	    });
+        });
+    };
+    
+    $scope.init();
+    
+    $scope.consulterGareJour = function(){
+    	$location.path('/consultationGareJour');
+    }
+    
+    $scope.filtrerConsultation = function(){
+    	if($scope.filtre == undefined){
+    		$scope.filtre ={};
+    	}
+    	
+    	var format = $("#inputdateDebEventFiltre").val().split("/");
+    	var newformatDebut = new Date(format[2], format[1] -1, format[0])
+    //	console.log(newformatDebut);
+    	
+    	var formatFin = $("#inputdateFinEventFiltre").val().split("/");
+    	var newformatFin = new Date(formatFin[2], formatFin[1] -1, formatFin[0])
+    //	console.log(newformatFin);
+    	
+    	
+    //	var dateDeb = new Date($("#inputdateDebEventFiltre").val());
+    //	var dateFin = new Date($("#inputdateFinEventFiltre").val());
+
+    	var dateDeb =newformatDebut;
+    	var dateFin =newformatFin;
+    	
+    	$scope.filtre.dateDebEvent = dateDeb.getDate()+"-"+(dateDeb.getMonth()+1)+"-"+dateDeb.getFullYear();
+    	$scope.filtre.dateFinEvent = dateFin.getDate()+"-"+(dateFin.getMonth()+1)+"-"+dateFin.getFullYear();
+    	
+    	if($scope.filtre.dateDebEvent== "NaN-NaN-NaN"){
+    		$scope.filtre.dateDebEvent="";
+    	}
+    	
+    	if($scope.filtre.dateFinEvent== "NaN-NaN-NaN"){
+    		$scope.filtre.dateFinEvent="";
+    	}
+    	
+    	//var libelleGare = $("#inputLibelleGareFiltre").val();
+    	
+    	$scope.filtre.libelleGare = $("#inputLibelleGareFiltre").val();
+     	
+    	//console.log("gare " + libelleGare);
+    	
+    	$scope.filtre.ligneFiltre = $("#inputLigneFiltre").val();
+    	if($scope.filtre.libelleGare==""){
+    		$scope.filtre.codeUIC="";
+    	}else{
+    		angular.forEach($scope.listeGares, function(gare, key) {
+    			if(gare.libelle == $scope.filtre.libelleGare){
+    				$scope.filtre.codeUIC = gare.codeUIC
+    			}
+    		});
+    		
+    	}
+    	
+    	$scope.filtre.impactValidation;
+    	
+    	/*ARI Test actuel : si la date de début n'est pas saisie, alors on renvoie le message suivant*/
+    	
+    	if($scope.filtre.dateFinEvent !="" &&  $scope.filtre.dateDebEvent == ""){
+    		// Si l'utilisateur a saisi la date de fin, alors la date de début est obligatoire
+    		// On envoie un message à l'utilisateur
+    		//ARI Ajout d'un message d'avertissement
+    		window.alert("Saisir une date de début.");
+    	}else{
+    		numPage = 1;
+    		$rootScope.initConsultationGare($scope.filtre, numPage);
+    		$rootScope.initConsultationLigne($scope.filtre, numPage);
+    		$rootScope.initConsultationReseau($scope.filtre, numPage);
+    	}
+    };
+    
+    
+    $scope.goToGestionReferentiel = function(){
+    	$location.path('/gestionReferentiel');
+    };
+    
+    $scope.exportFiltre = function(){
+    	if($scope.filtre == undefined){
+    		$scope.filtre ={};
+    	}
+    	if($scope.filtre.codeUIC == undefined){
+    		$scope.filtre.codeUIC ="";
+    	}
+    	if($scope.filtre.ligneFiltre == undefined){
+    		$scope.filtre.ligneFiltre ="";
+    	}
+    	
+    	if($scope.filtre.dateFinEvent == undefined){
+    		$scope.filtre.dateFinEvent ="";
+    	}
+    	
+    	if($scope.filtre.dateDebEvent == undefined){
+    		$scope.filtre.dateDebEvent ="";
+    	}
+    	$http.get("services/gare/getGaresEventsAll/?codeUIC="+$scope.filtre.codeUIC+"&ligneFiltre="+$scope.filtre.ligneFiltre +"&dateFinEvent="+$scope.filtre.dateFinEvent
+    			+"&dateDebEvent="+$scope.filtre.dateDebEvent).success(function(listeGareEventAll) {
+    				angular.forEach(listeGareEventAll, function(gare, indice) {
+    					
+    					var datedebutGare = new Date(gare.dateDebutEvent).toLocaleString('fr-FR');
+    					var dateFinGare = new Date(gare.dateFinEvent).toLocaleString('fr-FR');
+    						
+    					
+    		            $scope.csvFiltreGare.push({ 
+    		            	Gare : gare.libelleGare, 
+    		            	CodeUIC : gare.codeUIC, 
+    		            	Date : datedebutGare, 
+    		            	DateFin : dateFinGare, 
+    		            	Duree : gare.dureeEvent,
+    		            	Categorie : gare.libelleCategorie,
+    		            	Evenement : gare.libelleEvent, 
+    		            	SousEvenement : gare.libelleInfoCmpl,  
+    		            	InformationComplementaireLibre : gare.saisieLibreInfoCompl,});
+    		        });
+    				
+    				$timeout(function(){
+    					  // Any code in here will automatically have an $scope.apply() run afterwards
+    					$( "#idExporGareEvent" ).click();
+    					$scope.csvFiltreGare = []; // On vide le tableau apres l'export du csv
+    					  // And it just works!
+    				});
+    			});
+    	
+
+    	
+    	$http.get("services/ligne/getLignesEventsAll/?codeUIC="+$scope.filtre.codeUIC+"&ligneFiltre="+$scope.filtre.ligneFiltre+"&dateFinEvent="+$scope.filtre.dateFinEvent
+    			+"&dateDebEvent="+$scope.filtre.dateDebEvent).success(function(listeLigneEventAll) {
+    				angular.forEach(listeLigneEventAll, function(ligne, indice) {
+    					var datedebutLigne = new Date(ligne.dateDebutEvent).toLocaleString('fr-FR');
+    					var dateFinLigne = new Date(ligne.dateFinEvent).toLocaleString('fr-FR');
+    					
+    		            $scope.csvFiltreLigne.push({ 
+    		            	Ligne : ligne.ligneLibelle, 
+    		            	Date : datedebutLigne, 
+    		            	DateFin: dateFinLigne, 
+    		            	Duree : ligne.dureeEvent,
+    		            	Categorie : ligne.libelleCategorie,
+    		            	Evenement : ligne.libelleEvent, 
+    		            	SousEvenement : ligne.libelleInfoCmpl,  
+    		            	InformationComplementaireLibre : ligne.saisieLibreInfoCompl,});
+    		        });
+    				
+    				$timeout(function(){
+    					  // Any code in here will automatically have an $scope.apply() run afterwards
+    					$( "#idExporLigneEvent" ).click();
+    					$scope.csvFiltreLigne = [];
+    					  // And it just works!
+    				});
+    			});
+    	
+    	$http.get("services/reseau/getReseauxAll").success(function(listeReseauEventAll) {
+    		
+    		angular.forEach(listeReseauEventAll, function(reseau, indice) {
+    			var datedebutReseau = new Date(reseau.dateDebutEvent).toLocaleString('fr-FR');
+    			var dateFinReseau = new Date(reseau.dateFinEvent).toLocaleString('fr-FR');
+    			
+	            $scope.csvFiltreReseau.push({
+	            	Date : datedebutReseau, 
+	            	DateFin : dateFinReseau,
+	            	Duree : reseau.dureeEvent, 
+	            	Categorie : reseau.libelleCategorie,
+	            	Evenement : reseau.libelleEvent, 
+	            	SousEvenement : reseau.libelleInfoCmpl, 
+	            	InformationComplementaireLibre : reseau.saisieLibreInfoCompl,});
+	        });
+			
+			$timeout(function(){
+				  // Any code in here will automatically have an $scope.apply() run afterwards (L'attente du $digest)
+				$( "#idExporReseauEvent" ).click();
+				$scope.csvFiltreReseau = [];
+			});
+			
+    	});
+    };
+    
+    $scope.getHeaderFiltreGare = function(){
+    	return ["Gare","Code UIC","DateDebut", "DateFin","Duree","Categorie","Evenement",
+    	        "SousEvenement",
+    	        "Information Complementaire libre",]
+    };
+    
+    
+    $scope.getHeaderFiltreLigne = function(){
+    	return ["Ligne", "DateDebut", "DateFin","Duree","Categorie","Evenement",
+    	        "SousEvenement",
+    	        "Information Complementaire libre",]
+    };
+    
+    $scope.getHeaderFiltreReseau = function(){
+    	return ["DateDebut", "DateFin","Duree","Categorie","Evenement",
+    	        "SousEvenement",
+    	        "Information Complementaire libre",]
+    };
+    
+    
+  //test de la fonction copy de postgresSQL
+    $scope.exportFiltreTotalCopy = function(){
+	$http.get("services/gare/getGareEventExportTotalCopy").success(function(listeGareEventCopyAll) {
+				angular.forEach(listeGareEventCopyAll, function(gare, indice) {
+				});		
+			});
+	$http.get("services/ligne/getLigneEventExportTotalCopy").success(function(listeLigneEventCopyAll) {
+		angular.forEach(listeLigneEventCopyAll, function(ligne, indice) {
+				});	
+			});
+	
+	$http.get("services/reseau/getReseauEventExportTotalCopy").success(function(listeReseauEventCopyAll) {
+			angular.forEach(listeReseauEventCopyAll, function(reseau, indice) {
+				});	
+			});
+    };
+    
+    $scope.exportFiltreTotal = function(){
+    	$http.get("services/gare/getGareEventExportTotal").success(function(listeGareEventAll) {
+    				angular.forEach(listeGareEventAll, function(gare, indice) {
+    					
+    				//	var datedebut = new Date(gare.dateDebutEvent).toUTCString().substring(0, 10);
+    					var options={day:"2-digit", month:"2-digit",year:"numeric"};
+    					//var datecount = new Date(gare.calendrierDate).toLocaleString('fr-FR',options);
+    					var datedebut = new Date(gare.dateDebutEvent).toLocaleString('fr-FR',options);
+    					var datefin = new Date(gare.dateFinEvent).toLocaleString('fr-FR',options);
+    			/*		
+    		            $scope.csvGareTotal.push({ID : gare.id, Gare : gare.libelleGare ,User_ID : gare.idUser,
+    		              Ligne_Libelle : gare.codeUIC,
+      					  Date_Début : datedebut, Date_Fin : datefin, 
+    					  Id_Categorie : gare.idCategorie, Id_Event : gare.idEvent,
+    					  Id_Info_Compl : gare.idInfoCmpt, Saisie_Libre : gare.saisieLibreInfoCompl,
+    					  Duree : gare.dureeEvent, Stif : gare.stif,
+    					  Impact_Validation : gare.impactValidation});
+    		        });
+    		*/		
+    				
+    		            $scope.csvGareTotal.push({ 
+    		            	ID_Saisie : gare.idUser,
+    		            	NumCp: gare.numCp,
+    		            	Gare : gare.libelleGare,
+      		              	Code_UIC : gare.codeUIC,
+      		              	//Date_Count : datecount,
+      		              	Date_Début : datedebut, 
+      		              	Date_Fin : datefin,
+      		              	Duree: gare.dureeEvent,
+      		              	CategorieEvent : gare.idCategorie,
+      		              	CategorieEvent_libelle : gare.libelleCategorie,
+      		              	Event : gare.idEvent,
+      		              	Event_libelle : gare.libelleEvent,
+      		              	SousEvent: gare.idInfoCmpt,
+      		              	idInfoCmpt_libelle : gare.libelleInfoCmpl,
+      		              	InfoEvent_libre : gare.saisieLibreInfoCompl
+      					  });
+      		        });	
+    					
+    					
+    				
+    				$timeout(function(){
+    					  // Any code in here will automatically have an $scope.apply() run afterwards
+    					$( "#idExporGareTotal" ).click();
+    					$scope.csvGareTotal = []; // On vide le tableau apres l'export du csv
+    					  // And it just works!
+    				});
+    			});
+    	
+    	$http.get("services/ligne/getLigneEventExportTotal").success(function(listeLigneEventAll) {
+    		
+    		
+			/*
+    				angular.forEach(listeLigneEventAll, function(ligne, indice) {
+    		            $scope.csvLigneTotal.push({ ID : ligne.id, User_ID : ligne.idUser,
+    		              Ligne_Libelle : ligne.ligneLibelle,
+      					  Date_Début : datedebutLigne, Date_Fin : datefinLigne, 
+    					  Id_Categorie : ligne.idCategorie, Id_Event : ligne.idEvent,
+    					  Id_Info_Compl : ligne.idInfoCmpt,
+    					  libelleCategorie : ligne.libelleCategorie, libelleEvent : ligne.libelleEvent, libelleInfoCmpl : ligne.libelleInfoCmpl,
+    					  Saisie_Libre : ligne.saisieLibreInfoCompl,
+    					  Duree : ligne.dureeEvent, Stif : ligne.stif,
+    					  Impact_Validation : ligne.impactValidation});
+    		        });
+    				*/
+    				
+    		
+					angular.forEach(listeLigneEventAll, function(ligne, indice) {
+						var options={day:"2-digit", month:"2-digit",year:"numeric"};
+						var datedebutLigne = new Date(ligne.dateDebutEvent).toLocaleString('fr-FR',options);
+						var datefinLigne = new Date(ligne.dateFinEvent).toLocaleString('fr-FR',options);	
+						
+			        /* maj MNI suite demande Fanette 12/2016
+			         *     $scope.csvLigneTotal.push({
+			              Ligne_Libelle : ligne.ligneLibelle,
+						  Date_Début : datedebutLigne, Date_Fin : datefinLigne, 
+						  libelleCategorie : ligne.libelleCategorie, libelleEvent : ligne.libelleEvent, libelleSousEvent : ligne.libelleInfoCmpl,
+						  Saisie_Libre : ligne.saisieLibreInfoCompl,
+						  Duree : ligne.dureeEvent, Stif : ligne.stif,
+						  Impact_Validation : ligne.impactValidation});
+			        });*/
+					
+				     $scope.csvLigneTotal.push({
+				    	 ID_Saisie: ligne.idUser,
+				    	 NumCp: ligne.numCp,
+			              Ligne : ligne.ligneLibelle,
+			              //Date: ,
+						  Date_Debut : datedebutLigne, 
+						  Date_Fin : datefinLigne,
+						  Duree:ligne.dureeEvent,
+						  CategorieEvent: ligne.idCategorie,
+						  CategorieEvent_libelle : ligne.libelleCategorie,
+						  Event: ligne.idEvent,
+						  Event_libelle : ligne.libelleEvent,
+						  SousEvent: ligne.idInfoCmpt,
+						  SousEvent_libelle : ligne.libelleInfoCmpl,
+						  InfoEvent_libre_Libre : ligne.saisieLibreInfoCompl
+						  });
+			        });
+			
+			
+			
+			
+			
+    				$timeout(function(){
+    					  // Any code in here will automatically have an $scope.apply() run afterwards
+    					$( "#idExporLigneTotal" ).click();
+    					$scope.csvLigneTotal = [];
+    					  // And it just works!
+    				});
+    			});
+    	
+    	$http.get("services/reseau/getReseauEventExportTotal").success(function(listeReseauEventAll) {
+    		
+    		angular.forEach(listeReseauEventAll, function(reseau, indice) {
+    			var options={day:"2-digit", month:"2-digit",year:"numeric"};
+    			var datedebutReseau = new Date(reseau.dateDebutEvent).toLocaleString('fr-FR',options);
+    			var datefinReseau = new Date(reseau.dateFinEvent).toLocaleString('fr-FR',options);	
+    			
+    			/*
+	            $scope.csvReseauTotal.push({ID : reseau.id, User_ID : reseau.idUser,
+	            					  Date_Début : datedebutReseau, Date_Fin : datefinReseau, 
+	            					  Id_Categorie : reseau.idCategorie, Id_Event : reseau.idEvent,
+	            					  Id_Info_Compl : reseau.idInfoCmpt,
+	            					  libelleCategorie : reseau.libelleCategorie, libelleEvent : reseau.libelleEvent, libelleInfoCmpl : reseau.libelleInfoCmpl,
+	            					  Saisie_Libre : reseau.saisieLibreInfoCompl,
+	            					  Duree : reseau.dureeEvent, Stif : reseau.stif,
+	            					  Impact_Validation : reseau.impactValidation});
+	        });
+			
+				*/
+			/* maj MNI suite demande Fanette 12/2016
+	            $scope.csvReseauTotal.push({
+					  Date_Début : datedebutReseau, Date_Fin : datefinReseau, 
+					  libelleCategorie : reseau.libelleCategorie, libelleEvent : reseau.libelleEvent, libelleSousEvent : reseau.libelleInfoCmpl,
+					  Saisie_Libre : reseau.saisieLibreInfoCompl,
+					  Duree : reseau.dureeEvent, Stif : reseau.stif,
+					  Impact_Validation : reseau.impactValidation});
+    		}); */
+    		
+    	    $scope.csvReseauTotal.push({
+    	    	  ID_Saisie: reseau.idUser,
+    	    	  NumCp: reseau.numCp,
+    	    	  //Date: ,
+				  Date_Début : datedebutReseau, 
+				  Date_Fin : datefinReseau, 
+				  Duree : reseau.dureeEvent,
+				  CategorieEvent: reseau.idCategorie,
+				  CategorieEvent_libelle : reseau.libelleCategorie,
+				  Event: reseau.idEvent,
+				  Event_Libelle : reseau.libelleEvent,
+				  SousEvent: reseau.idInfoCmpt,
+				  SousEvent_Libelle : reseau.libelleInfoCmpl,
+				  Saisie_Libre : reseau.saisieLibreInfoCompl
+				  });
+		});
+    			
+    			
+    			
+			$timeout(function(){
+				  // Any code in here will automatically have an $scope.apply() run afterwards (L'attente du $digest)
+				$( "#idExporReseauTotal" ).click();
+				$scope.csvReseauTotal = [];
+			});
+			
+    	});
+    	
+    	/* SD
+    	
+    	$http.get("services/categorie/getCategorieExportTotal").success(function(listeCategorieAll) {
+    		
+    		angular.forEach(listeCategorieAll, function(categorie, indice) {
+	            $scope.csvCategorieTotal.push({ID : categorie.id, Libelle : categorie.libelle});
+	        });
+			
+			$timeout(function(){
+				  // Any code in here will automatically have an $scope.apply() run afterwards (L'attente du $digest)
+				$( "#idExporCategorieTotal" ).click();
+				$scope.csvCategorieTotal = [];
+			});
+			
+    	});
+    	
+    	$http.get("services/categorie/getEventExportTotal").success(function(listeEvenementAll) {
+    		
+    		angular.forEach(listeEvenementAll, function(evenement, indice) {
+	            $scope.csvEvenementTotal.push({ID : evenement.id, Libelle : evenement.libelle});
+	        });
+			
+			$timeout(function(){
+				  // Any code in here will automatically have an $scope.apply() run afterwards (L'attente du $digest)
+				$( "#idExporEvenementTotal" ).click();
+				$scope.csvEvenementTotal = [];   
+			});
+			
+    	});
+    	
+    	$http.get("services/categorie/getInfoComplExportTotal").success(function(listeInfoComplAll) {
+    		
+    		angular.forEach(listeInfoComplAll, function(infoCompl, indice) {
+	            $scope.csvInfoComplTotal.push({ID : infoCompl.id, Libelle : infoCompl.libelle});
+	        });
+			
+			$timeout(function(){
+				  // Any code in here will automatically have an $scope.apply() run afterwards (L'attente du $digest)
+				$( "#idExporInfoComplTotal" ).click();
+				$scope.csvInfoComplTotal = [];
+			});
+			
+    	});
+   
+    */
+    
+    
+    };
+    
+ /*   
+  	$scope.getHeaderGareTotal = function(){
+    	return ["ID", "Gare","ID_UTilisateur","Code_UIC", "Date_Début","Date_Fin","Id_Categorie",
+    	        "Id_Evénement","Id_Information_Complementaire",
+    	        "Saisie_Libre", "Duree","Stif","Impact_Validation"]
+    };
+    
+    
+    $scope.getHeaderLigneTotal = function(){
+    	return ["ID","ID_UTilisateur","Ligne_Libelle", "Date_Début","Date_Fin",
+    	        "Id_Categorie","Id_Evénement","Id_Information_Complementaire",
+    	        "libelleCategorie","libelleEvent","libelleInfoCmpl",
+    	        "Saisie_Libre", "Duree","Stif","Impact_Validation"]
+    };
+    
+    $scope.getHeaderReseauTotal = function(){
+    	return ["ID","ID_UTilisateur", "Date_Début","Date_Fin",
+    	        "Id_Categorie","Id_Evénement","Id_Information_Complementaire",
+    	        "libelleCategorie","libelleEvent","libelleInfoCmpl",
+    	        "Saisie_Libre", "Duree","Stif","Impact_Validation"]
+    };
+    
+   */
+    
+    
+    
+  	$scope.getHeaderGareTotal = function(){
+    	return ["ID_Saisie","Utilisateur","Gare","Code_UIC",/*"Date",*/"Date_Debut","Date_Fin","Duree",
+    	        "CategorieEvent","CategorieEvent_Libelle","Event","Event_Libelle",
+    	        "SousEvent","SousEvent_Libelle","InfoEvent_libre"]
+    };
+    
+    
+    $scope.getHeaderLigneTotal = function(){
+    	return ["ID_Saisie","Utilisateur","Ligne",/*"Date",*/"Date_Debut","Date_Fin","Duree",
+   	         "CategorieEvent","CategorieEvent_Libelle","Event","Event_Libelle",
+	         "SousEvent","SousEvent_Libelle","InfoEvent_libre"]
+    };
+    
+    $scope.getHeaderReseauTotal = function(){
+    	return [ "ID_Saisie","Utilisateur",/*"Date",*/"Date_Debut","Date_Fin","Duree",
+    	         "CategorieEvent","CategorieEvent_Libelle","Event","Event_Libelle",
+    	         "SousEvent","SousEvent_Libelle","InfoEvent_libre"]
+    };
+    
+    
+    
+    
+    $scope.getHeaderCategorieTotal = function(){
+    	return ["ID","Libelle"]
+    };
+    
+    $scope.getHeaderEvenementTotal = function(){
+    	return ["ID","Libelle"]
+    };
+    
+    $scope.getHeaderInfoComplTotal = function(){
+    	return ["ID","Libelle"]
+    };
+}]);

@@ -1,0 +1,100 @@
+
+angular.module('consultationEvenementRefModule') 
+
+.controller('consultationEvenementRefController', ['$scope',
+                                        '$location',
+                                        '$http',
+                                        'Auth',
+                                        function($scope,
+                                                $location,
+                                                $http,
+                                                Auth) {
+    
+	
+	
+	
+	
+	$scope.model = {};
+	$scope.listeEvenement;
+	
+	$scope.precedantDisabledEvenement=false;
+	$scope.suivantDisabledEvenement=false;
+	$scope.numPageEvenement = 1
+	$scope.evenementSelected;
+	
+	$scope.EnregistrerDisabledEvenement=true;
+	
+	
+	$scope.initConsultationEvenementRef = function() {
+    	
+    	
+    	$http.get("services/categorie/getEvenementsRef/?numPageEvenement="+$scope.numPageEvenement).success(function(listeEvenement) {
+    		
+    		if($scope.numPageEvenement == 1){
+        		$scope.precedantDisabledEvenement=true;
+        	}
+    		
+    		if(listeEvenement != null){
+    			$scope.listeEvenement = listeEvenement // mettre la liste des catégories dans le sope
+    		}else{
+    			$scope.precedantDisabledEvenement=true;
+    			$scope.suivantDisabledEvenement=true;
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    $scope.initConsultationEvenementRef();
+    
+    $scope.precedantEvenement = function(){
+    	
+    	if($scope.numPageEvenement == 1){
+    		$scope.precedantDisabledEvenement=true;
+    	}else{
+    		$scope.numPageEvenement--;
+    		$scope.initConsultationEvenementRef();
+    	}
+    };
+    
+    $scope.suivantEvenement = function(){
+    	$scope.numPageEvenement++;
+    	$scope.precedantDisabledEvenement=false;
+    	$scope.initConsultationEvenementRef();
+    };
+    
+    $scope.modifierEvenement = function(idEvenement){
+    	$scope.EnregistrerDisabledEvenement=false;
+    	
+    	angular.forEach($scope.listeEvenement, function(evenement, key) {
+			if(evenement.id == idEvenement){
+				$scope.evenementSelected = evenement;
+			}
+		});
+    };
+   
+    $scope.supprimerEvenement = function(evenement){
+    	
+    	var index = $scope.listeEvenement.indexOf(evenement);
+    	$scope.listeEvenement.splice(index, 1);  
+    	 var idEvenement =  evenement.id;
+    	$http.post("services/categorie/deleteEvenementRef", idEvenement).success(function(evenementSupprime) {
+		$scope.initConsultationEvenementRef();
+		
+    	});
+    };
+   
+    
+    $scope.updateEvenementRef = function(){
+    	$http.post("services/categorie/updateEvenementRef", $scope.evenementSelected).success(function(listeEvenementUpdate) {
+    		if(listeEvenementUpdate != null){
+    			$scope.initConsultationEvenementRef();
+    		}else{
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    
+}]);

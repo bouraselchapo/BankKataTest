@@ -1,0 +1,100 @@
+
+angular.module('consultationInfoComplRefModule') 
+
+.controller('consultationInfoComplRefController', ['$scope',
+                                        '$location',
+                                        '$http',
+                                        'Auth',
+                                        function($scope,
+                                                $location,
+                                                $http,
+                                                Auth) {
+    
+	
+	
+	
+	
+	$scope.model = {};
+	$scope.listeInfoCompl;
+	
+	$scope.precedantDisabledInfoCompl=false;
+	$scope.suivantDisabledInfoCompl=false;
+	$scope.numPageInfoCompl = 1
+	$scope.infoComplSelected;
+	
+	$scope.EnregistrerDisabledInfoCompl=true;
+	
+	
+	$scope.initConsultationInfoComplRef = function() {
+    	
+    	
+    	$http.get("services/categorie/getInfoComplsRef/?numPageInfoCompl="+$scope.numPageInfoCompl).success(function(listeInfoCompl) {
+    		
+    		if($scope.numPageInfoCompl == 1){
+        		$scope.precedantDisabledInfoCompl=true;
+        	}
+    		
+    		if(listeInfoCompl != null){
+    			$scope.listeInfoCompl = listeInfoCompl // mettre la liste des catégories dans le sope
+    		}else{
+    			$scope.precedantDisabledInfoCompl=true;
+    			$scope.suivantDisabledInfoCompl=true;
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    $scope.initConsultationInfoComplRef();
+    
+    $scope.precedantInfoCompl = function(){
+    	
+    	if($scope.numPageInfoCompl == 1){
+    		$scope.precedantDisabledInfoCompl=true;
+    	}else{
+    		$scope.numPageInfoCompl--;
+    		$scope.initConsultationInfoComplRef();
+    	}
+    };
+    
+    $scope.suivantInfoCompl = function(){
+    	$scope.numPageInfoCompl++;
+    	$scope.precedantDisabledInfoCompl=false;
+    	$scope.initConsultationInfoComplRef();
+    };
+    
+    $scope.modifierInfoCompl = function(idInfoCompl){
+    	$scope.EnregistrerDisabledInfoCompl=false;
+    	
+    	angular.forEach($scope.listeInfoCompl, function(infoCompl, key) {
+			if(infoCompl.id == idInfoCompl){
+				$scope.infoComplSelected = infoCompl;
+			}
+		});
+    };
+   
+    $scope.supprimerInfoCompl = function(infoCompl){
+    	
+    	var index = $scope.listeInfoCompl.indexOf(infoCompl);
+    	$scope.listeInfoCompl.splice(index, 1);  
+    	 var idInfoCompl =  infoCompl.id;
+    	$http.post("services/categorie/deleteInfoComplRef", idInfoCompl).success(function(infoComplSupprime) {
+		$scope.initConsultationInfoComplRef();
+		
+    	});
+    };
+   
+    
+    $scope.updateInfoComplRef = function(){
+    	$http.post("services/categorie/updateInfoComplRef", $scope.infoComplSelected).success(function(listeInfoComplUpdate) {
+    		if(listeInfoComplUpdate != null){
+    			$scope.initConsultationInfoComplRef();
+    		}else{
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    
+}]);

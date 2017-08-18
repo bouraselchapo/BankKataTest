@@ -1,0 +1,39 @@
+1502390315857	Delete element
+1502390365088	Rename package 'com.bank.account'
+1502390501035	Rename package 'com.bank.service'
+1502390969701	Delete element
+1502394171240	Delete element
+1502394734689	Delete element
+1502394971750	Delete element
+1502395764597	Rename type 'ServiceTest'
+1502488036423	Rename package 'com.bank.account.persistence'
+1502488112272	Rename package 'com.bank.account.persistance'
+1502526660741	Rename package 'com.bank.account.models'
+1502526828070	Move compilation unit
+1502526988223	Rename type 'IaccountService'
+1502527039654	Rename type 'accountService'
+1502527231463	Move compilation unit
+1502528459671	Move compilation unit
+1502528533707	Rename method 'getAccountByAccountHolder'
+1502542867742	Rename package 'com.bank.account.acceptenceTest'
+1502542972296	Rename type 'AccountHolder'
+1502543371276	Encapsulate field 'name'
+1502543448136	Encapsulate field 'UID'
+1502543659303	Rename local variable 'accountHolder'
+1502543715791	Rename method 'getAccountByHolder'
+1502543732760	Rename local variable 'accountHolder'
+1502617619033	Move compilation unit
+1502617687986	Move compilation unit
+1502653568708	Move 'TransactionDAO.java' to 'persistence'
+1502653608963	Rename type 'AccountDAO'
+1502653715418	Extract interface 'AccountDAO'
+1502653725375	Move 'AccountDAOImpl.java' to 'persistence'
+1502653768857	Copy file
+1502653783910	Rename type 'TransactionDAO'
+1502653864814	Move 'AccountDAOImpl.java' to 'impl'
+1502653872292	Move 'TransactionDAO.java' to 'persistence'
+1502653899586	Move 'TransactionDAOImpl.java' to 'impl'
+1502653905070	Move 'AccountDAOImpl.java' to 'persistence'
+1502653911162	Move 'AccountDAOImpl.java' to 'impl'
+1502653914967	Move 'AccountDAO.java' to 'persistence'
+1502654089535	Rename method 'createAccountaccountHolder'

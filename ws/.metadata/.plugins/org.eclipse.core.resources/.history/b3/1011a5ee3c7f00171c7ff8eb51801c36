@@ -1,0 +1,45 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: IaccountService.java
+// Created: Aug 10, 2017 8:43:10 PM
+// Author: hicham
+////////////////////////////////////////////////////////////////////
+package com.bank.account.service;
+
+import java.math.BigDecimal;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.AccountHolder;
+
+/**
+ * Interface for all account operations.
+ * 
+ * @author hicham.
+ *
+ */
+public interface AccountService {
+
+  /**
+   * @param accountHolder
+   * 
+   */
+  void createAccount(AccountHolder accountHolder);
+
+  /**
+   * @param accountNumber
+   * 
+   */
+  void depositAmount(BigDecimal accountNumber);
+
+  /**
+   * @param accountHolder
+   * @return
+   */
+  Account getAccountByAccountHolder(AccountHolder accountHolder);
+
+  /**
+   * @param amount.
+   */
+  void withdrowAmount(BigDecimal amount);
+
+}

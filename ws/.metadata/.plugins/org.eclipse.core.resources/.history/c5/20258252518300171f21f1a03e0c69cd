@@ -1,0 +1,41 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountDAO.java
+// Created: 13 août 2017 21:48:34
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.persistence;
+
+import org.springframework.stereotype.Repository;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.BankClient;
+
+
+/**
+ * @author PHBS06171
+ *
+ */
+@Repository
+public interface AccountDAO {
+
+  /**
+   * @param accountHolder
+   */
+  void createAccount(Account account);
+
+  /**
+   * @param client
+   * @return
+   */
+  public Account getAccountByClient(BankClient client);
+
+  /**
+   * @param RIB
+   * @return
+   */
+  Account getAccountByRIB(String rib);
+
+}

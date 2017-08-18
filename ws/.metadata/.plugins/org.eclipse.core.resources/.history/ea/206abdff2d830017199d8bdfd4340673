@@ -1,0 +1,62 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountTransferTest.java
+// Created: 15 août 2017 09:37:15
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.acceptanceTest;
+
+import static org.fest.assertions.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Set;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.Transaction;
+import com.bank.account.service.AccountService;
+import com.bank.account.test.builders.AccountBuilder;
+
+/**
+ * Acceptance test for transfer part business requirement :
+ * 
+ * ● Write some code to transfer a specified amount of money from one bank account (the payer) to
+ * another (the payee) ● Write some code to keep a record of the transfer for both bank accounts in
+ * a transaction history ● Write some code to query a bank account's transaction history for any
+ * bank transfers to or from a specific account
+ *
+ * @author PHBS06171
+ *
+ */
+public class AccountTransferTest {
+
+  AccountService accountService;
+
+  public void transferAmount() {
+    // Creation of the needed accounts.
+    final Account sourceAccount =
+        AccountBuilder.getBuilder().clientUID("AQZ4444447").clientName("John").build();
+
+    final Account destinationAccount =
+        AccountBuilder.getBuilder().clientUID("ZXF2111116").clientName("John").build();
+
+    // Depose some money to the source account.
+    accountService.depositAmount(LocalDateTime.now(), sourceAccount, new BigDecimal(5000));
+
+    // transfer the money from the source account to destination.
+    accountService.transferMoney(LocalDateTime.now(), sourceAccount, destinationAccount, new BigDecimal(5000));
+
+    // Test the transactions trace for the source Account.
+    final Set<Transaction> sourceTransactionHistory =
+        accountService.getTransactionsHistory(sourceAccount);
+
+    assertThat(sourceTransactionHistory.size()).isEqualTo(2);
+
+    // Test the transactions trace for the destination Account.
+    final Set<Transaction> desinationTransactionHistory =
+        accountService.getTransactionsHistory(destinationAccount);
+  }
+
+}

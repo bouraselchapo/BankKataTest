@@ -1,0 +1,11 @@
+angular.module('consultationLigneFormModule')
+
+.directive('uiFormConsultationLigne', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'consultationLigneJourForm/view.html',
+		controller : 'consultationLigneFormController',
+		controllerAs : 'consultationLigneFormController',
+		replace: true,
+	}
+}]);

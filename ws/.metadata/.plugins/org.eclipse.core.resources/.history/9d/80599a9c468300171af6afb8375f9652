@@ -1,0 +1,20 @@
+<!-- index.html -->
+
+
+<!-- define angular app -->
+<html ng-app="bankKataApp">
+ 
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8"/> 
+
+<!-- load angular  -->
+<script src="lib/js/angular-1.5.1/angular.js"></script>
+
+<script src="app.js"></script>
+</head>
+
+<!-- define angular controller -->
+<body>
+	<h1> Bien venu</h1>
+</body>
+</html>

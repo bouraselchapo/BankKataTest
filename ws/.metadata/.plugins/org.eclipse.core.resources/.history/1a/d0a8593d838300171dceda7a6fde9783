@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fr.sncf.persistance.UserDao" >
+   
+    <select id="getUser" resultType="fr.sncf.domaine.UserBean" >
+       SELECT useraccount.useraccount_id as id, 
+       useraccount.UserAccount_Firstname as firstName,
+       useraccount.UserAccount_Lastname as lastName,
+       useraccount.useraccount_email as email,
+       useraccount.useraccount_service as service,
+       useraccount.Useraccount_numero_cp as numeroCp,
+       useraccount.useraccount_flag_admin as flagAdmin
+       FROM useraccount 
+      WHERE useraccount.useraccount_delete !='OUI' 
+    </select>
+    
+    <select id="getUserByEmailAndPwd" resultType="fr.sncf.domaine.UserBean" >
+       SELECT useraccount.useraccount_Id as id, useraccount.UserAccount_Firstname as firstName,
+       useraccount.UserAccount_Lastname as lastName,
+       useraccount.useraccount_email as email,
+       useraccount.useraccount_service as service,
+       useraccount.useraccount_flag_admin as flagAdmin 
+       FROM useraccount
+       WHERE  
+       useraccount_numero_cp = #{userBean.numeroCp}
+       AND  useraccount.useraccount_hashpass = #{userBean.password} 
+       AND useraccount.useraccount_delete !='OUI' 
+    </select>
+       
+    <insert id="sasirUtilisateurReferentiel" useGeneratedKeys="true"
+		keyProperty="userBean.id">
+
+		insert into Useraccount
+		(
+		useraccount_firstname,
+		UserAccount_Lastname,
+		useraccount_email,
+		useraccount_hashpass,
+		useraccount_service,
+		useraccount_numero_cp,
+		useraccount_flag_admin,
+		useraccount_delete)
+		values
+		(#{userBean.firstName}, #{userBean.lastName}, #{userBean.email},
+		#{userBean.password}, #{userBean.service}, #{userBean.numeroCp},
+		#{userBean.flagAdmin},'NON')
+	</insert>
+	
+	
+	<update id="supprimerLogiqueUtilisateur">
+  		update useraccount set
+    	useraccount_Delete = 'OUI'
+  		where useraccount.useraccount_Id = #{idUtilisateur}
+	</update>
+	
+	<update id="modifierUtilisateur">
+  		update useraccount set
+    	UserAccount_Firstname = #{userBean.firstName},
+    	UserAccount_Lastname = #{userBean.lastName},
+    	useraccount_email = #{userBean.email},
+    	useraccount_service = #{userBean.service},
+    	Useraccount_numero_cp = #{userBean.numeroCp},
+    	useraccount_flag_admin = #{userBean.flagAdmin}
+    	
+  		where useraccount.useraccount_Id = #{userBean.id}
+	</update>
+	
+</mapper> 

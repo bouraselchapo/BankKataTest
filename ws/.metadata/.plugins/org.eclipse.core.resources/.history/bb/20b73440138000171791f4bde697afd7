@@ -1,0 +1,86 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: Account.java
+// Created: 12 août 2017 11:00:41
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.domaine;
+
+import java.math.BigDecimal;
+
+/**
+ * @author PHBS06171
+ *
+ */
+public class Account {
+
+  /**
+   * The Bank Customer/account Holder.
+   */
+  private BankClient accountHolder;
+
+  /**
+   * Unique bank account ID.
+   */
+  private String accountRIB;
+
+  /**
+   * Account current balance.
+   */
+  private BigDecimal balance = new BigDecimal(0);
+
+  /**
+   * @param accountHolder2
+   */
+  public Account(BankClient accountHolder) {
+    this.accountHolder = accountHolder;
+    // To simplify the systeme we set the account RIB with
+    // client UID
+    this.accountRIB = accountHolder.getUID();
+  }
+
+  /**
+   * @return the accountHolder
+   */
+  public BankClient getAccountHolder() {
+    return accountHolder;
+  }
+
+  /**
+   * @return the accountRIB
+   */
+  public String getAccountRIB() {
+    return accountRIB;
+  }
+
+  /**
+   * @return the balance
+   */
+  public BigDecimal getBalance() {
+    return balance;
+  }
+
+  /**
+   * @param accountHolder the accountHolder to set
+   */
+  public void setAccountHolder(BankClient accountHolder) {
+    this.accountHolder = accountHolder;
+  }
+
+  /**
+   * @param accountRIB the accountRIB to set
+   */
+  public void setAccountRIB(String accountRIB) {
+    this.accountRIB = accountRIB;
+  }
+
+  /**
+   * @param balance the balance to set
+   */
+  public void setBalance(BigDecimal balance) {
+    this.balance = balance;
+  }
+
+}

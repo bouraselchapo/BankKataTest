@@ -1,0 +1,23 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountController.java
+// Created: 17 août 2017 21:46:26
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.web;
+
+import javax.jws.WebService;
+
+import org.springframework.stereotype.Controller;
+
+/**
+ * @author PHBS06171
+ *
+ */
+@WebService
+@Controller
+public class AccountController {
+
+}

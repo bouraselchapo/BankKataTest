@@ -1,0 +1,6 @@
+angular.module('saisieEvenementModule', [ 'gestionReferentielModule',
+		'saisieGareFormModule', 'saisieLigneFormModule',
+		'saisieReseauFormModule', 'consultationGareFormModule',
+		'consultationLigneFormModule', 'consultationReseauFormModule',
+		'moduleDirectvieCommon','ngSanitize', 'ngCsv','ngCookies',
+		'ui.router', 'consultationFormModule']);

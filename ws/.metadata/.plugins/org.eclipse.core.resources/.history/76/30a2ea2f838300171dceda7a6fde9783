@@ -1,0 +1,1 @@
+angular.module('consultationGareJourModule', ['consultationGareFormModule', 'consultationLigneFormModule', 'consultationReseauFormModule', 'ui.router']);

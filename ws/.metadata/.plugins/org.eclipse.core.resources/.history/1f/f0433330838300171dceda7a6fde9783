@@ -1,0 +1,31 @@
+angular.module('gestionReferentielModule')
+
+.controller('gestionReferentielController', ['$scope',
+                                          '$rootScope',
+                                        '$location',
+                                        '$http',
+                                        function($scope,
+                                        		$rootScope,
+                                                $location,
+                                                $http) {
+    $scope.model = {};
+    $scope.currentTab;
+    
+    
+    $scope.setCurrentTab = function(tab){
+    	$scope.currentTab = tab;
+    };
+    $scope.init = function() {
+    	$scope.setCurrentTab("UTILISATEUR");
+    	
+    };
+    
+    $scope.init();
+    
+    
+    $scope.goToMain = function(){
+    	$location.path('/saisieEvenement');
+    };
+    
+    
+}]);

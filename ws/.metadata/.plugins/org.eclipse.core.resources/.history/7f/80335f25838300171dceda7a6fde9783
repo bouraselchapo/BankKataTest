@@ -1,0 +1,716 @@
+var msg = function(msg) {
+	alert(msg);
+}
+
+var serviceEvenement = {
+		
+		msg_taille_max_saisieCplmt: 'Le contenu du champ a atteint la taille maximum',
+		
+		initEvenementLists: function(scope){
+	    	var listeInfoComplementaires = scope.listeInfoComplementaires = [];
+	    	var listeEvenements = scope.listeEvenements = [];
+			angular.forEach(scope.listeCategories, function(categorie, keyCat) {
+					angular.forEach(categorie.listEvenements, function(evenement, keyEvt) {
+						var matches = listeEvenements.filter(function(item) {
+						      return item.id === evenement.id;
+						    });
+						if(!matches.length) {
+							listeEvenements.push(evenement);
+							angular.forEach(evenement.listeInfoCompl, function(infoComplementaire, keySsEvt) {
+									matches = listeInfoComplementaires.filter(function(item) {
+									      return item.id === infoComplementaire.id;
+									    });
+									if(!matches.length) {
+										listeInfoComplementaires.push(infoComplementaire);
+									}
+							});
+						}
+					});
+			});
+	    },
+	    
+	    selectCategorie: function(scope) {
+	    	var listeInfoComplementaires = scope.listeInfoComplementaires = [];
+			angular.forEach(scope.listeCategories, function(categorie, keyCat) {
+				if(categorie.id == scope.model.idCategorie){
+					scope.listeEvenements = categorie.listEvenements
+					angular.forEach(categorie.listEvenements, function(evenement, keyEvt) {
+						angular.forEach(evenement.listeInfoCompl, function(infoComplementaire, keySsEvt) {
+								var matches = listeInfoComplementaires.filter(function(item) {
+								      return item.id === infoComplementaire.id && item.libelle === infoComplementaire.libelle;
+								    });
+								if(!matches.length) {
+									listeInfoComplementaires.push(infoComplementaire);
+								}
+						});
+					});
+				}
+			});
+	    },
+	    
+	    selectEvent: function(scope){
+	    	idCategorieSelected = scope.model.idCategorie;
+			angular.forEach(scope.listeEvenements, function(evenement, key) {
+				if(evenement.id == scope.model.idEvent){
+					scope.listeInfoComplementaires = evenement.listeInfoCompl;
+				}
+			});
+			if(!idCategorieSelected) {
+		    	var found = false;
+				angular.forEach(scope.listeCategories, function(categorie, keyCat) {
+					angular.forEach(categorie.listEvenements, function(evenement, keyEvt) {
+						if(evenement.id == scope.model.idEvent) {
+							scope.model.idCategorie = categorie.id + "";
+	    					found = true;
+							return true;
+						}
+					});
+					if(found) return true;
+				});
+			}
+	    },
+	    
+	    selectInfoCmpl: function(scope) {
+	    	var idEvent = scope.model.idEvent;
+	    	var found = false;
+	    	if(!idEvent) {
+	    		angular.forEach(scope.listeCategories, function(categorie, keyCat) {
+	    				angular.forEach(categorie.listEvenements, function(evenement, keyEvt) {
+	    					angular.forEach(evenement.listeInfoCompl, function(infoComplementaire, keySsEvt) {
+	    						if(infoComplementaire.id == scope.model.idInfoCmpt) {
+	    							found = true;
+	    							scope.model.idCategorie = categorie.id + "";
+	    							scope.model.idEvent = evenement.id + "";
+	    							return true;
+	    						}
+	    					});
+	    					if(found) return true;
+	    				});
+					if(found) return true;
+	    		});
+	    	}
+	    }
+}
+
+var serviceGare = {
+	msg_error_gares_limite: "Le contenu du champ a atteint la taille maximum.(15 Gares)",
+	msg_error_gares_inexistante: "Cette gare n’est pas référencée.",
+	divListeGares: '#list_gares',
+	inputGare: '#inputLibelleGare',
+	model: {},
+	vars: {},
+	
+	getDivListeGares: function() {
+		this.divListeGares = $('#list_gares');
+		return this.divListeGares
+	},
+	
+	getInputGare: function() {
+		this.inputGare = $('#inputLibelleGare');
+		//console.log("INFO : getInputGare : inputGare obj  : " + this.inputGare);
+		return this.inputGare
+	},
+	
+	showSelectedListeGares: function() {
+		var obj = this.getDivListeGares();
+		if (obj.css('display') === 'none' ) {
+			obj.toggle('show');
+        }
+	},
+	
+	hideSelectedListeGares: function() {
+		var obj = this.getDivListeGares();
+		if (obj.css('display') !== 'none' ) {
+			obj.toggle('show');
+        }
+	},
+	
+	getSelectedGareValue: function() {
+		return this.getInputGare().val();
+	},
+	
+	getListGaresHtml: function(listeGares) {
+		var listGareHtml = '<div class="list-gares  list-gares-toggl" > ';
+		angular.forEach(listeGares, function (gare) {
+			listGareHtml = listGareHtml 
+				+ ' <div class="selected-gare"> ' + gare 
+				+ ' <button type="button" onclick="serviceGare.deselectGare(' + "'" + gare.replace("'","&quot;") + "'" 
+				+ ')" class="btn-gare-close"> X </button></div> ';
+		});
+		return listGareHtml + "</div> <button type='button' class='btn-gare-liste-ext'" +
+				" onclick=" + '"' + "$('.list-gares').toggleClass('list-gares-toggl');" + '"' + " >. . .</button>";
+	},
+	
+	populateDivListeGares: function(listeGares) {
+		this.getDivListeGares().html(
+				this.getListGaresHtml(listeGares));
+
+	},
+	
+	setModel: function(scope) {
+		this.model = scope.model;
+		this.vars = scope.vars;
+	},
+	
+	deselectGare: function(gare) {
+    	var selectedGares = this.vars.selectedGares;
+    	if(selectedGares.length == 1) {
+    		this.inputGare.val(selectedGares[0]);
+    		this.hideSelectedListeGares();
+    	}
+    	selectedGares.splice($.inArray(gare, selectedGares), 1 );
+    	if(selectedGares.length > 0) {
+    		this.populateDivListeGares(selectedGares);
+    	}
+    	this.getInputGare().focus();
+	},
+	
+	doesGareExiste: function(globaleList, gareVal) {
+		var doesOrNot = false;
+    	angular.forEach(globaleList, function(gare, key) {
+			if(gare.libelle == gareVal){
+				doesOrNot = true;
+			}
+		});
+    	return doesOrNot;
+	},
+	
+	getSelectedGaresUIC: function(globaleList, selectedGares) {
+		var selectedUIC = [];
+    	angular.forEach(globaleList, function(gare, key) {
+			if(selectedGares.indexOf(gare.libelle) > -1) {
+				selectedUIC.push(gare.codeUIC);
+			}
+		});
+    	return selectedUIC;
+	},
+	
+	synchModelGareValue: function(model) {
+		var actualVal = this.getSelectedGareValue();
+		if(model.libelleGare != actualVal) {
+			model.libelleGare = actualVal;
+		}
+	}
+};
+
+var serviceLigne = {
+		
+		listLignes:[
+			{code :'A' , color :'#E95E27', shape: 'cercle'},{code :'B' , color :'#778EC6', shape: 'cercle'},
+			{code :'C' , color :'#FAE000', shape: 'cercle'},{code: 'D', color: '#71A94D', shape: 'rectangle'},
+			{code: 'E', color: '#AE5591', shape: 'cercle'},{code: 'L', color: '#7366A8', shape: 'rectangle'},
+			{code: 'J', color: '#CCD037', shape: 'rectangle'},{code: 'N', color: '#5EAA8C', shape: 'rectangle'},
+			{code: 'H', color: '#6C353F', shape: 'rectangle'},{code: 'K', color: '#A89500', shape: 'rectangle'},
+			{code: 'P', color: '#E1AC00', shape: 'rectangle'},{code: 'R', color: '#CF99BF', shape: 'rectangle'},
+			{code: 'U', color: '#D60059', shape: 'rectangle'},{code: 'T4', color: '#F9B41D', shape: 'cercle'}
+			],
+		
+		toggleLinesSelection: function(selectedLignes, ligne) {
+	        // is currently selected
+	        if (selectedLignes.indexOf(ligne) > -1) {
+	        	selectedLignes.splice($.inArray(ligne, selectedLignes), 1 );
+	        } else {
+	        	selectedLignes.push(ligne);
+	        }
+		},
+		
+		resetLineSelection : function(model) {
+			model.selectedLignes = [];
+			var container = $('#ligne-checkbox-container');
+			container.find(':checkbox').prop('checked', false);
+		}
+}
+
+var serviceDates = {
+	
+	msg_error_date_fin_avant_debut : 'La date de fin doit être supérieure ou égale à la date de  début.',
+	msg_error_date_non_valide : 'Date non valide',
+	msg_error_heure_non_valide : 'Heure non valide',
+	
+	initDatePickers: function() {
+		$("#inputdateDebutEvent").datepicker(this.datePickerConf);
+		$("#inputdateFinEvent").datepicker(this.datePickerConf);
+	    $("#inputHeureFinEvent").timepicker(this.hourDatePickerConf);
+	    $("#inputHeureDebutEvent").timepicker(this.hourDatePickerConf);
+	},
+	
+	getDateDebutInput: function() {
+		return $('#inputdateDebutEvent');
+	},
+	
+	getDateFinInput: function() {
+		return $('#inputdateFinEvent');
+	},
+	
+	clearDateInputs: function() {
+		this.getDateDebutInput().val('');
+		this.getDateFinInput().val('');
+	},
+
+	datePickerConf : {
+			  dateFormat: 'dd/mm/yy',
+		      changeMonth: true,
+		      changeYear: true,
+	},
+
+	hourDatePickerConf : {
+			'timeFormat': 'H',
+			'step': 60,
+			'show2400': true,
+	}
+
+}
+
+angular.module('saisieGareFormModule') 
+
+.controller('saisieGareFormController', 
+		['$scope', '$location', '$http', 'Auth',
+          function($scope, $location, $http, Auth) {
+    
+	$scope.model = {};
+	$scope.vars = {};
+    $scope.listeCategories = [];
+    $scope.vars.listeGares = {};
+    $scope.listeEvenements = [];
+    $scope.listeInfoComplementaires = [];
+    $scope.vars.selectedGares = [];
+    $scope.model.impactValidation= "";
+	$scope.model.selectedLignes = [];
+    
+    serviceGare.setModel($scope);
+	$scope.vars.listeLignes = serviceLigne.listLignes;
+	
+    /** Bouton Annuler */
+    $scope.reset = function() {
+    	$scope.model.libelleGare = '';
+    	$scope.model.idCategorie = '';
+    	$scope.model.idEvent = '';
+    	$scope.model.idInfoCmpt = '';
+    	$scope.model.saisieLibreInfoCompl = '';
+    	$scope.model.dateDebutEvent = '';
+    	$scope.model.dateFinEvent = '';
+    	$scope.vars.dateDebutEvent = '';
+    	$scope.vars.dateFinEvent = '';
+    	serviceDates.clearDateInputs();
+    	$scope.model.heureDebut = '';
+    	$scope.model.datePrevDebut = 'false';
+    	$scope.model.heureFin = '';
+    	$scope.model.datePrevFin = 'false';
+    	$scope.model.impactValidation = '';
+    	$scope.vars.ttLaJourneeHrDebut = 'YES';
+    	$scope.vars.ttLaJourneeHrFin = 'YES';
+		$scope.model.selectedGares = [];
+		$scope.vars.selectedGares = [];
+		serviceLigne.resetLineSelection($scope.model);
+    	serviceGare.hideSelectedListeGares();
+    	//serviceGare.getInputGare().focus();
+    	$scope.vars.dateDebutEvent = "";
+    	$scope.vars.dateFinEvent = "";
+    };
+
+    $scope.loadListeGares = function(listeItems) {
+    	if(listeItems == undefined) {
+    		listeItems = $scope.vars.listeGares;
+    	}
+    	gareInput = serviceGare.getInputGare();
+    	console.log("INFO : loadListeGares : serviceGare " + serviceGare)
+    	console.log(gareInput);
+    	console.log(document.getElementById("inputLibelleGare"));
+    	if(gareInput.length) {
+    		var options = {
+    	    		data: listeItems,
+    	    		getValue: "libelle",
+    	    		list: {	
+    	    		    match: {
+    	    		      enabled: true
+    	    		    }
+    	    		}
+    	    	};
+    		
+    	     gareInput.easyAutocomplete(options);    		
+    	} else {
+    		//setTimeout(loadListeGares(liste), 1000);
+    	}
+  }
+      
+    /** Init scope */
+	$scope.init = function() {
+    	$scope.model.stif = 'YES';
+    	$scope.reset();
+    	
+    	$http.get("services/gare/getGares", $scope.model).success(function(listeGares) {
+	    	if(listeGares != null){
+	   			// mettre la liste des catégories dans le sope
+	   	    	//console.log("Load saisie : " + $scope.vars.listeGares);
+	   	    	$scope.loadListeGares(listeGares);
+	   	    	$scope.vars.listeGares = listeGares;
+	   		}else {
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    	    	console.log("Liste des Gares vide");
+    		}
+	   	});
+    	
+    	$http.get("services/categorie/getCategories", $scope.model).success(function(listeCategories) {
+    		if(listeCategories != null){
+    			$scope.listeCategories = listeCategories; // mettre la liste des catégories dans le sope
+    			serviceEvenement.initEvenementLists($scope);
+    		}else{
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    $scope.init();
+    
+    $scope.heureFinChange = function() {
+    	var elt = $('#inputHeureFinEvent');
+    	var heureFinVal = elt.val();
+        if($.isNumeric(heureFinVal) === false) {
+        	elt.val("");
+        }
+    	if(heureFinVal != $scope.model.heureFin) 
+    		$scope.model.heureFin = heureFinVal;
+    	if($scope.model.heureFin != "") {
+    		$scope.vars.ttLaJourneeHrFin = 'NON';
+    	} else {
+    		$scope.vars.ttLaJourneeHrFin = 'YES';
+    	}
+    }
+    
+    $scope.heureDebutChange = function() {
+    	var elt = $('#inputHeureDebutEvent');
+    	var heureDebutVal = elt.val();
+        if($.isNumeric(heureDebutVal) === false) {
+        	elt.val("");
+        }
+    	if(heureDebutVal != $scope.model.heureDebut) 
+    		$scope.model.heureDebut = heureDebutVal;
+    	if($scope.model.heureDebut != "") {
+    		$scope.vars.ttLaJourneeHrDebut = 'NON';
+    	} else {
+    		$scope.vars.ttLaJourneeHrDebut = 'YES';
+    	}
+    }
+    
+    /** Bouton Ajout gare */
+    $scope.ajouterGareInt = function(silent) {
+       	if($scope.vars.toutLeReseau != 'R') {
+    		serviceGare.synchModelGareValue($scope.model);
+       		var selectedGares = $scope.vars.selectedGares;
+       		if(selectedGares.length < 14) {
+	   			var inputGare = serviceGare.getInputGare();
+	       		var gareValue = inputGare.val();
+	       		//console.log($scope.vars.listeGares);
+	       		if(gareValue != null && gareValue != "" && serviceGare.doesGareExiste($scope.vars.listeGares, gareValue)){
+		       		if(selectedGares.indexOf(gareValue) < 0) {
+		       			selectedGares.push(gareValue);	
+		       		} 
+		    	
+		       		if(!silent && selectedGares.length > 0) {
+		       			$scope.model.libelleGare = "";
+		       			inputGare.val("");
+		       			inputGare.focus();
+		       			serviceGare.showSelectedListeGares();
+		       			serviceGare.populateDivListeGares(selectedGares);
+		       		}
+	       		} else {
+	       			if(gareValue != "") msg(serviceGare.msg_error_gares_inexistante);
+	       		}
+	       	} else {
+	       		serviceGare.showSelectedListeGares()
+	       		if(!silent) msg(serviceGare.msg_error_gares_limite);
+	       	}
+       	}
+    //	serviceGare.showSelectedListeGares();
+    }
+    
+    $scope.ajouterGare = function() {
+        $scope.ajouterGareInt(false);
+    }
+    
+    $scope.toggleLinesSelection = function(ligne) {
+    	serviceLigne.toggleLinesSelection($scope.model.selectedLignes, ligne);
+    }
+        
+    $scope.setFormSaisieType = function(type){
+    	//console.log("tout le reseau" + $scope.model.toutLeReseau);
+        this.model.formSaisieType = type;
+    }
+    
+    $scope.onchangeToutLeReseau = function() {
+    	// console.log($scope.vars.oldSaisieType);
+       	if($scope.vars.toutLeReseau == 'R') {
+        	serviceGare.hideSelectedListeGares();
+        	serviceGare.getInputGare().val("");
+    		$scope.vars.selectedGares = [];
+    	} else {
+        	if($scope.vars.selectedGares.length > 1) {
+        		serviceGare.showSelectedListeGares();
+        	}
+    	}
+    }
+    
+    $scope.tmplLoad = function() {
+    	//Récuperer la liste des Gare du referentiels
+    	serviceDates.initDatePickers();
+         $(document).keydown(function(e){
+        	   if (e.keyCode === 27)
+        		   $('[data-toggle="popover"]').popover("hide");
+        });
+         //$('img').tooltip();
+    }
+    
+    
+    $scope.saisieEvenement = function(type) {
+    	
+    	if(type == 'GARE') {
+	    	urlDoublon = "services/gare/estDoublon";
+	    	urlEnregistrement = "services/gare/saisie";
+    	} else {
+    	   	urlDoublon = "services/ligne/estDoublon";
+        	urlEnregistrement = "services/ligne/saisie";	
+    	}
+    	
+    	var format = $("#inputdateDebutEvent").val().split("/");
+    	$scope.model.dateDebutEvent = new Date(format[2], format[1] -1, format[0])
+    //	console.log(newformatDebut);
+    	
+    	var formatFin = $("#inputdateFinEvent").val().split("/");
+    	$scope.model.dateFinEvent = new Date(formatFin[2], formatFin[1] -1, formatFin[0])
+    //	console.log(newformatFin);
+        	
+    	$scope.model.idUser =  Auth.getUser().id;
+    		
+    	if(formGareJourValid($scope.model, $scope.vars)){
+        	if ($scope.vars.toutLeReseau != 'R' && type == 'GARE') {
+        		$scope.model.selectedGares = 
+        			serviceGare.getSelectedGaresUIC($scope.vars.listeGares, $scope.vars.selectedGares)
+        	}
+			$scope.model.toutLeReseau = $scope.vars.toutLeReseau == 'R';
+//    		$http.post(urlDoublon, $scope.model).success(function(typeRetour) {
+//    			if(typeRetour != null){
+//    				if(typeRetour == 0){
+    					//Pas de doublon --> On saisi les évènements
+    					$http.post(urlEnregistrement, $scope.model).success(function(typeRetour) {
+    			  			if(typeRetour != null){
+    		    				if(typeRetour == 0){
+		    	    				$( "#myModalEnregistrementOk").collapse("show");
+    		    				} else if(typeRetour == 1) {
+    		    					//On notifie l'utilisateur de l'existence d'un doublon sur le couple Gare/Date de début
+//    		    					$('.modal').collapse("show");
+    		    					$( "#myModal").collapse("show")
+    		    				}
+    			  			}
+    	    			   	$scope.reset();
+    					});
+//    				} else {
+//    			       	$scope.model.dateDebutEvent = $scope.vars.dateDebutEvent;
+//    			    	$scope.model.dateFinEvent = $scope.vars.dateFinEvent;
+//    				}
+//    				if(typeRetour==1){
+//    					//On notifie l'utilisateur de l'existence d'un doublon sur le couple Gare/Date de début
+////    					$('.modal').collapse("show");
+//    					$( "#myModal").collapse("show")
+//    					
+//    				} else if(typeRetour==2){
+//    					//On bloque la saisie de l'utilisateur car on a un doublon sur Gare/Date/Catégorie/Evenement/InfoComplementaire
+//    					$( "#myModalBloquante").collapse("show")
+//    				}
+//    				
+//    				$location.path('/saisieEvenement');
+//    				
+//    			}
+//    		});
+    		
+    	} else {
+    		$("#myModalEnregistrementNonOk").collapse("show");
+    	}
+
+    };
+    
+    $scope.saisirGareJour = function(){
+     	if ($scope.vars.toutLeReseau != 'R') {
+    		$scope.ajouterGareInt(true);
+    	}
+    	$scope.saisieEvenement('GARE');
+     };
+    
+    
+    $scope.saisirLigneJour = function() {
+    	if($scope.vars.toutLeReseau == 'R') {
+    		$scope.saisirGareJour();
+    	} else {
+    		$scope.saisieEvenement('LINE');
+    	}
+    	
+    	/*if(formLigneJourValid($scope.model)){
+    		$http.post("services/ligne/estDoublon", $scope.model).success(function(typeRetour) {
+    			if(typeRetour != null){
+    				if(typeRetour == 0){
+    					// Pas de doublon --> On saisi les évènements
+    					$http.post("services/ligne/saisie", $scope.model).success(function(idEventSaisi) {
+    						
+    					});
+    				}
+    				if(typeRetour==1){
+    					// On notifie l'utilisateur de l'existence d'un doublon sur le
+    					// couple Gare/Date de début
+//    					$( "#myModal").collapse("show")
+    					$( "#myModal").collapse("show")
+    					
+    				}
+    				
+    				else if(typeRetour==2){
+    					// On bloque la saisie de l'utilisateur car on a un doublon sur
+    					// Ligne/Date/Catégorie/Evenement/InfoComplementaire
+    					$( "#myModalBloquante").collapse("show")
+    				}
+    				else{
+    					$( "#myModalEnregistrementLigneOk").collapse("show");
+    				}
+    				
+    				$location.path('/saisieEvenement');
+    				
+    			}else{
+    				// Connexion échoué [Utilisateur non trouvé]
+    			}
+    			
+    		});
+    	}
+    	else{
+    		$( "#myModalEnregistrementLigneNonOk").collapse("show");
+    	}*/
+    };
+
+    validationGares= function(model, vars) {
+    	if(vars.toutLeReseau != 'R') {	
+	    	if ($scope.currentTab == 'GARE'
+	    			&& vars.selectedGares.length == 0) {
+	        		return false;
+	    	} else if($scope.currentTab != 'GARE'
+				&& model.selectedLignes.length == 0) {
+	    		return false;
+	    	}
+    	}
+    	return true;
+    }
+    
+    isHeureDebutValid = function(model, vars) {
+    	var valid = true;
+    	if(vars.ttLaJourneeHrDebut != 'YES' && model.heureDebut == "") {
+    		return false;
+    	}
+    	return valid;
+    }
+    
+    isDateDebutValid = function(model, vars) {
+    	var valid = true;
+    	if (model.dateDebutEvent == "Invalid Date") {
+    		if (vars.dateDebutEvent != "") {
+        		msg(serviceDates.msg_error_date_non_valide);
+    		}
+    		valid = false;
+    	} else if(!isHeureDebutValid(model, vars)){
+        	msg(serviceDates.msg_error_heure_non_valide);
+    		valid = false;
+    	}
+    	return valid;
+    }
+    
+    isHeureFinValid = function(model, vars) {
+    	var valid = true;
+    	if(vars.ttLaJourneeHrFin != 'YES' && model.heureFin == "") {
+    		return false;
+    	}
+    	return valid;
+    }
+    
+    isDateFinValid = function(model, vars) {
+    	var valid = true;
+    	if (model.dateFinEvent == "Invalid Date") {
+    		if (vars.dateDebutEvent != "") {
+        		msg(serviceDates.msg_error_date_non_valide);
+    		}
+    		valid = false;
+    	} else if(!isHeureFinValid(model, vars)){
+    		msg(serviceDates.msg_error_heure_non_valide);
+    		valid = false;
+    	}
+    	return valid;
+    }
+    
+    validationDates = function(model, vars) {
+    	var valid = true;
+    	if(!isDateDebutValid(model, vars) || !isDateFinValid(model, vars)) 
+    		return false
+	    
+    	if ((model.dateDebutEvent > model.dateFinEvent) 
+    			|| ((model.dateDebutEvent.toDateString() == model.dateFinEvent.toDateString())
+	    	&& ((model.heureFin + 0) < (model.heureDebut + 0)))) {
+	    	msg(serviceDates.msg_error_date_fin_avant_debut); 
+	    	valid = false;
+	    }
+    	return valid;
+    }
+    
+    /**
+     * Form Validation
+     */
+    formGareJourValid = function(model, vars) {
+    	if(validationGares(model, vars) && model.idCategorie!=null && model.idEvent!=null
+    			&& model.idInfoCmpt!=null && validationDates(model, vars)){
+    		return true;
+    	}
+    	return false;
+    }
+    
+    $scope.selectCategorie = function(){
+    	serviceEvenement.selectCategorie($scope);
+    };
+    
+    $scope.selectEvent = function(){
+    	serviceEvenement.selectEvent($scope);
+    };
+    
+    $scope.selectInfoCmpl = function(){
+    	serviceEvenement.selectInfoCmpl($scope);
+    };
+    
+    $scope.confirmerGareEvent = function(){
+    	$('.modal').collapse("hide");
+    	$scope.setCurrentMenu('CONSULTATION', 'CONSULTATION-DROPDOWN');
+//    	$http.post("services/gare/saisie", $scope.model).success(function(idEventSaisi) {
+//			
+//		});
+    };
+    
+    $scope.annulerModal = function(){
+    	$('.modal').collapse("hide");
+    };
+    
+    $scope.fermerGareEvent = function(){
+    	$( "#myModalBloquante").collapse("hide")
+    }
+    
+    $scope.fermerEnregistrementOk = function(){
+    	$( "#myModalEnregistrementOk").collapse("hide")
+    }
+    
+    $scope.fermerEnregistrementNonOk = function(){
+    	$( "#myModalEnregistrementNonOk").collapse("hide")
+    }
+    
+    $scope.fermerLigneEvent = function(){
+    	$( "#myModalBloquante").collapse("hide")
+    }
+    
+    $scope.fermerEnregistrementLigneOk = function(){
+    	$( "#myModalEnregistrementOk").collapse("hide")
+    }
+    
+    $scope.fermerEnregistrementLigneNonOk = function(){
+    	$( "#myModalEnregistrementNonOk").collapse("hide")
+    }
+
+}]);

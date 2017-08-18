@@ -1,0 +1,42 @@
+angular.module('connexionModule')
+
+.controller('connexionController', ['$scope',
+                                        '$location',
+                                        '$http',
+                                        '$cookies',
+                                        'Auth',
+                                        function($scope,
+                                                $location,
+                                                $http,
+                                                $cookies,
+                                                Auth) {
+    $scope.model = {};
+    
+    $scope.init = function() {
+        
+    };
+    
+    $scope.logIn = function(){
+    	$scope.model;
+    	$scope.model.email;
+    	$scope.model.password;
+    	console.log($scope.model);
+    	$http.post("services/user/connexion", $scope.model).success(function(utilisateur) {
+    		if(utilisateur != null && utilisateur != ""){
+    			//Connexion réussi [Utilisateur trouvé] -> Redirection ver la page 
+    			//de saisie es évènements
+    			Auth.setUser(utilisateur);
+    			$cookies.putObject('utilisateur', utilisateur);
+    			$location.path('/saisieEvenement');
+    			
+    		}else{
+    			//Connexion échoué [Utilisateur non trouvé]
+    			window.alert("Login ou mot de passe incorrect."+utilisateur);
+    		}
+    		
+    	});
+    };
+
+    $scope.init();
+
+}]);

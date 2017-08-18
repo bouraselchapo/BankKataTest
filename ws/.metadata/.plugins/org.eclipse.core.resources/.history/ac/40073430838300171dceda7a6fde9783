@@ -1,0 +1,87 @@
+<div class="container">
+	
+	<div class="row">
+		<div class="col-md-2 col-md-offset-10">
+			<button ng-click="goToMain()"
+				name="saisie" class="btn btn-sm btn-primary btn-block"
+				style="background-color: #A10043;">Retour page d'accueil</button>
+		</div>
+	</div>
+
+
+	<ul class="nav nav-tabs">
+		<li role="presentation"
+			ng-class="{'active' : currentTab == 'UTILISATEUR'}"><a
+			ng-click="setCurrentTab('UTILISATEUR')">UTILISATEUR</a></li>
+		<li role="presentation"
+			ng-class="{'active' : currentTab == 'GARE'}"><a
+			ng-click="setCurrentTab('GARE')">GARE / LIGNE</a></li>
+		<li role="presentation"
+			ng-class="{'active' : currentTab == 'CATEGORIE'}"><a
+			ng-click="setCurrentTab('CATEGORIE')">CATEGORIE / EVENEMENT / SOUS EVENEMENT</a></li>
+		<li role="presentation"
+			ng-class="{'active' : currentTab == 'CONSULTATION'}"><a
+			ng-click="setCurrentTab('CONSULTATION')">CONSULTATION</a></li>
+	</ul>
+
+	<div ng-if="currentTab == 'UTILISATEUR'">
+		<div class="row">
+			<ui-form-saisie-utilisateur-ref></ui-form-saisie-utilisateur-ref>
+			<div class="col-md-8">
+				<div class="panel">
+					<div class="panel-body">
+						<h3 class="text-center">
+							<!-- <center>Description de la saisie d'un Utilisateur</center> -->
+						</h3>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div ng-if="currentTab == 'GARE'">
+		<div class="row">
+			<ui-form-saisie-Gare-ref></ui-form-saisie-Gare-ref>
+			<div class="col-md-8">
+				<div class="panel">
+					<div class="panel-body">
+						<h3 class="text-center">
+							<!-- <center>Description de la saisie d'une GARE / LIGNE</center> -->
+						</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div ng-if="currentTab == 'CATEGORIE'">
+		<div class="row">
+			<ui-form-saisie-categorie-ref></ui-form-saisie-categorie-ref>
+			<div class="col-md-8">
+				<div class="panel">
+					<div class="panel-body">
+						<h3 class="text-center">
+							<!-- <center>Description de la saisie d'une Catégorie</center> -->
+						</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div ng-if="currentTab == 'CONSULTATION'">
+			<ui-form-consultation-utilisateur-ref></ui-form-consultation-utilisateur-ref>
+			<hr>
+			<ui-form-consultation-gare-ref></ui-form-consultation-gare-ref>
+			<hr>
+			<ui-form-consultation-ligne-ref></ui-form-consultation-ligne-ref>
+			<hr>
+			<ui-form-consultation-categorie-ref></ui-form-consultation-categorie-ref>
+			<hr>
+			<ui-form-consultation-evenement-ref></ui-form-consultation-evenement-ref>
+			<hr>
+			<ui-form-consultation-info-compl-ref></ui-form-consultation-info-compl-ref>
+	</div>
+
+</div>

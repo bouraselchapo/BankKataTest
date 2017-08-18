@@ -1,0 +1,12 @@
+angular.module('saisieUtilisateurRefModule')
+
+.directive('uiFormSaisieUtilisateurRef', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'saisieUtilisateurReferentiel/view.html',
+		controller : 'saisieUtilisateurRefController',
+		controllerAs : 'saisieUtilisateurRefController',
+		replace: true,
+	}
+}]);
+

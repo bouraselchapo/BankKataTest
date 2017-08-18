@@ -1,0 +1,93 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountController.java
+// Created: 17 août 2017 21:46:26
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.web.controllers;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Set;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.BankClient;
+import com.bank.account.domaine.Transaction;
+import com.bank.account.service.AccountService;
+import com.bank.account.web.models.AccountModel;
+import com.bank.account.web.models.ClientModel;
+
+/**
+ * @author PHBS06171
+ *
+ */
+@Controller
+@Path("/BankAccount")
+public class AccountController {
+
+  @Autowired
+  private AccountService accountService;
+  /**
+   * @param accountModel
+   * @return
+   */
+  @POST
+  @Path("/createAccount")
+  @Consumes({MediaType.APPLICATION_JSON})
+  @Produces({MediaType.APPLICATION_JSON})
+  public Set<Account> createAccount(AccountModel accountModel) {
+    final ClientModel client = accountModel.getClient(); 
+    accountService.createAccount(new BankClient(client.getUid(), client.getName()));
+    return accountService.getAllAccounts();
+  }
+
+  @POST
+  @Path("/createAccount")
+  @Consumes({MediaType.APPLICATION_JSON})
+  @Produces({MediaType.APPLICATION_JSON})
+  void depositAmount(AccountModel accountModel) {
+
+  }
+
+  @GET
+  @Path("/getAccountByRIB")
+  @Consumes({MediaType.APPLICATION_JSON})
+  @Produces({MediaType.APPLICATION_JSON})
+  public Account getAccountByRib(String rib) {
+    return accountService.getAccountByRib(rib);
+  }
+
+  @POST
+  @Path("/createAccount")
+  @Consumes({MediaType.APPLICATION_JSON})
+  @Produces({MediaType.APPLICATION_JSON})
+  Set<Transaction> getTransactionsHistory(AccountModel accountModel) {
+    return null;
+  }
+
+  @POST
+  @Path("/createAccount")
+  @Consumes({MediaType.APPLICATION_JSON})
+  @Produces({MediaType.APPLICATION_JSON})
+  void transferMoney(LocalDateTime transactionDate, Account sourceAccount,
+      Account destinationAccount, BigDecimal transferAmount);
+
+  @POST
+  @Path("/createAccount")
+  @Consumes({MediaType.APPLICATION_JSON})
+  @Produces({MediaType.APPLICATION_JSON})
+  void withdrawAmount(LocalDateTime localDate, Account account, BigDecimal accountNumber);
+
+}

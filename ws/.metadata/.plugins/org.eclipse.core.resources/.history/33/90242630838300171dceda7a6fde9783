@@ -1,0 +1,11 @@
+angular.module('consultationGareRefModule')
+
+.directive('uiFormConsultationGareRef', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'consultationGareReferentiel/view.html',
+		controller : 'consultationGareRefController',
+		controllerAs : 'consultationGareRefController',
+		replace: true,
+	}
+}]);

@@ -1,0 +1,32 @@
+<div class="container">
+	<div class="row">
+		<div class="col-md-2">
+			<input ng-model="filtre.ligneFiltre" name="ligneFiltre" placeholder="Ligne"
+				class="form-control" id="inputLigneFiltre" />
+		</div>
+
+		<div class="col-md-2">
+			<input ng-model="filtre.codeUIC" name="gareFiltre" placeholder="Gare"
+				class="form-control" id="inputGareFiltre" />
+		</div>
+		
+		
+		</div>
+
+		<div class="col-md-2">
+			<button type="button"
+			class="btn btn-sm btn-primary btn-block"
+			style="background-color: #A10043; width: 50%;"
+			ng-click="filtrerConsultation()">Filtrer</button>
+		</div>
+		
+	</div>
+	
+	<br>
+	<ui-form-consultation-gare></ui-form-consultation-gare>
+	<hr>
+	<ui-form-consultation-ligne></ui-form-consultation-ligne>
+	<hr>
+	<ui-form-consultation-reseau></ui-form-consultation-reseau>
+	
+</div>

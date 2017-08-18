@@ -1,0 +1,41 @@
+// Jquery date picker conf
+$.datepicker.regional['fr'] = {
+    	    closeText: 'Fermer',
+    	    prevText: 'Précédent',
+    	    nextText: 'Suivant',
+    	    currentText: 'Aujourd\'hui',
+    	    monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+    	    monthNamesShort: ['Janv.','Févr.','Mars','Avril','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'],
+    	    dayNames: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+    	    dayNamesShort: ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'],
+    	    dayNamesMin: ['D','L','M','M','J','V','S'],
+    	    weekHeader: 'Sem.',
+    	    dateFormat: 'dd/mm/yy',
+    	    firstDay: 1,
+    	    isRTL: false,
+    	    showMonthAfterYear: false,
+    	    yearSuffix: ''
+};
+
+$.datepicker.setDefaults($.datepicker.regional['fr']);
+
+// create the module and name it sncfApp
+// also include ngRoute for all our routing needs
+var sncfApp = angular.module('sncfApp', ['ui.router',
+                           'connexionModule',
+                            'saisieEvenementModule'])
+                  .run(function($rootScope) {
+                		$rootScope.estAdmin = false;
+                  })
+                           
+    .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+
+
+	$httpProvider.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
+
+	$httpProvider.defaults.withCredentials = true;
+
+	$urlRouterProvider.otherwise("/connexion");
+});
+
+

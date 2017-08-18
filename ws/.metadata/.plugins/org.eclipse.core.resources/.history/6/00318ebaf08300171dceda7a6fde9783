@@ -1,0 +1,12 @@
+angular.module('saisieCategorieRefModule')
+
+.directive('uiFormSaisieCategorieRef', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'saisieCategorieReferentiel/view.html',
+		controller : 'saisieCategorieRefController',
+		controllerAs : 'saisieCategorieRefController',
+		replace: true,
+	}
+}]);
+

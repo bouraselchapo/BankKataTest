@@ -1,0 +1,40 @@
+<!-- index.html -->
+
+
+<!-- define angular app -->
+<html ng-app="bankKataApp">
+ 
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8"/> 
+
+<!-- load angular  -->
+<script src="lib/js/angular/angular.js"></script>
+
+<script src="app.js"></script>
+</head>
+
+<!-- define angular controller -->
+<body>
+	<h1> Bienvenue </h1>
+	<h1> Create</h1>
+	<label>Client ID (Identity document number)<input type="text" ng-model="model.client.uid" maxlength="11"/></label>
+	<label>Client Name <input type="text" ng-model="model.client.name" maxlength="50"/></label>
+	<button type="button"> Create bank account </button>
+	<br>
+	<h1> Depose/withdraw</h1>
+	<label> Select an account <select></select></label>
+	<label>Amount <input type="text" ng-model="model.deposeWithdrawAmount" maxlength="13"/></label>
+	<button type="button"> Deposit </button>
+	<button type="button"> Withdraw </button>
+	<br>
+	<h1> Transfer</h1>
+	<label> Select the source account<select></select></label>
+	<label> Select the destination account<select></select></label>
+	<label> Amount <input type="text" ng-model="model.transferAmount" maxlength="13"/></label>
+	<button type="button"> Transfer </button>
+	<br>
+	<h1> History</h1>
+	<label> Select an account <select ng-model="model.historyAccount"></select></label>
+	<button type="button"> Get history </button>
+</body>
+</html>

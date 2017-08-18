@@ -1,0 +1,194 @@
+
+angular.module('saisieLigneFormModule')
+
+.controller('saisieLigneFormController', ['$scope',
+                                        '$location',
+                                        '$http',
+                                        'Auth',
+                                        function($scope,
+                                                $location,
+                                                $http,
+                                                Auth) {
+    
+	$scope.model = {};
+    $scope.listeCategories = {};
+    $scope.listeLignes = {};
+    $scope.listeEvenements = [];
+    $scope.listeInfoComplementaires = []
+    
+        jQuery(document).ready(function($){
+            $("#inputdateDebutEvent").datetimepicker({
+              	locale: 'fr',
+                viewMode: 'days',
+                format: 'DD/MM/YYYY',
+            });
+            $("#inputdateFinEvent").datetimepicker({
+              	locale: 'fr',
+                viewMode: 'days',
+                format: 'DD/MM/YYYY',
+            });
+            
+        });
+
+    $scope.init = function() {
+    	// Récuperer la liste des Gare du referentiels
+    	$http.get("services/ligne/getLignes", $scope.model).success(function(listeLignes) {
+    		if(listeLignes != null){
+    			$scope.listeLignes = listeLignes // mettre la liste des
+													// lignes dans le sope
+    			
+    			var options = {
+    		    		data: listeLignes,
+    		    		getValue: "libelle",
+    		    		list: {	
+    		    		    match: {
+    		    		      enabled: true
+    		    		    }
+    		    		  },
+    		    	};
+    		    $("#inputLigne").easyAutocomplete(options);
+    		}else{
+    			// Afficher un message d'erreurs informant que la liste des
+				// catégories est vides !
+    		}
+    		
+    	});
+    	
+    	$http.get("services/categorie/getCategories", $scope.model).success(function(listeCategories) {
+    		if(listeCategories != null){
+    			$scope.listeCategories = listeCategories // mettre la liste
+															// des catégories
+															// dans le sope
+    		}else{
+    			// Afficher un message d'erreurs informant que la liste des
+				// catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    $scope.init();
+
+    
+    $scope.saisirLigneJour = function(){
+    	
+    	var format = $("#inputdateDebutEvent").val().split("/");
+    	var newformatDebut = new Date(format[2], format[1] -1, format[0])
+    //	console.log(newformatDebut);
+    	
+    	var formatFin = $("#inputdateFinEvent").val().split("/");
+    	var newformatFin = new Date(formatFin[2], formatFin[1] -1, formatFin[0])
+    //	console.log(newformatFin);
+    	
+    	
+    	
+   // 	$scope.model.dateDebutEvent = new Date($("#inputdateDebutEvent").val());
+   // 	$scope.model.dateFinEvent = new Date($("#inputdateFinEvent").val());
+    
+    	$scope.model.dateDebutEvent = newformatDebut ; 
+    	$scope.model.dateFinEvent = newformatFin ; 
+    	
+    	$scope.model.idCategorie = $scope.idCategorieSelected;
+    	$scope.model.idEvent = $scope.idEventlected;
+    	$scope.model.idInfoCmpt = $scope.idInfoCpmlSelected;
+    	
+    	$scope.model.idUser =  Auth.getUser().id;
+    	
+    	if(formLigneJourValid($scope.model)){
+    		$http.post("services/ligne/estDoublon", $scope.model).success(function(typeRetour) {
+    			if(typeRetour != null){
+    				if(typeRetour == 0){
+    					// Pas de doublon --> On saisi les évènements
+    					$http.post("services/ligne/saisie", $scope.model).success(function(idEventSaisi) {
+    						
+    					});
+    				}
+    				if(typeRetour==1){
+    					// On notifie l'utilisateur de l'existence d'un doublon sur le
+    					// couple Gare/Date de début
+//    					$( "#myModal").collapse("show")
+    					$( "#myModal").collapse("show")
+    					
+    				}
+    				
+    				else if(typeRetour==2){
+    					// On bloque la saisie de l'utilisateur car on a un doublon sur
+    					// Ligne/Date/Catégorie/Evenement/InfoComplementaire
+    					$( "#myModalBloquante").collapse("show")
+    				}
+    				else{
+    					$( "#myModalEnregistrementLigneOk").collapse("show");
+    				}
+    				
+    				$location.path('/saisieEvenement');
+    				
+    			}else{
+    				// Connexion échoué [Utilisateur non trouvé]
+    			}
+    			
+    		});
+    	}
+    	else{
+    		$( "#myModalEnregistrementLigneNonOk").collapse("show");
+    	}
+    };
+    
+    /**
+     * Form Validation
+     */
+    formLigneJourValid = function(model){
+    	if(model.ligneLibelle!=null && model.idCategorie!=null && model.idEvent!=null
+    			&& model.idInfoCmpt!=null && model.dateDebutEvent!="Invalid Date"
+    				&& model.dateFinEvent !="Invalid Date"){
+    		return true;
+    	}
+    	return false;
+    }
+    
+    $scope.selectCategorie = function(){
+    	$scope.idCategorieSelected;
+		angular.forEach($scope.listeCategories, function(categorie, key) {
+			if(categorie.id == $scope.idCategorieSelected){
+				$scope.listeEvenements = categorie.listEvenements
+			}
+		});
+    };
+    
+    $scope.selectEvent = function(){
+    	$scope.idEventlected;
+		angular.forEach($scope.listeEvenements, function(evenement, key) {
+			if(evenement.id == $scope.idEventlected){
+				$scope.listeInfoComplementaires = evenement.listeInfoCompl;
+			}
+		});
+    };
+    
+    $scope.selectInfoCmpl = function(){
+    	$scope.idInfoCpmlSelected;
+
+    };
+    
+    $scope.confirmerLigneEvent = function(){
+    	$('.modal').collapse("hide");
+    	$http.post("services/ligne/saisie", $scope.model).success(function(idEventSaisi) {
+			
+		});
+    };
+    
+    $scope.annulerLigneEvent = function(){
+    	$('.modal').collapse("hide");
+    };
+    
+    $scope.fermerLigneEvent = function(){
+    	$( "#myModalBloquante").collapse("hide")
+    }
+    
+    $scope.fermerEnregistrementLigneOk = function(){
+    	$( "#myModalEnregistrementLigneOk").collapse("hide")
+    }
+    
+    $scope.fermerEnregistrementLigneNonOk = function(){
+    	$( "#myModalEnregistrementLigneNonOk").collapse("hide")
+    }
+    
+}]);

@@ -1,0 +1,42 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: AccountController.java
+// Created: 17 août 2017 21:46:26
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.web;
+
+import javax.jws.WebService;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+
+import org.springframework.stereotype.Controller;
+
+/**
+ * @author PHBS06171
+ *
+ */
+@WebService
+@Controller
+public class AccountController {
+  /**
+   * Saisir l'�v�nement pour une Gare � un jour donn�
+   * 
+   * @param codeUIC codeUIC
+   * @param dateEvent date de l'�v�nement
+   * @param idEvent id Ev�nement
+   * @param idInfoCmpt id Information Compl�mentaire
+   * @return id de la gare/jour saisie en base
+   */
+  @POST
+  @Path("/saisie")
+  @Consumes({MediaType.APPLICATION_JSON})
+  @Produces({MediaType.APPLICATION_JSON})
+  public Long saisirGareJour(GareEvenementBean gareEvenementBean);
+
+
+}

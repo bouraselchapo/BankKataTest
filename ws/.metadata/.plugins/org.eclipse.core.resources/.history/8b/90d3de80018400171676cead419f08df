@@ -1,0 +1,40 @@
+package com.bank.account.service;
+
+import org.junit.Test;
+import org.mockito.Mock;
+
+import com.bank.account.service.AccountService;
+
+/**
+ * Account test Class.
+ * 
+ * @author hicham.
+ *
+ */
+public class AccountServiceTest {
+
+  /**
+   * 
+   */
+  @Mock
+  AccountService accountService;
+
+  @Test
+  public void createAccountTest() {
+    // TODO should add account
+    final long accountNumber = 2111300355678l;
+    // accountService.createAccount();
+
+  }
+
+  public void depositAmountTest() {
+    // TODO shoud add amount to the account
+    // accountService.depositAmount(accountNumber);
+
+  }
+
+  public void withdrawAmountTest() {
+    // TODO shoud withdraw an amount from the account
+  }
+
+}

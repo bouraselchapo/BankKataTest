@@ -1,0 +1,103 @@
+
+angular.module('consultationUtilisateurRefModule') 
+
+.controller('consultationUtilisateurRefController', ['$scope',
+                                        '$location',
+                                        '$http',
+                                        'Auth',
+                                        function($scope,
+                                                $location,
+                                                $http,
+                                                Auth) {
+    
+	
+	
+	
+	
+	$scope.model = {};
+	$scope.listeutilisateur;
+	
+	$scope.precedantDisabledUtilisateur=false;
+	$scope.suivantDisabledUtilisateur=false;
+	$scope.numPageUtilisateur = 1
+	$scope.UtilisateurSelected;
+	
+	$scope.EnregistrerDisabledUtilisateur=true;
+	
+	
+	$scope.initConsultationUtilisateurRef = function() {
+    	
+    	
+    	$http.get("services/user/getUtilisateurs/?numPageUtilisateur="+$scope.numPageUtilisateur).success(function(listeutilisateur) {
+    		
+    		if($scope.numPageUtilisateur == 1){
+        		$scope.precedantDisabledUtilisateur=true;
+        	}
+    		
+    		if(listeutilisateur != null){
+    			$scope.listeutilisateur = listeutilisateur // mettre la liste des catégories dans le sope
+    		}else{
+    			$scope.precedantDisabledUtilisateur=true;
+    			$scope.suivantDisabledUtilisateur=true;
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    $scope.initConsultationUtilisateurRef();
+    
+    $scope.precedantUtilisateur = function(){
+    	
+    	if($scope.numPageUtilisateur == 1){
+    		$scope.precedantDisabledUtilisateur=true;
+    	}else{
+    		$scope.numPageUtilisateur--;
+    		$scope.initConsultationUtilisateurRef();
+    	}
+    };
+    
+    $scope.suivantUtilisateur = function(){
+    	$scope.numPageUtilisateur++;
+    	$scope.precedantDisabledUtilisateur=false;
+    	$scope.initConsultationUtilisateurRef();
+    };
+    
+    $scope.modifierUtilisateur = function(idUtilisateur){
+    	$scope.EnregistrerDisabledUtilisateur=false;
+    	
+    	angular.forEach($scope.listeutilisateur, function(utilisateur, key) {
+			if(utilisateur.id == idUtilisateur){
+				$scope.UtilisateurSelected = utilisateur;
+			}
+		});
+    };
+   
+    $scope.supprimerUtilisateur = function(utilisateur){
+    	
+    	var index = $scope.listeutilisateur.indexOf(utilisateur);
+    	$scope.listeutilisateur.splice(index, 1);  
+    	 var idUtilisateur =  utilisateur.id;
+    	$http.post("services/user/deleteUser", idUtilisateur).success(function(utilisateurSupprime) {
+		$scope.initConsultationUtilisateurRef();
+		
+    	});
+    };
+   
+    
+    $scope.updateUtilisateur = function(){
+    	$scope.UtilisateurSelected.oldDateFinEvent = $scope.UtilisateurSelected.dateFinEvent;
+    	$scope.UtilisateurSelected.dateFinEvent = new Date($("#inputdateFinEventReseau").val());
+    	$scope.UtilisateurSelected.idUser =  Auth.getUser();
+    	$http.post("services/user/updateUser", $scope.UtilisateurSelected).success(function(listeCategoriesReseau) {
+    		if(listeCategoriesReseau != null){
+    			$scope.initConsultationUtilisateurRef();
+    		}else{
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    	});
+    };
+    
+    
+}]);

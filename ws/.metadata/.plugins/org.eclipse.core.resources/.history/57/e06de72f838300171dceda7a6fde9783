@@ -1,0 +1,14 @@
+'use strict';
+
+angular.module('consultationGareJourModule')
+
+.config(['$stateProvider', '$urlRouterProvider',
+         function($stateProvider, $urlRouterProvider) {
+	
+	$stateProvider.state('consultationGareJour', {
+		url : '/consultationGareJour',
+		templateUrl : 'consultationGareJour/view.html',
+		controller : 'consultationGareJourController',
+		controllerAs : 'consultationGareJourController'
+	});
+}]);

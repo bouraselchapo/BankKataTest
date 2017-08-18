@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fr.sncf.persistance.CategorieDao">
+
+
+
+	<resultMap id="categorieBean" type="fr.sncf.domaine.CategorieBean">
+		<id property="id" column="id" />
+		<result property="libelle" column="libelle" />
+		<collection property="listEvenements" ofType="fr.sncf.domaine.EventBean"
+			resultMap="evenement" columnPrefix="event_" />
+	</resultMap>
+
+	<resultMap id="evenement" type="fr.sncf.domaine.EventBean">
+		<id property="id" column="id" />
+		<result property="libelle" column="libelle" />
+		<collection property="listeInfoCompl" ofType="fr.sncf.domaine.InfoComplementaireBean"
+			resultMap="infoCmpl" columnPrefix="infoCmpl_" />
+	</resultMap>
+	
+	<resultMap id="infoCmpl" type="fr.sncf.domaine.InfoComplementaireBean">
+		<id property="id" column="id" />
+		<result property="libelle" column="libelle" />
+	</resultMap>
+
+	<select id="getListeCategorieBean" resultMap="categorieBean">
+		SELECT
+		categorie.categorie_Id as id, categorie.categorie_libele as libelle,
+		classification.classification_id_event as event_id,
+		evenement.evenement_libele as event_libelle,
+		classification.classification_id_infocompl as event_infoCmpl_id,
+		information_compl.information_compl_libele as event_infoCmpl_libelle
+		FROM categorie, classification, evenement, information_compl
+		WHERE
+		classification.classification_id_categorie = categorie.categorie_Id
+		AND classification.classification_id_event = evenement.evenement_id
+		AND classification.classification_id_infocompl = information_compl.information_compl_id
+		AND classification.classification_delete != 'OUI'
+	</select>
+	
+	
+	<select id="recupererListeCategorieRef" resultMap="categorieBean">
+		SELECT	categorie.categorie_Id as id, 
+			categorie.categorie_libele as libelle
+		FROM categorie
+		
+		WHERE categorie.categorie_delete != 'OUI'
+	</select>
+	
+	<select id="recupererListeEvenementsRef" resultType="fr.sncf.domaine.EventBean">
+		SELECT	evenement.evenement_id as id, 
+			evenement.evenement_libele as libelle
+		FROM evenement
+		
+		WHERE evenement.evenement_delete != 'OUI'
+	</select>
+	
+	<select id="recupererListeInfoComplsRef" resultType="fr.sncf.domaine.InfoComplementaireBean">
+		SELECT	information_compl.information_compl_id as id, 
+			information_compl.information_compl_libele as libelle
+		FROM information_compl
+		
+		WHERE information_compl.information_compl_delete != 'OUI'
+	</select>
+	
+	<insert id="sasirCategorieReferentiel" useGeneratedKeys="true"
+		keyProperty="categorieBean.id">
+
+		insert into categorie
+		(categorie_libele, categorie_delete)
+		values
+		(#{categorieBean.libelle}, 'NON')
+	</insert>
+	
+	<insert id="sasirEvenementReferentiel" useGeneratedKeys="true"
+		keyProperty="eventBean.id">
+
+		insert into evenement
+		(evenement_libele, evenement_delete)
+		values
+		(#{eventBean.libelle}, 'NON')
+	</insert>
+	
+	<insert id="sasirInfoComplReferentiel" useGeneratedKeys="true"
+		keyProperty="infoComplementaireBean.id">
+
+		insert into information_compl
+		(information_compl_libele, information_compl_delete)
+		values
+		(#{infoComplementaireBean.libelle}, 'NON')
+	</insert>
+	
+	<insert id="sasirClassificationReferentiel" useGeneratedKeys="true"
+		keyProperty="categorieEventInfComplBean.id">
+
+		insert into classification
+		(classification_id_categorie,
+		classification_id_event,
+		classification_id_infocompl, classification_delete)
+		values
+		(#{categorieEventInfComplBean.idCategorie}, #{categorieEventInfComplBean.idEvenement},
+		#{categorieEventInfComplBean.idInfoComplementaire}, 'NON')
+	</insert>
+	
+	
+	<select id="recupererInfoComplByLibelle" resultType="fr.sncf.domaine.InfoComplementaireBean">
+		SELECT
+		information_compl.information_compl_id as id,
+		information_compl.information_compl_libele as libelle
+		FROM information_compl
+		WHERE information_compl.information_compl_libele = #{libelleInfoComplementaire}
+	</select>
+	
+	<select id="recupererEvenementByLibelle" resultType="fr.sncf.domaine.EventBean">
+		SELECT
+		evenement.evenement_id as id,
+		evenement.evenement_libele as libelle
+		FROM evenement
+		WHERE evenement.evenement_libele = #{libelleEvenement}
+	</select>
+	
+	<select id="recupererCategorieByLibelle" resultType="fr.sncf.domaine.CategorieBean">
+		SELECT
+		categorie.categorie_id as id,
+		categorie.categorie_libele as libelle
+		FROM categorie
+		WHERE categorie.categorie_libele = #{libelleCategorie}
+	</select>
+	
+	<select id="recupererCategorieEventInfComplBeanByLibelle" resultType="fr.sncf.domaine.CategorieEventInfComplBean">
+		SELECT
+		classification.classification_id as id
+		FROM classification
+		WHERE classification.classification_id_categorie = #{categorieEventInfComplBean.idCategorie}
+		AND classification.classification_id_event = #{categorieEventInfComplBean.idEvenement}
+		AND classification.classification_id_infocompl = #{categorieEventInfComplBean.idInfoComplementaire}
+	</select>
+	
+	<update id="supprimerLogiqueCategorieRef">
+  		update categorie set
+    	categorie_delete = 'OUI'
+  		where categorie.categorie_id = #{idCategorie}
+	</update>
+	
+	<update id="supprimerLogiqueCategorieAssocationRef">
+  		update classification set
+    	classification_delete = 'OUI'
+  		where classification.classification_id_categorie = #{idCategorie}
+	</update>
+
+	<update id="modifierCategorieRef">
+  		update categorie set
+    	categorie_libele = #{categorieBean.libelle}
+    	
+  		where categorie.categorie_id = #{categorieBean.id}
+	</update>
+	
+	
+	<update id="supprimerLogiqueEvenementRef">
+  		update evenement set
+    	evenement_delete = 'OUI'
+  		where evenement.evenement_id = #{idEvenement}
+	</update>
+	
+	<update id="supprimerLogiqueEvenementAssocationRef">
+  		update classification set
+    	classification_delete = 'OUI'
+  		where classification.classification_id_event = #{idEvenement}
+	</update>
+	
+	<update id="modifierEvenementRef">
+  		update evenement set
+    	evenement_libele = #{eventBean.libelle}
+    	
+  		where evenement.evenement_id = #{eventBean.id}
+	</update>
+	
+	<update id="supprimerLogiqueInfoComplRef">
+  		update information_compl set
+    	information_compl_delete = 'OUI'
+  		where information_compl.information_compl_id = #{idInfoCompl}
+	</update>
+	
+	<update id="supprimerLogiqueInfoComplAssocationRef">
+  		update classification set
+    	classification_delete = 'OUI'
+  		where classification.classification_id_infocompl = #{idInfoCompl}
+	</update>
+	
+	<update id="modifierInfoComplRef">
+  		update information_compl set
+    	information_compl_libele = #{infoComplementaireBean.libelle}
+    	
+  		where information_compl.information_compl_id = #{infoComplementaireBean.id}
+	</update>
+	
+	<select id="recupererCategorieTotalPourExport" resultMap="categorieBean">
+		SELECT	categorie.categorie_Id as id, 
+			categorie.categorie_libele as libelle
+		FROM categorie
+		
+		WHERE categorie.categorie_delete != 'OUI'
+	</select>
+	
+	<select id="recupererEvenementTotalPourExport" resultType="fr.sncf.domaine.EventBean">
+		SELECT	evenement.evenement_id as id, 
+			evenement.evenement_libele as libelle
+		FROM evenement
+		
+		WHERE evenement.evenement_delete != 'OUI'
+	</select>
+	
+	<select id="recupererInformationComplementaireTotalPourExport" resultType="fr.sncf.domaine.InfoComplementaireBean">
+		SELECT	information_compl.information_compl_id as id, 
+			information_compl.information_compl_libele as libelle
+		FROM information_compl
+		
+		WHERE information_compl.information_compl_delete != 'OUI'
+	</select>
+	
+</mapper> 

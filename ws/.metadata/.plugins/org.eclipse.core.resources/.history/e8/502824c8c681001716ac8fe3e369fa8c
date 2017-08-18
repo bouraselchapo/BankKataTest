@@ -1,0 +1,51 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: TransactionDAO.java
+// Created: 13 août 2017 21:14:37
+// Author: PHBS06171
+//
+////////////////////////////////////////////////////////////////////
+
+package com.bank.account.persistence.impl;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.Transaction;
+import com.bank.account.domaine.TransactionType;
+import com.bank.account.persistence.TransactionDAO;
+
+/**
+ * @author PHBS06171
+ *
+ */
+public class TransactionDAOImpl implements TransactionDAO {
+
+  /* (non-Javadoc)
+   * @see com.bank.account.persistence.TransactionDAO#addTransaction(com.bank.account.domaine.Account, com.bank.account.domaine.TransactionType, java.math.BigDecimal, java.time.LocalDate)
+   */
+  public void addTransaction(Account account, TransactionType transactionType, BigDecimal amount,
+      LocalDate date) {
+    // TODO Auto-generated method stub
+
+  }
+
+  /**
+   * @param account
+   * @param transacctionType
+   * @param amount
+   * @param transactionDate
+   */
+  public void addTransaction(Account account, TransactionType transacctionType, BigDecimal amount,
+      LocalDateTime transactionDate) {
+    final BigDecimal transactionMap;
+    transactionMap.put('id',new Transaction(account, transacctionType, amount, transactionDate));// TODO
+    // Auto-generated
+    // method
+    // stub
+
+  }
+
+}

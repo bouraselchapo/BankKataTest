@@ -1,0 +1,173 @@
+package com.bank.account.serviceTest;
+
+import static org.fest.assertions.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Set;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.BankClient;
+import com.bank.account.domaine.Transaction;
+import com.bank.account.persistence.AccountDAO;
+import com.bank.account.test.builders.AccountBuilder;
+import com.bank.account.test.conf.AppTestConfig;
+
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {AppTestConfig.class})
+public class AccountAcceptanceTest {
+
+  private static Account ACCOUNT_1;
+
+  private static BankClient CLIENT_1;
+
+  @InjectMocks
+  private AccountDAO accountDao;
+
+  @Autowired
+  private AccountService accountService;
+
+  void depositAmount(LocalDateTime localDateTime, Account account, BigDecimal amount) {}
+
+  /**
+   * Account getter by bank client object.
+   * 
+   * @param client the client object of account holder.
+   * @return account the account object of the given client.
+   */
+  Account getAccountByClient(BankClient client);
+
+  /**
+   * 
+   * @param rib
+   * @return
+   */
+  Set<Account> getAccountByRib(String rib);
+
+  /**
+   * All account Objects getter.
+   * 
+   * @return All accounts in the repository.
+   */
+  Set<Account> getAllAccounts();
+
+  /**
+   * All account transactions getter.
+   * 
+   * @param account
+   *            {@link Account} object.
+   * @return Set of transactions
+   *            representing all transaction for the given account.
+   */
+  Set<Transaction> getTransactionsHistory(Account account);
+
+
+  @Test
+  public void shouldCreateAccount() {
+    // We start by creating a Bank client that will be the account holder.
+    CLIENT_1 = AccountBuilder.getBuilder().clientUID("AQZ445376").clientName("John").buildClient();
+
+    // Create the account
+    accountService.createAccount(CLIENT_1);
+
+    // Get account
+    final Account account = accountService.getAccountByClient(CLIENT_1);
+
+    // Test that the account exists.
+    assertThat(account).isNotNull();
+  }
+
+  /**
+   * Create an Account object from a given BankClient object.
+   * 
+   * @param accountHolder for Bank client.
+   * 
+   */
+  void shouldCreateAccount(BankClient accountHolder) {
+  }
+
+  public void shouldDepositAnAmount() {
+    //
+    ACCOUNT_1 = AccountBuilder.getBuilder().clientName("John").clientUID("AQZ445376").build();
+
+    // Deposit value
+    accountService.depositAmount(LocalDateTime.now(), ACCOUNT_1, new BigDecimal(1000));
+
+    assertThat(ACCOUNT_1.getBalance()).isEqualByComparingTo(new BigDecimal(1000));
+  }
+
+  public void shouldWithdrawAnAmount() {
+    // Withdraw value
+    accountService.withdrawAmount(LocalDateTime.now(), ACCOUNT_1, new BigDecimal(600));
+
+    assertThat(ACCOUNT_1.getBalance()).isEqualByComparingTo(new BigDecimal(400));
+  }
+
+  /**
+   * Method for transferring money from an account to an other.
+   * 
+   * @param sourceAccount
+   *            account to transfer money from.
+   * @param destinationAccount
+   *            account to transfer money to.
+   * @param transferAmount
+   *            amount of the transfer.
+   * @param transactionDate
+   *            date of the transfer.
+   */
+  void transferMoney(LocalDateTime transactionDate, Account sourceAccount,
+      Account destinationAccount, BigDecimal transferAmount);
+
+  /**
+   * Withdraw the given amount of money to the given account.
+   * 
+   * @param account the account to depose into.
+   * @param localDateTime Date and time of the operation.
+   * @param amount the money amount of the operation.
+   */
+  void withdrawAmount(LocalDateTime localDate, Account account, BigDecimal accountNumber);
+
+}
+
+
+/**
+ * Account test Class.
+ * 
+ * @author hicham.
+ *
+ */
+public class AccountServiceTest {
+
+  /**
+   * 
+   */
+  @Mock
+  AccountService accountService;
+
+  @Test
+  public void createAccountTest() {
+    // TODO should add account
+    final long accountNumber = 2111300355678l;
+    // accountService.createAccount();
+
+  }
+
+  public void depositAmountTest() {
+    // TODO shoud add amount to the account
+    // accountService.depositAmount(accountNumber);
+
+  }
+
+  public void withdrawAmountTest() {
+    // TODO shoud withdraw an amount from the account
+  }
+
+}

@@ -1,0 +1,70 @@
+////////////////////////////////////////////////////////////////////
+//
+// File: IaccountService.java
+// Created: Aug 10, 2017 8:43:10 PM
+// Author: hicham
+////////////////////////////////////////////////////////////////////
+package com.bank.account.service;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import com.bank.account.domaine.Account;
+import com.bank.account.domaine.BankClient;
+
+/**
+ * Interface for all account operations.
+ * 
+ * @author hicham.
+ *
+ */
+public interface AccountService {
+
+  /**
+   * Create an Account object from a given BankClient object.
+   * 
+   * @param accountHolder for Bank client.
+   * 
+   */
+  void createAccount(BankClient accountHolder);
+
+  /**
+   * Depose a some amount of money to the given account.
+   * 
+   * @param account the account to depose into.
+   * @param localDateTime Date and time of the operation.
+   * @param amount the money amount of the operation.
+   * 
+   */
+  void depositAmount(LocalDateTime localDateTime, Account account, BigDecimal amount);
+
+  /**
+   * @param client
+   * @return
+   */
+  Account getAccountByClient(BankClient client);
+
+  /**
+   * @param sourceAccount
+   */
+  void getTransactionsHistory(Account sourceAccount);
+
+  /**
+   * @param sourceAccount
+   * @param destinationAccount
+   * @param transferAmount
+   * @param transactionDate
+   */
+  void transferMoney(LocalDateTime transactionDate, Account sourceAccount,
+      Account destinationAccount, BigDecimal transferAmount);
+
+  /**
+   * 
+   * @param account the account to depose into.
+   * @param localDateTime Date and time of the operation.
+   * @param amount the money amount of the operation.
+   */
+  void withdrowAmount(LocalDateTime localDate, Account account, BigDecimal accountNumber);
+
+
+}

@@ -1,0 +1,11 @@
+<div style="position:relative;">
+	<div name="select-ligne" id='ligne-checkbox-container' style="margin-left: -1.5em; margin-right: -1.5em;">		
+		<div ng-repeat="ligne in vars.listeLignes" style="display: inline-block;" >
+			<div class="ligne-{{ligne.shape}}">
+				<input type="checkbox" id="lignes{{ligne.code}}" ng-disabled="vars.toutLeReseau == 'R'"
+						ng-click="toggleLinesSelection(ligne.code)" />
+				<label id="lignes{{ligne.code}}" for="lignes{{ligne.code}}" style="border-color:{{ligne.color}}">
+						<p class="lignes{{ligne.code}}" style="color:{{ligne.color}};">{{ ligne.code }}</p></label>
+			</div>
+	</div>
+</div>

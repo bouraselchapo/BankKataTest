@@ -1,0 +1,191 @@
+
+angular.module('consultationGareFormModule') 
+
+.controller('consultationGareFormController', 
+		   ['$scope', '$rootScope', '$location', '$http', 'Auth',
+             function($scope, $rootScope, $location, $http, Auth) {
+	
+	$scope.model = {};
+	$scope.listeGareEvent;
+	
+	$scope.precedantDisabled=false;
+	$scope.suivantDisabled=false;
+	$scope.numPage = 1
+	$scope.showEditLigneGare = false
+	$scope.gareEventSelected;
+	$scope.listeCategories;
+	
+	$scope.idCategorieSelected;
+	$scope.idEventlected;
+	
+	$scope.EnregistrerDisabled=true;
+
+    jQuery(document).ready(function($){
+    	var elt = $("#inputdateFinEventFiltre");
+//    	if(elt.length) elt.datetimepicker({
+//          	locale: 'fr',
+//            viewMode: 'days',
+//            format: 'DD/MM/YYYY',
+//     });
+   });
+	
+	$rootScope.initConsultationGare = function(filtre, numPage) {
+		$scope.filtreConsultationGare = filtre;
+    	if(filtre == undefined){
+    		filtre ={};
+    	}
+    	if(filtre.codeUIC == undefined){
+    		filtre.codeUIC ="";
+    	}
+    	if(filtre.ligneFiltre == undefined){
+    		filtre.ligneFiltre ="";
+    	}
+    	
+    	if(filtre.dateFinEvent == undefined){
+    		filtre.dateFinEvent ="";
+    	}
+    	
+    	if(filtre.dateDebEvent == undefined){
+    		filtre.dateDebEvent ="";
+    	}
+    	if(filtre.idCategorie == undefined){
+    		filtre.idCategorie ="";
+    	}
+    	if(filtre.impactValidation == undefined){
+    		filtre.impactValidation ="";
+    	}
+    	if(numPage!=undefined){
+    		$scope.numPage = numPage;
+    	}
+    	
+    	$http.get("services/gare/getGaresEvents/?numPage="+$scope.numPage+"&codeUIC="+filtre.codeUIC+"&ligneFiltre="+filtre.ligneFiltre +"&dateFinEvent="+filtre.dateFinEvent
+    			+"&dateDebEvent="+filtre.dateDebEvent+"&idCategorieSelectedFiltre="+filtre.idCategorieSelectedFiltre+"&impactValidation="+filtre.impactValidation).success(function(listeGareEvent) {
+    		
+    		if($scope.numPage == 1){
+        		$scope.precedantDisabled=true;
+        	}
+    		
+    		if(listeGareEvent != null){
+    			$scope.listeGareEvent = listeGareEvent // mettre la liste des catégories dans le sope
+    		}else{
+    			$scope.precedantDisabled=true;
+    			$scope.suivantDisabled=true;
+    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+    		}
+    		
+    		$http.get("services/categorie/getCategories", $scope.model).success(function(listeCategories) {
+        		if(listeCategories != null){
+        			$scope.listeCategories = listeCategories // mettre la liste des catégories dans le sope
+        		}else{
+        			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+        		}
+        		
+        	});
+    		
+    		
+    	});
+    };
+    
+    $scope.filtreGare = {};
+    $rootScope.initConsultationGare($scope.filtreGare);
+    
+    $scope.precedantGare = function(){
+    	
+    	if($scope.numPage == 1){
+    		$scope.precedantDisabled=true;
+    	}else{
+    		$scope.numPage--;
+    		$rootScope.initConsultationGare($scope.filtreConsultationGare);
+    	}
+    };
+    
+    $scope.suivantGare = function(){
+    	$scope.numPage++;
+    	$scope.precedantDisabled=false;
+    	$rootScope.initConsultationGare($scope.filtreConsultationGare);
+    };
+    
+    $scope.modifierGareEvent = function(idGareEvent){
+    	$scope.showEditLigneGare = true;
+    	$scope.EnregistrerDisabled=false;
+    	
+    	angular.forEach($scope.listeGareEvent, function(gareEvent, key) {
+			if(gareEvent.id == idGareEvent){
+				$scope.gareEventSelected = gareEvent;
+			}
+		});
+    };
+   
+    $scope.supprimerGareEvent = function(gareEvent){
+    	var options={day:"2-digit", month:"2-digit",year:"numeric"};
+    	var madatedebutEvent = new Date(gareEvent.dateDebutEvent).toLocaleString('fr-FR',options);
+    	if (confirm("Êtes-vous sûr de vouloir supprimer l'évènement de la gare "+gareEvent.libelleGare+" du "+madatedebutEvent+" ?")){
+    	var index = $scope.listeGareEvent.indexOf(gareEvent);
+    	$scope.listeGareEvent.splice(index, 1);  
+    	 var idGareEvenement =  gareEvent.id;
+    	$http.post("services/gare/deleteGareEvent", idGareEvenement).success(function(listeCategories) {
+		$rootScope.initConsultationGare($scope.filtreConsultationGare);
+    	
+    	});
+    	}
+    };
+   
+    
+    
+    $scope.selectCategorieGare = function(){
+    	$scope.idCategorieSelected;
+		angular.forEach($scope.listeCategories, function(categorie, key) {
+			if(categorie.id == $scope.idCategorieSelected){
+				$scope.gareEventSelected.libelleCategorie = categorie.libelle;
+				$scope.gareEventSelected.idCategorie = categorie.id;
+				$scope.listeEvenements = categorie.listEvenements
+			}
+		});
+    };
+    
+    $scope.selectEventGare = function(){
+    	$scope.idEventlected;
+		angular.forEach($scope.listeEvenements, function(evenement, key) {
+			if(evenement.id == $scope.idEventlected){
+				$scope.gareEventSelected.libelleEvent = evenement.libelle;
+				$scope.gareEventSelected.idEvent = evenement.id;
+				$scope.listeInfoComplementaires = evenement.listeInfoCompl;
+			}
+		});
+    };
+    
+    $scope.selectInfoCmplGare = function(){
+    	$scope.idInfoCpmlSelected;
+    	angular.forEach($scope.listeInfoComplementaires, function(infoCmpl, key) {
+			if(infoCmpl.id == $scope.idInfoCpmlSelected){
+				$scope.gareEventSelected.libelleInfoCmpl = infoCmpl.libelle;
+				$scope.gareEventSelected.idInfoCmpt = infoCmpl.id;
+			}
+		});
+    	
+
+    };
+    
+    $scope.updateEventGare = function(){
+    	if($("#inputdateFinEvent").val() ==""){
+   		 event.preventDefault();
+    	}
+    	else{
+    		$scope.gareEventSelected.oldDateFinEvent = $scope.gareEventSelected.dateFinEvent;
+        	$scope.gareEventSelected.dateFinEvent = new Date($("#inputdateFinEvent").val());
+        	$scope.gareEventSelected.idUser =  Auth.getUser().id;
+        	$http.post("services/gare/updateGareEvent", $scope.gareEventSelected).success(function(listeCategories) {
+        	window.alert("Modification enregistrée.");	
+        		if(listeCategories != null){
+        			$rootScope.initConsultationGare($scope.filtreConsultationGare);
+        			
+        		}else{
+        			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+        			//window.alert("Merci de saisir tous les champs obligatoires.");
+        		}
+        		
+        	});
+    		}
+    };
+      
+}]);

@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fr.sncf.persistance.ReseauDao">
+
+	<insert id="saisirReseauJour" useGeneratedKeys="true"
+		keyProperty="reseauEvenementBean.id">
+
+		insert into RESEAU_JOUR
+		(RESEAU_JOUR_User_Id,
+		RESEAU_JOUR_date, reseau_heure_debut, RESEAU_date_prev_debut,
+		RESEAU_jour_date_fin, RESEAU_heure_fin, RESEAU_date_prev_fin,
+		RESEAU_JOUR_id_event,
+		RESEAU_JOUR_id_categorie, RESEAU_JOUR_id_infocompl, RESEAU_JOUR_saisie_libre_infocompl,
+		RESEAU_JOUR_duree_event, RESEAU_JOUR_STIF, RESEAU_JOUR_impact_validation, RESEAU_JOUR_delete, reseau_jour_update_time)
+		values
+		(#{reseauEvenementBean.idUser},
+		#{reseauEvenementBean.dateDebutEvent}, #{reseauEvenementBean.heureDebut}, #{reseauEvenementBean.datePrevDebut},
+		#{reseauEvenementBean.dateFinEvent}, #{reseauEvenementBean.heureFin}, #{reseauEvenementBean.datePrevFin},
+		#{reseauEvenementBean.idEvent},#{reseauEvenementBean.idCategorie},#{reseauEvenementBean.idInfoCmpt},
+		#{reseauEvenementBean.saisieLibreInfoCompl},
+		#{reseauEvenementBean.dureeEvent}, #{reseauEvenementBean.stif}, #{reseauEvenementBean.impactValidation}, 'NON', LOCALTIMESTAMP)
+	</insert>
+
+	<insert id="saisirListeReseauJour" parameterType="java.util.List">
+		INSERT into
+		RESEAU_JOUR
+		(RESEAU_JOUR_User_Id,
+		RESEAU_JOUR_date,
+		RESEAU_JOUR_date_fin,
+		RESEAU_JOUR_id_event,
+		RESEAU_JOUR_id_categorie,
+		RESEAU_JOUR_id_infocompl,
+		RESEAU_JOUR_saisie_libre_infocompl,
+		RESEAU_JOUR_duree_event,
+		RESEAU_JOUR_STIF, RESEAU_JOUR_impact_validation, RESEAU_JOUR_delete) values (
+		<foreach item="reseauEvenementBean" collection="listeReseauJour"
+			open="" close="" separator="),(">
+			#{reseauEvenementBean.idUser},#{reseauEvenementBean.dateDebutEvent},#{reseauEvenementBean.dateFinEvent},#{reseauEvenementBean.idEvent},
+			#{reseauEvenementBean.idCategorie},#{reseauEvenementBean.idInfoCmpt},
+			#{reseauEvenementBean.saisieLibreInfoCompl},
+			#{reseauEvenementBean.dureeEvent}, #{reseauEvenementBean.stif},  #{reseauEvenementBean.impactValidation}, 'NON'
+		</foreach>
+		)
+	</insert>
+	
+	<select id="recupererListeReseauxEvenement" resultType="fr.sncf.domaine.ReseauEvenementBean">
+		SELECT
+		reseau_jour.reseau_jour_id as id, 
+		reseau_jour.reseau_jour_date as dateDebutEvent,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		reseau_jour.reseau_jour_duree_event as dureeEvent,
+		reseau_jour.reseau_jour_saisie_libre_infocompl as saisieLibreInfoCompl,
+		reseau_jour.reseau_jour_stif as stif
+		FROM reseau_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+		
+		ORDER BY reseau_jour.RESEAU_JOUR_date DESC
+	</select>
+	
+	<select id="recupererListeReseauxEvenementParDate" resultType="fr.sncf.domaine.ReseauEvenementBean">
+		SELECT
+		reseau_jour.reseau_jour_id as id, 
+		reseau_jour.reseau_jour_date as dateDebutEvent,
+		
+		reseau_jour.reseau_jour_id_categorie as idCategorie,
+		reseau_jour.reseau_jour_id_event as idEvent,
+		reseau_jour.reseau_jour_id_infocompl as idInfoCmpt,
+		
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		reseau_jour.reseau_jour_duree_event as dureeEvent,
+		reseau_jour.reseau_jour_saisie_libre_infocompl as saisieLibreInfoCompl,
+		reseau_jour.reseau_jour_stif as stif
+		FROM reseau_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+		
+		WHERE reseau_jour.reseau_jour_date =  #{reseauEvenementBean.dateDebutEvent}
+		AND reseau_jour.reseau_jour_date_fin =  #{reseauEvenementBean.dateFinEvent}
+		AND reseau_jour.reseau_jour_delete != 'OUI'
+		
+		ORDER BY reseau_jour.RESEAU_JOUR_date DESC
+	</select>
+	
+	<select id="recupererListeReseauxEvenementSansDoublon" resultType="fr.sncf.domaine.ReseauEvenementBean">
+		SELECT
+		MIN(reseau_jour.reseau_jour_id) as id, 
+		MIN(reseau_jour.reseau_jour_date) as dateDebutEvent,
+		reseau_jour.reseau_jour_date_fin as dateFinEvent,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		MIN(reseau_jour.reseau_jour_duree_event) as dureeEvent,
+		MIN(reseau_jour.reseau_jour_saisie_libre_infocompl) as saisieLibreInfoCompl,
+		MIN(reseau_jour.reseau_jour_stif) as stif
+		FROM reseau_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+		
+		WHERE reseau_jour.reseau_jour_delete != 'OUI'
+		
+		
+		<if test="dateDebut != null and dateFin == null">
+   	 		AND reseau_jour.reseau_jour_date = #{dateDebut}
+  		</if>
+  		
+  		<!-- ARI Ajout du filtre dans le cas où la date de fin uniquement est renseignée -> ne fonctionne pas ?-->
+  		<if test="dateFin != null and dateDebut == null">
+   	 		AND reseau_jour.reseau_jour_date_fin = #{dateFin}
+  		</if>
+  		
+  		<!-- ARI Mise à jour du filtre si les dates de début et date de fin sont renseignées  		
+  		<if test="dateDebut != null and dateFin != null">
+   	 		AND (( reseau_jour.reseau_jour_date BETWEEN #{dateDebut} and #{dateFin} ) OR ( #{dateDebut} BETWEEN reseau_jour.reseau_jour_date and reseau_jour.reseau_jour_date_fin ) OR (reseau_jour.reseau_jour_date_fin BETWEEN #{dateDebut} and #{dateFin} ))
+  		</if>
+  		-->
+  		<if test="dateDebut != null and dateFin != null">
+  			AND NOT reseau_jour.reseau_jour_date &gt; #{dateFin} AND NOT reseau_jour.reseau_jour_date_fin &lt; #{dateDebut}
+  		</if>
+  		
+  		<if test="idCategorie != null">
+   	 		AND reseau_jour.reseau_jour_id_categorie =  #{idCategorie}
+  		</if>
+  		
+  		<if test="impactValidation != ''">
+   	 		AND reseau_jour.reseau_jour_impact_validation =  #{impactValidation}
+  		</if>
+		
+		GROUP BY reseau_jour_date_fin, categorie_libele, evenement_libele, information_compl_libele
+	</select>
+	
+	<select id="recupererListeReseauxEvenementSansDoublonAll" resultType="fr.sncf.domaine.ReseauEvenementBean">
+		SELECT
+		MIN(reseau_jour.reseau_jour_id) as id, 
+		MIN(reseau_jour.reseau_jour_date) as dateDebutEvent,
+		reseau_jour.reseau_jour_date_fin as dateFinEvent,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		MIN(reseau_jour.reseau_jour_duree_event) as dureeEvent,
+		MIN(reseau_jour.reseau_jour_saisie_libre_infocompl) as saisieLibreInfoCompl,
+		MIN(reseau_jour.reseau_jour_stif) as stif
+		FROM reseau_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+		
+		WHERE reseau_jour.reseau_jour_delete != 'OUI'
+		
+		GROUP BY reseau_jour_date_fin, categorie_libele, evenement_libele, information_compl_libele
+	</select>
+	
+	<delete id="supprimerReseauEvenement">
+  		delete from reseau_jour where reseau_jour.reseau_jour_id = #{idReseauEvenement}
+	</delete>
+	
+	<update id="modifierReseauEvenement">
+  		update reseau_jour set
+    	RESEAU_JOUR_id_categorie = #{reseauEvenementBean.idCategorie},
+    	RESEAU_JOUR_id_event = #{reseauEvenementBean.idEvent},
+    	RESEAU_JOUR_id_infocompl = #{reseauEvenementBean.idInfoCmpt},
+    	reseau_jour_stif = #{reseauEvenementBean.stif}
+  		where reseau_jour.reseau_jour_id = #{reseauEvenementBean.id}
+	</update>
+	
+	<update id="modifierReseauEvenementSurUnePeriode">
+  		update reseau_jour set
+  		RESEAU_JOUR_date_fin = #{reseauEvenementBean.dateFinEvent},
+    	RESEAU_JOUR_id_categorie = #{reseauEvenementBean.idCategorie},
+    	RESEAU_JOUR_id_event = #{reseauEvenementBean.idEvent},
+    	RESEAU_JOUR_id_infocompl = #{reseauEvenementBean.idInfoCmpt},
+    	reseau_jour_saisie_libre_infocompl = #{reseauEvenementBean.saisieLibreInfoCompl},
+    	reseau_jour_stif = #{reseauEvenementBean.stif}
+  		where reseau_jour.reseau_jour_id IN (SELECT reseau_jour.reseau_jour_Id        
+  										 FROM reseau_jour
+  										 
+  										LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+										LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+										LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+										 
+										WHERE categorie.categorie_libele = (SELECT categorie.categorie_libele
+																			FROM reseau_jour
+																			LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+																			WHERE reseau_jour.reseau_jour_Id = #{reseauEvenementBean.id} 		
+																		   )
+										 AND evenement.evenement_libele = (SELECT evenement.evenement_libele
+						 													FROM reseau_jour  
+						 													LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+						 													WHERE reseau_jour.reseau_jour_Id = #{reseauEvenementBean.id} 		
+						 												   )
+										 AND information_compl.information_compl_libele = (SELECT information_compl.information_compl_libele
+																							FROM reseau_jour  
+																							LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+																							WHERE reseau_jour.reseau_jour_Id = #{reseauEvenementBean.id} 		
+																						   ) 
+										 AND reseau_jour.reseau_jour_date_fin = (SELECT reseau_jour.reseau_jour_date_fin
+																							FROM reseau_jour  
+																							WHERE reseau_jour.reseau_jour_Id = #{reseauEvenementBean.id} 		
+																						   )
+										 )
+	</update>
+	
+	<update id="supprimerReseauEvenementSurUnePeriode">
+  		delete from reseau_jour 
+  		where reseau_jour.reseau_jour_id IN (SELECT reseau_jour.reseau_jour_Id        
+  										 FROM reseau_jour
+  										 
+  										LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+										LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+										LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+										 
+										WHERE categorie.categorie_libele = (SELECT categorie.categorie_libele
+																			FROM reseau_jour
+																			LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+																			WHERE reseau_jour.reseau_jour_Id = #{idReseauEvenement} 		
+																		   )
+										 AND evenement.evenement_libele = (SELECT evenement.evenement_libele
+						 													FROM reseau_jour  
+						 													LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+						 													WHERE reseau_jour.reseau_jour_Id = #{idReseauEvenement} 		
+						 												   )
+										 AND information_compl.information_compl_libele = (SELECT information_compl.information_compl_libele
+																							FROM reseau_jour  
+																							LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+																							WHERE reseau_jour.reseau_jour_Id = #{idReseauEvenement} 		
+																						   ) 
+										 
+										 AND reseau_jour.reseau_jour_date_fin = (SELECT reseau_jour.reseau_jour_date_fin
+																							FROM reseau_jour  
+																							WHERE reseau_jour.reseau_jour_Id = #{idReseauEvenement} 		
+																						   )
+																						   
+										 )
+	</update>
+	
+	<update id="supprimerLogiqueReseauEvenementSurUnePeriode">
+  		update reseau_jour set
+  		RESEAU_JOUR_Delete = 'OUI'
+  		where reseau_jour.reseau_jour_id IN (SELECT reseau_jour.reseau_jour_Id        
+  										 FROM reseau_jour
+  										 
+  										LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+										LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+										LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+										 
+										WHERE categorie.categorie_libele = (SELECT categorie.categorie_libele
+																			FROM reseau_jour
+																			LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+																			WHERE reseau_jour.reseau_jour_Id = #{idReseauEvenement} 		
+																		   )
+										 AND evenement.evenement_libele = (SELECT evenement.evenement_libele
+						 													FROM reseau_jour  
+						 													LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+						 													WHERE reseau_jour.reseau_jour_Id = #{idReseauEvenement} 		
+						 												   )
+										 AND information_compl.information_compl_libele = (SELECT information_compl.information_compl_libele
+																							FROM reseau_jour  
+																							LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+																							WHERE reseau_jour.reseau_jour_Id = #{idReseauEvenement} 		
+																						   ) 
+										 AND reseau_jour.reseau_jour_date_fin = (SELECT reseau_jour.reseau_jour_date_fin
+																							FROM reseau_jour  
+																							WHERE reseau_jour.reseau_jour_Id = #{idReseauEvenement} 		
+																						   )
+										 )
+	</update>
+
+	<select id="recupererReseauEventTotalPourExport" resultType="fr.sncf.domaine.ReseauEvenementBean">
+	 select distinct 
+	   reseau_jour_id as id,
+	   reseau_jour_user_id as idUser,
+	   useraccount_numero_cp as numCp,
+	   reseau_jour_date as dateDebutEvent,
+	   reseau_jour_date_fin as dateFinEvent,
+	   reseau_jour_id_categorie as idCategorie,
+	   reseau_jour_id_event as idEvent,
+	   reseau_jour_id_infocompl as idInfoCmpt,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,	   
+	   reseau_jour_saisie_libre_infocompl as saisieLibreInfoCompl,
+	   reseau_jour_duree_event as dureeEvent,
+	   reseau_jour_stif as stif,
+	   reseau_jour_impact_validation as impactValidation
+	 
+	 FROM reseau_jour
+	 
+	 	LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+		LEFT OUTER JOIN useraccount ON useraccount.useraccount_id = reseau_jour.reseau_jour_user_id
+	 
+	 WHERE reseau_jour.reseau_jour_delete != 'OUI'
+	   
+	</select>
+	
+	<select id="recupererReseauEventTotalPourExportCopy" resultType="fr.sncf.domaine.ReseauEvenementBean">
+	 Copy ( select distinct 
+	   reseau_jour_user_id as ID_SAISIE,
+	   useraccount_numero_cp as NUM_CP,
+	   calendrier.calendrier_date as Date,
+	   reseau_jour_date as Date_Debut,
+	   reseau_jour_date_fin as Date_Fin,
+	   reseau_jour_duree_event as Duree,
+	   reseau_jour_id_categorie as CategorieEvent,
+	   categorie.categorie_libele as CategorieEvent_libelle,
+	   reseau_jour_id_event as Event,
+	   evenement.evenement_libele as Event_libelle,
+	   reseau_jour_id_infocompl as SousEvent,	   
+	   information_compl.information_compl_libele as SousEvent_libelle,	
+	   reseau_jour_saisie_libre_infocompl as InfoEvent_libre
+	 FROM reseau_jour
+	 
+	 INNER JOIN calendrier ON calendrier.calendrier_date &gt;= reseau_jour.reseau_jour_date 
+	  AND calendrier.calendrier_date &lt;= reseau_jour.reseau_jour_date_fin
+	  
+	 	LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+		LEFT OUTER JOIN useraccount ON useraccount.useraccount_id = reseau_jour.reseau_jour_user_id
+	 
+	 WHERE reseau_jour.reseau_jour_delete != 'OUI')
+	   To '/nas/sftppddp2/outgoing/reseauTotal.csv' With CSV DELIMITER ';' HEADER
+	</select>
+	
+	
+	<select id="recupererReseauEvenementDoublons" resultType="fr.sncf.domaine.ReseauEvenementBean">
+			SELECT
+		reseau_jour.reseau_jour_id as id, 
+		reseau_jour.reseau_jour_date as dateDebutEvent,
+		reseau_jour.reseau_jour_date_fin as dateFinEvent,
+		categorie.categorie_libele as libelleCategorie,
+		evenement.evenement_libele as libelleEvent,
+		information_compl.information_compl_libele as libelleInfoCmpl,
+		reseau_jour.reseau_jour_duree_event as dureeEvent,
+		reseau_jour.reseau_jour_saisie_libre_infocompl as saisieLibreInfoCompl,
+		reseau_jour.reseau_jour_stif as stif
+		FROM reseau_jour 
+		LEFT OUTER JOIN categorie ON categorie.categorie_id = reseau_jour.RESEAU_JOUR_id_categorie
+		LEFT OUTER JOIN evenement ON evenement.evenement_id = reseau_jour.RESEAU_JOUR_id_event
+		LEFT OUTER JOIN information_compl ON information_compl.information_compl_id = reseau_jour.RESEAU_JOUR_id_infocompl
+		
+		WHERE reseau_jour.reseau_jour_delete != 'OUI'
+
+		<if test="reseauEvenementBean.idCategorie != null">
+   	 		AND reseau_jour.reseau_jour_id_categorie =  #{reseauEvenementBean.idCategorie}
+  		</if>
+  		
+  		<if test="reseauEvenementBean.idEvent != null">
+   	 		AND reseau_jour.reseau_jour_id_event =  #{reseauEvenementBean.idEvent}
+  		</if>
+  		
+  		<if test="reseauEvenementBean.idInfoCmpt != null">
+   	 		AND reseau_jour.reseau_jour_id_infocompl =  #{reseauEvenementBean.idInfoCmpt}
+  		</if>
+  		
+    	<if test="reseauEvenementBean.dateDebutEvent != null">
+   	 		AND reseau_jour.reseau_jour_date = #{reseauEvenementBean.dateDebutEvent}
+  		</if>
+  		
+  		<!-- ARI Ajout du filtre dans le cas où la date de fin uniquement est renseignée -> ne fonctionne pas ?-->
+  		<if test="reseauEvenementBean.dateFinEvent != null">
+   	 		AND reseau_jour.reseau_jour_date_fin = #{reseauEvenementBean.dateFinEvent}
+  		</if>
+  		
+  		<if test="reseauEvenementBean.heureDebut != null">
+   	 		AND reseau_jour.reseau_heure_debut = #{reseauEvenementBean.heureDebut}
+  		</if>
+  		
+  		<if test="reseauEvenementBean.heureFin != null">
+   	 		AND reseau_jour.reseau_heure_fin = #{reseauEvenementBean.heureFin}
+  		</if>
+	</select>
+
+</mapper> 

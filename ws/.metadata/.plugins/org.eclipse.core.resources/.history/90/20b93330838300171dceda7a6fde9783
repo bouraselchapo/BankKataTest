@@ -1,0 +1,5 @@
+angular.module('gestionReferentielModule', [ 'saisieUtilisateurRefModule',
+		'saisieGareRefModule', 'saisieCategorieRefModule', 'consultationUtilisateurRefModule',
+		'consultationGareRefModule', 'consultationLigneRefModule', 'consultationCategorieRefModule',
+		'consultationEvenementRefModule','moduleDirectvieCommon', 'consultationInfoComplRefModule',
+		'ui.router' ]);

@@ -1,0 +1,94 @@
+angular.module('saisieEvenementModule')
+
+.directive('uiFormSaisieGare', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'saisieGareForm/view.html',
+		controller : 'saisieGareFormController',
+		controllerAs : 'saisieGareFormController',
+		replace: true,
+	}
+}]);
+
+angular.module('saisieEvenementModule')
+
+.directive('uiFormSaisieLigne', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'saisieLigneForm/view.html',
+		controller : 'saisieGareFormController',
+		controllerAs : 'saisieGareFormController',
+		replace: true,
+	}
+}]);
+
+angular.module('saisieEvenementModule')
+
+.directive('uiConsultationSaisie', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'consultationEvenement/ConsultEvenementView.html',
+		controller : 'consultationController',
+		controllerAs : 'consultationController',
+		replace: true,
+	}
+}]);
+
+// Dirdective input Gare
+angular.module('saisieEvenementModule')
+
+.directive('uiInputGare', ['$http',function($http) {
+	return {
+		restrict : 'E',
+		templateUrl : 'templates/saisie/input-gare.html',
+		controller : 'saisieGareFormController',
+		controllerAs : 'saisieGareFormController',
+		replace: true,
+		link: function($scope) {
+			
+			function loadAutoCompletion(garesData) {
+				var gareInput = serviceGare.getInputGare();
+		    	//console.log("INFO : loadListeGares : serviceGare " + serviceGare)
+		    	//console.log(gareInput);
+		    	if(gareInput.length) {
+		    		var options = {
+		    	    		data: garesData,
+		    	    		getValue: "libelle",
+		    	    		list: {	
+		    	    		    match: {
+		    	    		      enabled: true
+		    	    		    }
+		    	    		}
+		    	    	};
+		    		
+		    		gareInput.easyAutocomplete(options); 
+		    	}
+			}
+			
+	    	$http.get("services/gare/getGares", $scope.model).success(function(listeGares) {
+		    	if(listeGares != null){
+		   			// mettre la liste des catégories dans le sope
+		   	    	//console.log("Load saisie : " + $scope.vars.listeGares);
+		   	    	$scope.vars.listeGares = listeGares;
+		   	    	loadAutoCompletion(listeGares);
+		   		}else {
+	    			//Afficher un message d'erreurs informant que la liste des catégories est vides !
+	    	    	console.log("Liste des Gares vide");
+	    		}
+		   	});
+	    },
+	}
+}]);
+
+//Dirdective input Gare
+angular.module('saisieEvenementModule')
+
+.directive('uiSelectLigne', [function() {
+	return {
+		restrict : 'E',
+		templateUrl : 'templates/saisie/select-ligne.html',
+		controller : 'saisieGareFormController',
+		controllerAs : 'saisieGareFormController',
+		replace: true,
+	}
+}]);

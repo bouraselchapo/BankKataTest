@@ -1,0 +1,799 @@
+ /*@import "theme.css";*/
+ 
+ /* ===== Navigation Styles =================================================
+   Author: SNCF DSIT-E7/AR
+   ========================================================================== */
+
+/* Sous-menu qui apparait que dans les résolutions inférieures à 979px de large */
+div#subItem, 
+div#subItemContent{
+   display: none;
+}
+
+/* Menu déroulant */
+.sncf_nav{
+	position: absolute;
+}
+
+/* Barre de navigation principale (contenant le menu déroulant)*/
+nav.main-nav{
+	height: 84px;
+	margin: 0px 0px 0px 0px;
+	padding: 0px;
+	-moz-box-shadow: 0 2px 2px -2px #949494;
+	-webkit-box-shadow: 0 2px 2px -2px #949494;
+	box-shadow: 0 2px 2px -2px #949494;
+	z-index: 0;
+	/* MENU FIXE 
+	position:relative;
+	width:100%;
+	top:43px;
+	z-index:2;
+	 FIN MENU FIXE */
+}
+
+nav.main-nav .sncf_nav > li > a > i{
+	display:block;
+	margin:auto;
+}
+
+/* Liens du menu déroulant */
+.sncf_nav a.main{
+	background: no-repeat top right url(/Images/border.png);
+	width:130px;
+	height:54px;
+	line-height:17px;
+	margin-top:1000px;
+	margin-right:-129px;
+	float:left;
+	text-transform:uppercase;
+}
+
+/* Liens actifs d'un menu déroulant */
+.sncf_nav a.main:hover, 
+.sncf_nav a.main:focus, 
+.sncf_nav a.main:active { 
+	margin-right:0;
+	text-decoration: none;
+}
+
+/* Liens actifs d'un sous-menu */
+.sncf_nav .sub a:hover, 
+.sncf_nav .sub a:focus, 
+.sncf_nav .sub a:active {
+	margin:0;
+	text-decoration: none;
+}
+
+/* Conteneur d'une navigation principale */
+.main-nav .container, 
+.main-nav .container-fluid{
+	padding-top: 20px;
+}
+
+/* Logo à gauche du menu déroulant */
+.sncf_nav .logo{
+	float:left;
+	padding: 0px 8px 0px 0px;
+	margin-top: 3px;
+	background: no-repeat top right url(/Images/border.png);
+}
+.sncf_nav .logo a{
+	top:-20px;
+}
+
+/* case d'un menu déroulant */
+.sncf_nav .link {
+	width:130px;
+	margin-top:-1000px;
+	float:left;
+	text-align: center;
+}
+
+/* Liens menu déroulant */
+.sncf_nav a {
+	position:relative;
+	padding-top: 15px;
+	top: 0px;
+	display:block;
+	min-height:22px;
+	text-decoration:none;
+	z-index:10;
+}
+.sncf_nav .link > a{
+	padding-top:0;
+	padding-bottom:15px;
+}
+
+/* Liens d'un sous-menu */
+.sncf_nav .sub a {
+	margin: 0 -10px 0 0;
+	padding-left: 8px;
+	padding-top: 4px;
+	border-left: 1px solid #cdcdcd;
+	border-right: 1px solid #cdcdcd;
+	width: 120px;
+	z-index: 10;
+	-moz-box-shadow: 0px 2px 2px -1px #949494;
+	-webkit-box-shadow: 0px 2px 2px -1px #949494;
+	box-shadow: 0px 2px 2px -1px #949494;
+}
+
+/* Sous-menu d'un menu déroulant */
+.sncf_nav .sub {
+	position:relative;
+	float:left;
+	border-bottom: 1px solid #cdcdcd;
+	padding-top:21px;
+	margin-top: -25px;
+	text-align: left;
+}
+
+.sncf_nav ul.sub li a.sep {
+border-top:1px solid #CDCDCD;
+}
+
+/* Menu déroulant */
+.sncf_nav, 
+.sncf_nav ul {
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}
+
+
+
+/* Marge inférieure du conteneur principal */
+.container.main > *:last-child,
+.container-fluid.main > *:last-child{
+	margin-bottom:20px;
+}
+
+/* MENU FIXE
+.container.main, .container-fluid.main{
+	padding-top:145px;
+}
+ MENU FIXE*/
+
+ /* ===== SNCF Styles ========================================================
+   Author: SNCF DSIT-E7/AR
+   ========================================================================== */
+
+/* Taille de la police du site */
+body{
+	font-size:13px;
+	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+body > .navbar {
+  font-size: 13px;
+}
+
+h1,h2,h3{
+	font-weight:normal;
+	text-transform:uppercase;
+	line-height:110%;
+}
+
+h1,h2{
+	font-size:23px;
+}
+
+
+h3{
+	font-size:18px;
+}
+
+h4{
+	font-size:15px;
+}
+
+/* Marges du corps de la page */
+.corps{
+	padding-top:18px;
+}
+
+/* Concerne les composants situés dans les encarts d'informations du type B */
+.sncf_encart_info input{
+	width:50%;
+}
+ 
+ /* Barre de navigation (qui contient le logo SNCF, liens et éventuels contrôles */
+.navbar-inner{
+	z-index: 100;
+	width: 100%;
+	position: relative;
+	/* MENU FIXE 
+	position:fixed;
+	top:4px;
+	FIN MENU FIXE */
+	
+}
+
+/* Liens et textes de la navbar (barre de navigation noire) */
+.navbar .nav>li a,
+.navbar .nav>li p{
+	text-transform:uppercase;
+	font-size:11px;
+	font-weight:bold;
+}
+/* Textes de la navbar (les liens sont gérés par bootstrap) */
+.navbar .nav>li p{
+    float: none;
+    padding: 9.5px 15px;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #232323;
+	margin-bottom:0;
+	cursor:default;
+}
+/* Premier texte d'une navbar */
+.navbar .nav>li p:first-child{
+	padding-left:0;
+}
+
+/* Correction de la position des icones affichés dans la navbar */
+.navbar .nav a i[class^="icon-"]{
+	position:relative;
+	bottom:1px;
+}
+
+/* Propriétés particulières aux navbar de footer */
+.corps .navbar.navbar-footer .nav > li p,
+.corps .navbar.navbar-footer .nav > li a
+{
+	text-transform:none;
+}
+
+/* Encarts well */
+.well{
+	border-radius:2px;
+	border:none;
+	box-shadow:none;
+}
+
+.well > .alert {
+margin-top:10px;
+}
+
+
+/* Les propriétés suivantes permettent de modifier les couleurs de surlignage*/   
+::-moz-selection{ 
+	text-shadow: none;
+}
+::selection { 
+	text-shadow: none;
+} 
+::-webkit-selection{ 
+	text-shadow: none;
+}
+
+/* Logo de la navbar */
+.logo-sncf{
+	float: left;
+	margin-top: 6px;
+}
+
+/* Filet violet en haut de la page */
+div#top-navbar{
+	height: 4px;
+/* MENU FIXE 
+	width:100%;
+	position:fixed;
+	z-index:2;
+ FIN MENU FIXE */
+}
+
+/* Barre de navigation */
+.navbar{
+	margin:0;
+}
+.navbar-inner{
+	padding:0;
+	border:0;
+}
+
+/* Propriétés pour garder fonctionnel les menus dropdown lorsque le JavaScript est désactivé */
+.no-js .dropdown-menu{
+	position: relative;
+	top: 0px;
+}
+.sncf_close  > .dropdown-menu {
+	display: none;
+}
+.open > .dropdown-menu{
+	display: inline-block;
+}
+.no-js .dropdown-menu{
+	position:relative;
+	top:0px;
+}
+.dropdown-menu{
+	display:inline-block;
+}
+
+/* Propriété pour que le collapse ne masque pas d'information si le JS n'est pas activé */
+.no-js .accordion-body.collapse{
+	height:auto;
+}
+
+div#subItem{
+	margin:0px;
+}
+
+/* Bordure de séparation */
+hr{
+	border-style:solid none;
+    border-width: 1px 0;
+	border-color: #BEBEBE -moz-use-text-color #FFFFFF;
+}
+
+/* Encart de titre de page */
+.hero-unit{
+	border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1) inset;
+}
+
+/* Fil d'ariane */
+.breadcrumb{
+	border: none;
+	border-radius:2px;
+}
+
+/* Liens actifs des menus dropdown et typeahead */
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus,
+.dropdown-submenu:hover > a,
+.dropdown-submenu:focus > a,
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus
+{
+	background-image:none;
+	filter:none; /* Pour IE */
+}
+
+/* Suppression des marges en haut et en bas lorsque la pagination est dans un footer de tableau*/
+table.table tfoot .pagination{
+	margin-top:0;
+	margin-bottom:0;
+}
+
+/* Alignement vertical du texte des tableaux */
+table.table tfoot td{
+	vertical-align:top;
+}
+table.table td{
+	vertical-align:middle;
+}
+
+/* Marge des champs de formulaire dans un tableau*/
+table.table td input,
+table.table td .input-append,
+table.table td select{
+	/*margin-bottom:0;*/
+}
+
+/* Champs obligatoires d'un formulaire */
+label.required{
+	font-weight:bold;
+}
+
+/* Suppression de la marge intérieure du haut et du bas lorsque les well sont dans des colonnes */
+[class*=span]  > .well {
+	padding-top:1px;
+	padding-bottom:1x;
+}
+
+[class*=well]  > .nav {
+margin-bottom:0;
+border:0;
+margin:-4px -10px -10px -10px;
+
+}
+
+
+[class*=well]  > .nav-tabs > li > a, [class*=well]  > .nav-pills > li > a {
+padding-left:4px;
+}
+
+
+[class*=well]  > .nav li a {
+border:0;
+color:#232323;
+border-radius:0 0 0 0;
+border-bottom:1px solid #DDDDDD;
+}
+
+[class*=well]  > .nav li a:hover {
+color:#CB0044;
+border-radius:0 0 0 0;
+}
+
+
+[class*=well-]  > .nav li a {
+color:#fff;
+border-bottom:1px solid #fff;
+}
+
+[class*=well-]  > .nav li a:hover {
+color:#fff;
+background-color: rgba(0, 0, 1, 0.2);
+}
+
+[class*=well]  > .nav li.last a {
+border:0;
+}
+
+
+
+/* Caret haut (non existant dans bootstrap */
+.caret-up{
+	border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 4px solid #000000;
+    content: "";
+    display: inline-block;
+    height: 0;
+    vertical-align: top;
+    width: 0;
+}
+
+.table th .caret, 
+.table th .caret-up{
+	margin-top:10px;
+	float:right;
+}
+
+.table th.sortable:hover{
+	cursor:pointer;
+}
+.table th a{
+	text-decoration:none;
+}
+
+@media (max-width: 979px) {
+	/* Adapte un formulaire au format ipad */
+	.form-horizontal .control-label {
+		float: none;
+		width: auto;
+		padding-top: 0;
+		text-align: left;
+	}
+	.form-horizontal .controls {
+		margin-left: 0;
+	}
+	.form-horizontal .control-list {
+		padding-top: 0;
+	}
+	.form-horizontal .form-actions {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	.sncf_nav .logo{
+		background:none;
+	}
+	.navbar-inner{
+		height:auto;
+	}
+	.sncf_nav {
+		position:relative;
+	}
+	.sncf_nav .logo a{
+		top:0px;
+	}
+	ul.sncf_nav li.logo{
+		float:none;
+		margin:20px 0px;
+		padding:0px;
+	}
+	ul.sncf_nav li.logo a{
+		padding:0px;
+	}
+	.main-nav ul.sncf_nav li.link a.main{
+		background-image:none;
+	}
+	#subItemContent{
+		padding:10px 5px 2px 5px;
+		min-height:20px;
+		text-align:center;
+	}
+	#subItemContent ul.sub{
+		margin:0px;
+	}
+	#subItemContent ul.sub li{
+		display:inline;
+		font-size:13px;
+	}
+	#subItemContent ul.sub li+li:before{
+		content:'| ';
+	}
+	#subItemContent ul.sub{
+		margin-bottom:10px;
+	}
+	#subItemContent a.main{
+		display:none;
+	}
+	body{
+		padding-top:0;
+	}
+	.navbar-inner .container, 
+	.navbar-inner .container-fluid{
+		width:96%!important;
+		margin:auto;
+	}
+	.navbar .container, 
+	.navbar .container-fluid{
+		width:auto;
+		padding:0;
+	}
+	.nav-collapse .nav>li>a,
+	.nav-collapse .dropdown-menu a{
+		padding:3px 15px;
+		font-weight:bold;
+		border:none;
+	}
+	.nav-collapse .dropdown-menu{
+		position:static;
+		top:auto;
+		left:auto;
+		float:none;
+		display:block;
+		max-width:none;
+		margin:0 15px;
+		padding:0;
+		background-color:transparent;
+		border:none;
+		-webkit-border-radius:0;
+		-moz-border-radius:0;
+		border-radius:0;
+		-webkit-box-shadow:none;
+		-moz-box-shadow:none;
+		box-shadow:none;
+	}
+	.nav-collapse .navbar-form, 
+	.nav-collapse .navbar-search{
+		float:none;
+		padding:9px 15px;
+		margin:9px 0;
+		border:0px;
+	}
+	
+	nav.main-nav .sncf_nav > li > a > i{
+		display:inline-block;
+		margin-top:2px;
+	}
+}
+
+@media (max-width: 767px) {
+	.hero-unit h1,h1{
+		font-size:40px;
+	}
+	h3{
+		font-size:18px;
+		margin:0;
+		line-height:27px;
+	}
+	body{
+		padding:0;
+		line-height:18px;
+		font-size:13px;
+	}
+	
+	li{
+		line-height:inherit;
+	}
+	.hero-unit{
+		padding:25px;
+	}
+	.sidebar-nav{
+		margin-top:20px;
+	}
+	.navbar-fixed-top .container,
+	.navbar-fixed-top .container-fluid,
+	.main-nav .container{
+		width:100%;
+		margin:0px;
+		padding:0px;
+	}
+	nav.container,
+	nav.container-fluid{
+		text-align:center;
+	}
+	nav.main-nav{
+		height:auto;
+	}
+	.sncf_nav .link{
+		margin:0px;
+		padding:0px;
+		width:100%;
+		min-height:20px;
+	}
+	
+	.sncf_nav a.main,
+	.sncf_nav a.main:link,
+	.sncf_nav a.main:visited{
+		float:left;
+		margin:0;
+		padding:10px 0 0 0;
+		width:100%;
+		height:13px;
+		border-top-width:1px;
+		border-top-style:solid;
+		border-bottom-width:1px;
+		border-bottom-style:solid;
+	}
+
+	.sncf_nav .sub{
+		width:100%;
+		display:none;
+		margin-top:-21px;
+		border:none;
+	}
+	.sncf_nav .sub a{
+		margin:0;
+		padding:10px 0 0 0;
+		width:100%;
+		height:13px;
+		border-top-width:1px;
+		border-top-style:solid;
+		border-left:0px;
+		border-right:0px;
+		border-bottom-width:1px;
+		border-bottom-style:solid;
+	}
+	.sncf_nav a{
+		width:100%;
+		top:0px;
+		font-size:13px;
+		color:#333333;
+		text-align:center;
+		vertical-align:middle;
+		cursor:pointer;
+	}
+	div.container,
+	div.container-fluid{
+		padding-left:20px;
+		padding-right:20px;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+	.hero-unit{
+		padding:40px;
+	}
+	.navbar-fixed-top .container, 
+	.navbar-fixed-top .container-fluid, 
+	.main-nav .container{
+		width:100%!important;
+		margin:0px;
+		padding:0px;
+	}
+	
+	div#subItem{
+		display:block;
+	}
+	nav.main-nav{
+		height:auto;
+		padding-bottom:20px;
+	}
+	#subItemContent{
+		width:96.8%;
+		height:25px;
+		margin:5px auto 0px auto;
+		border-radius:5px;
+	}
+	
+	.sncf_nav .link{
+		margin:5px 1% 0% 1%;
+		padding:0px;
+		width:48%;
+		min-height:20px;
+	}
+	.sncf_nav a.main,
+	.sncf_nav a.main:link,
+	.sncf_nav a.main:visited{
+		float:left;
+		margin:0px;
+		padding:9px 0 3px 0;
+		width:100%;
+		height:24px;
+		border-radius:5px;
+		border:1px solid #E3E3E3;
+		/*text-shadow:0px -1px 0px #000;*/
+	}
+	
+	.sncf_nav .sub{
+		display:none;
+		float:left;
+	}
+	.sncf_nav .sub a{
+		display:none;
+	}
+	.sncf_nav a{
+		width:100%;
+		top:0px;
+		font-size:13px;
+		color:#333333;
+		text-align:center;
+		vertical-align:middle;
+		cursor:pointer;
+	}
+	
+	/* Concerne les composants situés dans les encarts d'informations du type B */
+	.sncf_encart_info input{
+		width:30%;
+	}
+}
+
+@media (min-width: 1200px){
+	.navbar-inner .container{
+		width:1170px;
+	}
+}
+
+
+
+
+.align_justify {text-align:justify;}
+
+/* LBI : positionne l'affichage du caption hors de l'écran, mais ne le rend pas invisible, pour rester interpretable par les captures d'écran */
+caption {position:absolute;left:-4000px;}
+
+/* LBi : je ajoute ca, ca permet de recréer la margin interne supérieur dans les WELL, car j'ai passé les line-height des Hn à 100%.*/
+.well h1, .well h2,  .well h3 {
+padding-top:10px;
+}
+
+
+.well .nav {
+padding-top:10px;
+}
+
+
+
+/* 
+LBI : petite modif sur les onglets dès lors qu'on utilise un WELL (gris par défaut)  et WELL-BLEU
+A prévoir : mettre en place de genre de modif pour tous les autres types de WELL (orange, rouge, etc...) et prévoir aussi la couleur des liens qui sera différente
+A prévoir également la mise en couleur avec des WELL sur des mises en pages d'onglet différentes (onglet aligné à gauche, à droite)
+Bref : y pas mal de modif à prévoir pour adapter tous les différents types d'onglets avec nos WELL de couleur différente
+*/
+
+.well .nav-tabs > .active > a,
+.well .nav-tabs > .active > a:hover,
+.well .nav-tabs > .active > a:focus
+{
+background:transparent;
+border-bottom:1px solid #F7F7F7;
+}
+
+.well-bleu .nav-tabs > .active > a,
+.well-bleu .nav-tabs > .active > a:hover,
+.well-bleu .nav-tabs > .active > a:focus
+{
+background:transparent;
+border-bottom:1px solid #0088CE;
+color:#fff;
+}
+
+
+i.icon-chevron-right {
+float:right;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+margin-top:2px;
+}
+
+/* styke UL / LI puce SNCF */
+.sncf_style {
+list-style-type:none;
+margin-left:0;
+}
+
+.sncf_style li {
+background:url(/Images/puce-sncf-violet.png) no-repeat 0 0.7em;
+padding-left:16px;
+line-height:200%;
+}
+
+
+
