@@ -33,9 +33,12 @@ public interface AccountService {
   /**
    * Depose a some amount of money to the given account.
    * 
-   * @param account the account to depose into.
-   * @param localDateTime Date and time of the operation.
-   * @param amount the money amount of the operation.
+   * @param account 
+   *            the account to depose into.
+   * @param localDateTime 
+   *            Date and time of the operation.
+   * @param amount 
+   *            the money amount of the operation.
    * 
    */
   void depositAmount(LocalDateTime localDateTime, Account account, BigDecimal amount);
@@ -51,9 +54,12 @@ public interface AccountService {
   Account getAccountByClient(BankClient client);
 
   /**
+   * Account by BAN (RIB) getter.
    * 
-   * @param rib
-   * @return
+   * @param rib 
+   *            the account BAN.
+   * @return Account
+   *            the bank account for the given BAN (RIB).
    */
   Account getAccountByRib(String rib);
 
@@ -76,6 +82,16 @@ public interface AccountService {
   Set<Transaction> getTransactionsHistory(Account account);
 
   /**
+   * All transfer transactions getter.
+   * 
+   * @param account
+   *            {@link Account} object.
+   * @return Set of transfer transactions
+   *            representing all transfer transactions for the given account.
+   */
+  Set<Transaction> getTransferTransactionsHistory(Account sourceAccount);
+
+  /**
    * Method for transferring money from an account to an other.
    * 
    * @param sourceAccount
@@ -93,9 +109,12 @@ public interface AccountService {
   /**
    * Withdraw the given amount of money to the given account.
    * 
-   * @param account the account to depose into.
-   * @param localDateTime Date and time of the operation.
-   * @param amount the money amount of the operation.
+   * @param account 
+   *            the account to depose into.
+   * @param localDateTime 
+   *            Date and time of the operation.
+   * @param amount 
+   *            the money amount of the operation.
    */
   void withdrawAmount(LocalDateTime localDate, Account account, BigDecimal accountNumber);
 

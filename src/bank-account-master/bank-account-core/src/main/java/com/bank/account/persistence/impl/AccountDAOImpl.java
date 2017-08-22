@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.bank.account.domaine.Account;
 import com.bank.account.domaine.BankClient;
 import com.bank.account.persistence.AccountDAO;
-import com.bank.account.persistenceTest.AccountDAOTest;
+import com.bank.account.test.persistence.AccountDAOTest;
 
 /**
  * Class implementing the AccountDAO interface {@link AccountDAOTest}

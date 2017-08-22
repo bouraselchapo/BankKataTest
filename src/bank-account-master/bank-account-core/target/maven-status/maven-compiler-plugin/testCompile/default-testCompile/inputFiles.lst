@@ -1,7 +1,9 @@
-D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\serviceTest\AccountServiceTest.java
-D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\acceptanceTest\AccountAcceptanceTest.java
-D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\persistenceTest\AccountDAOTest.java
-D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\acceptanceTest\AccountTransferAcceptanceTest.java
+D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\test\acceptance\AccountMoneyTransferFeatureTest.java
+D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\test\acceptance\AccountTransferHistoryFeatureTest.java
+D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\test\acceptance\AccountCreationFeatureTest.java
+D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\test\persistence\AccountDAOTest.java
+D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\test\service\AccountServiceTest.java
+D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\test\acceptance\TransactionTransferKeepTraceFeatureTest.java
 D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\test\builders\AccountBuilder.java
 D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\test\conf\AppTestConfig.java
-D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\persistenceTest\TransactionDAOTest.java
+D:\wrk\Bank-Account\dev\src\bank-account-master\bank-account-core\src\test\java\com\bank\account\test\persistence\TransactionDAOTest.java
